@@ -1,0 +1,16 @@
+.activity-timeline {
+  background: linear-gradient(135deg, #1a1f3a 0%, #0f1a2e 100%);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(100, 200, 255, 0.1);
+}
+
+.activity-timeline h3 {
+  margin: 0 0 15px 0;
+  color: #64c8ff;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
