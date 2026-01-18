@@ -1,13 +1,14 @@
 site_name: LeirEye
-site_url: https://yourusername.github.io/leireye
+site_url: https://delacroixe.github.io/LeirEye
 site_author: LeirEye Team
 site_description: >-
   Analizador educativo de tráfico de red con IA local. 
   Captura, visualiza y entiende qué está pasando en tu red.
 
-repo_name: leireye
-repo_url: https://github.com/yourusername/leireye
-edit_uri: edit/main/docs/
+docs_dir: docs-source
+repo_name: LeirEye
+repo_url: https://github.com/delacroixe/LeirEye
+edit_uri: edit/main/docs-source/
 
 copyright: Copyright &copy; 2026 LeirEye
 
