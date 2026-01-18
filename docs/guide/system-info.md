@@ -148,7 +148,7 @@ Configuraciones actuales del backend:
 
 | Componente | Versión |
 |------------|---------|
-| NetMentor | 2.0.0 |
+| LeirEye | 2.0.0 |
 | Python | 3.11.x |
 | Node.js | 18.x |
 | PostgreSQL | 15.x |

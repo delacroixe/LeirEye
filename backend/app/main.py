@@ -27,7 +27,7 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     """Ciclo de vida de la aplicación"""
     # Startup
-    logger.info("🚀 Iniciando NetMentor...")
+    logger.info("🚀 Iniciando LeirEye...")
     try:
         await init_db()
         logger.info("✓ Base de datos conectada")
@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
     yield
     
     # Shutdown
-    logger.info("🛑 Cerrando NetMentor...")
+    logger.info("🛑 Cerrando LeirEye...")
     try:
         await close_db()
         logger.info("✓ Base de datos cerrada")
@@ -47,7 +47,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="NetMentor - Network Traffic Analyzer",
+    title="LeirEye - Network Traffic Analyzer",
     description="API educativa para capturar y analizar tráfico de red con IA",
     version="2.0.0",
     lifespan=lifespan
@@ -75,7 +75,7 @@ app.include_router(system.router)
 async def root():
     """Endpoint raíz de la API"""
     return {
-        "message": "NetMentor - Network Traffic Analyzer API",
+        "message": "LeirEye - Network Traffic Analyzer API",
         "version": "2.0.0",
         "docs": "/docs",
         "features": [

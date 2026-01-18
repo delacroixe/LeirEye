@@ -10,14 +10,14 @@ class Settings(BaseSettings):
     """Configuración principal de la aplicación"""
     
     # App
-    APP_NAME: str = "NetMentor"
+    APP_NAME: str = "LeirEye"
     APP_VERSION: str = "2.0.0"
     DEBUG: bool = False
     API_V1_PREFIX: str = "/api"
     
     # Database
-    DATABASE_URL: str = "postgresql+asyncpg://netmentor:netmentor_secret@localhost:5432/netmentor"
-    DATABASE_SYNC_URL: str = "postgresql://netmentor:netmentor_secret@localhost:5432/netmentor"
+    DATABASE_URL: str = "postgresql+asyncpg://leireye:leireye_secret@localhost:5432/leireye"
+    DATABASE_SYNC_URL: str = "postgresql://leireye:leireye_secret@localhost:5432/leireye"
     
     # Redis
     REDIS_URL: str = "redis://localhost:6379"

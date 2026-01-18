@@ -1,4 +1,4 @@
-# ⚡ NetMentor v2.0.0 - Command Reference
+# ⚡ LeirEye v2.0.0 - Command Reference
 
 Quick command reference for common development tasks.
 
@@ -23,7 +23,7 @@ docker-compose ps
 # Should see: postgres UP, redis UP
 
 # Check PostgreSQL
-psql -h localhost -U postgres -d netmentor
+psql -h localhost -U postgres -d leireye
 # (password: postgres)
 ```
 
@@ -119,7 +119,7 @@ Go to System tab
 ### PostgreSQL Connection
 ```bash
 # Connect to database
-psql -h localhost -U postgres -d netmentor
+psql -h localhost -U postgres -d leireye
 
 # List tables
 \dt
@@ -348,8 +348,8 @@ tail -f logs/app.log  # if logging enabled
 #### Database Debugging
 ```bash
 # Check current queries
-psql -h localhost -U postgres -d netmentor
-SELECT pid, query FROM pg_stat_activity WHERE datname = 'netmentor';
+psql -h localhost -U postgres -d leireye
+SELECT pid, query FROM pg_stat_activity WHERE datname = 'leireye';
 ```
 
 ### Frontend
@@ -487,8 +487,8 @@ lsof -i :6379      # Redis
 
 ### Database Size
 ```bash
-psql -h localhost -U postgres -d netmentor -c "
-  SELECT pg_size_pretty(pg_database_size('netmentor'));"
+psql -h localhost -U postgres -d leireye -c "
+  SELECT pg_size_pretty(pg_database_size('leireye'));"
 ```
 
 ---
@@ -614,10 +614,10 @@ curl -X POST http://localhost:8000/api/auth/register \
 
 ### Backup Database
 ```bash
-pg_dump -h localhost -U postgres netmentor > backup.sql
+pg_dump -h localhost -U postgres leireye > backup.sql
 
 # Restore
-psql -h localhost -U postgres netmentor < backup.sql
+psql -h localhost -U postgres leireye < backup.sql
 ```
 
 ---

@@ -1,6 +1,6 @@
 # Fundamentos de Redes
 
-Esta sección cubre los conceptos básicos que necesitas entender para usar NetMentor efectivamente.
+Esta sección cubre los conceptos básicos que necesitas entender para usar LeirEye efectivamente.
 
 ## 📚 Contenido
 
@@ -48,7 +48,7 @@ Después de esta sección podrás:
 - [x] Entender cómo funcionan las direcciones IP
 - [x] Identificar puertos y sus usos comunes
 - [x] Diferenciar entre TCP y UDP
-- [x] Interpretar la información básica en NetMentor
+- [x] Interpretar la información básica en LeirEye
 
 ## 🔄 Flujo de Datos
 
@@ -71,7 +71,7 @@ sequenceDiagram
 
 Cada flecha representa uno o más **paquetes** viajando por la red.
 
-## 📊 ¿Qué Verás en NetMentor?
+## 📊 ¿Qué Verás en LeirEye?
 
 Cuando captures tráfico, cada fila representa un paquete:
 

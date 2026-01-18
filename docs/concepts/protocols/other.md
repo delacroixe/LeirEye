@@ -1,6 +1,6 @@
 # Otros Protocolos
 
-Guía rápida de otros protocolos comunes que verás en NetMentor.
+Guía rápida de otros protocolos comunes que verás en LeirEye.
 
 ## 🏓 ICMP - Internet Control Message Protocol
 
@@ -23,7 +23,7 @@ PING google.com (142.250.185.14): 56 data bytes
 64 bytes from 142.250.185.14: icmp_seq=0 ttl=117 time=12.3 ms
 ```
 
-**En NetMentor:**
+**En LeirEye:**
 ```
 #1 | ICMP | 192.168.1.100 → 142.250.185.14 | Echo Request
 #2 | ICMP | 142.250.185.14 → 192.168.1.100 | Echo Reply
@@ -77,7 +77,7 @@ Cliente: .
 Servidor: 250 OK, message queued
 ```
 
-### En NetMentor
+### En LeirEye
 
 ```
 #1 | TCP | 192.168.1.100:54321 → mail.ejemplo.com:587 | [SYN]
@@ -132,7 +132,7 @@ Protocolo antiguo para transferencia de archivos.
     - Datos sin cifrar
     - Usa **SFTP** (SSH) o **FTPS** (TLS) en su lugar
 
-### En NetMentor
+### En LeirEye
 
 ```
 #1 | FTP | 220 Welcome to FTP server
@@ -149,7 +149,7 @@ Sincroniza el reloj del sistema.
 
 - **123 UDP**
 
-### En NetMentor
+### En LeirEye
 
 ```
 #1 | UDP | 192.168.1.100:54321 → time.apple.com:123 | NTP
@@ -184,7 +184,7 @@ sequenceDiagram
     S->>C: Acknowledge "Tuya por 24 horas"
 ```
 
-### En NetMentor
+### En LeirEye
 
 ```
 #1 | DHCP | Discover - Transaction ID 0x1234
@@ -204,7 +204,7 @@ Traduce IP a dirección MAC (capa 2).
 "Yo soy 192.168.1.1, mi MAC es aa:bb:cc:dd:ee:ff"
 ```
 
-### En NetMentor
+### En LeirEye
 
 ```
 #1 | ARP | Who has 192.168.1.1? Tell 192.168.1.100
@@ -252,7 +252,7 @@ Traduce IP a dirección MAC (capa 2).
 # Ver tabla ARP actual
 arp -a
 
-# En NetMentor, verás ARP al comunicarte con IPs locales nuevas
+# En LeirEye, verás ARP al comunicarte con IPs locales nuevas
 ```
 
 ### Capturar NTP

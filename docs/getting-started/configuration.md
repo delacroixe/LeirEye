@@ -1,6 +1,6 @@
 # Configuración
 
-Personaliza NetMentor para tus necesidades específicas.
+Personaliza LeirEye para tus necesidades específicas.
 
 ## Archivo de Configuración (.env)
 
@@ -8,10 +8,10 @@ Crea un archivo `.env` en la raíz del proyecto:
 
 ```bash
 # ===== BASE DE DATOS =====
-POSTGRES_USER=netmentor
+POSTGRES_USER=leireye
 POSTGRES_PASSWORD=tu_contraseña_fuerte
-POSTGRES_DB=netmentor_db
-DATABASE_URL=postgresql://netmentor:tu_contraseña_fuerte@db:5432/netmentor_db
+POSTGRES_DB=leireye_db
+DATABASE_URL=postgresql://leireye:tu_contraseña_fuerte@db:5432/leireye_db
 
 # ===== BACKEND =====
 SECRET_KEY=tu_clave_secreta_muy_larga_min_32_caracteres
@@ -39,9 +39,9 @@ FRONTEND_PORT=3001
 ### Base de Datos
 
 ```yaml
-POSTGRES_USER: nombre de usuario (default: netmentor)
+POSTGRES_USER: nombre de usuario (default: leireye)
 POSTGRES_PASSWORD: contraseña segura (min 12 caracteres)
-POSTGRES_DB: nombre de base de datos (default: netmentor_db)
+POSTGRES_DB: nombre de base de datos (default: leireye_db)
 DATABASE_URL: URL de conexión completa
 ```
 
@@ -131,7 +131,7 @@ from fastapi import FastAPI
 from fastapi.cors import CORSMiddleware
 
 app = FastAPI(
-    title="NetMentor API",
+    title="LeirEye API",
     version="2.0.0",
     description="API de análisis de tráfico de red"
 )
@@ -266,7 +266,7 @@ nginx:
 
 ```bash
 # Cambiar contraseña por defecto
-ALTER USER netmentor WITH PASSWORD 'contraseña_fuerte_nueva';
+ALTER USER leireye WITH PASSWORD 'contraseña_fuerte_nueva';
 ```
 
 ## Monitoreo

@@ -1,6 +1,6 @@
 # Despliegue
 
-Guías para desplegar NetMentor en diferentes entornos.
+Guías para desplegar LeirEye en diferentes entornos.
 
 ## 📚 Contenido
 

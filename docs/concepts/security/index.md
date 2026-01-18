@@ -1,6 +1,6 @@
 # Seguridad en Redes
 
-Aprende a identificar amenazas y proteger tu red usando NetMentor.
+Aprende a identificar amenazas y proteger tu red usando LeirEye.
 
 ## 🛡️ Contenido
 
@@ -47,7 +47,7 @@ El análisis de tráfico de red te permite:
 flowchart TD
     A[Fundamentos de Seguridad] --> B[Detectar Tráfico Sospechoso]
     B --> C[Mejores Prácticas]
-    C --> D[Análisis Continuo con NetMentor]
+    C --> D[Análisis Continuo con LeirEye]
     
     style A fill:#64c8ff
     style D fill:#64ffda
@@ -55,7 +55,7 @@ flowchart TD
 
 ## 📊 Tipos de Amenazas
 
-| Categoría | Ejemplos | Qué buscar en NetMentor |
+| Categoría | Ejemplos | Qué buscar en LeirEye |
 |-----------|----------|------------------------|
 | **Reconocimiento** | Escaneo de puertos, ping sweep | Muchos SYN a diferentes puertos |
 | **Acceso Inicial** | Exploits, credenciales robadas | Conexiones a puertos inusuales |
@@ -81,7 +81,7 @@ Señales de que algo está mal:
 - ❌ Comunicación cifrada a puertos no estándar
 - ❌ Múltiples conexiones fallidas
 
-## 💡 Usando NetMentor para Seguridad
+## 💡 Usando LeirEye para Seguridad
 
 ### Workflow de Análisis
 

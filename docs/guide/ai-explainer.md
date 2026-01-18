@@ -1,6 +1,6 @@
 # Explicador con IA
 
-NetMentor integra **Ollama** para proporcionar explicaciones en lenguaje natural de los paquetes de red capturados.
+LeirEye integra **Ollama** para proporcionar explicaciones en lenguaje natural de los paquetes de red capturados.
 
 ## 🤖 ¿Qué es el Explicador IA?
 
@@ -103,7 +103,7 @@ La IA puede identificar patrones sospechosos:
 
 ### Modelo Recomendado
 
-NetMentor usa **llama3.2:3b** por defecto:
+LeirEye usa **llama3.2:3b** por defecto:
 
 ```bash
 # Descargar modelo

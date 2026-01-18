@@ -61,7 +61,7 @@ sequenceDiagram
 | **NS** | Name Server | Servidores DNS autoritativos | google.com → ns1.google.com |
 | **PTR** | Pointer | IP → nombre (inverso) | 8.8.8.8 → dns.google |
 
-## 🔍 En NetMentor
+## 🔍 En LeirEye
 
 ### Consulta DNS (Query)
 
@@ -129,7 +129,7 @@ sudo systemd-resolve --statistics
 
 ### Amenazas Comunes
 
-| Ataque | Descripción | Señal en NetMentor |
+| Ataque | Descripción | Señal en LeirEye |
 |--------|-------------|-------------------|
 | **DNS Spoofing** | Respuestas falsas | IPs inesperadas para dominios conocidos |
 | **DNS Tunneling** | Exfiltrar datos vía DNS | Consultas TXT muy largas, subdominios extraños |
@@ -137,7 +137,7 @@ sudo systemd-resolve --statistics
 
 ### Señales de Alerta
 
-!!! warning "En NetMentor busca:"
+!!! warning "En LeirEye busca:"
     - Consultas a dominios muy largos o aleatorios
     - Muchas consultas TXT
     - DNS a servidores no reconocidos
@@ -177,7 +177,7 @@ long-random-subdomain-1234abcd.c2server.ru
 - Previene spoofing
 - No cifra, solo autentica
 
-## 💡 Práctica en NetMentor
+## 💡 Práctica en LeirEye
 
 ### Experimento 1: Capturar DNS
 

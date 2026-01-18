@@ -1,15 +1,15 @@
-site_name: NetMentor
-site_url: https://yourusername.github.io/netmentor
-site_author: NetMentor Team
+site_name: LeirEye
+site_url: https://yourusername.github.io/leireye
+site_author: LeirEye Team
 site_description: >-
   Analizador educativo de tráfico de red con IA local. 
   Captura, visualiza y entiende qué está pasando en tu red.
 
-repo_name: netmentor
-repo_url: https://github.com/yourusername/netmentor
+repo_name: leireye
+repo_url: https://github.com/yourusername/leireye
 edit_uri: edit/main/docs/
 
-copyright: Copyright &copy; 2026 NetMentor
+copyright: Copyright &copy; 2026 LeirEye
 
 theme:
   name: material
@@ -101,9 +101,9 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/yourusername/netmentor
+      link: https://github.com/yourusername/leireye
     - icon: fontawesome/brands/twitter
-      link: https://twitter.com/netmentor
+      link: https://twitter.com/leireye
   
   analytics:
     provider: google

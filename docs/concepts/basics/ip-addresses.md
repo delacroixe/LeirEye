@@ -113,7 +113,7 @@ flowchart LR
 4. El router traduce de vuelta: 203.0.113.50 → 192.168.1.100
 5. Tu PC recibe la respuesta
 
-## 📊 En NetMentor
+## 📊 En LeirEye
 
 Cuando capturas tráfico, verás dos tipos de IPs:
 
@@ -179,7 +179,7 @@ traceroute google.com
     Por eso existen VPNs y Tor.
 
 !!! warning "IPs Sospechosas"
-    En NetMentor, presta atención a:
+    En LeirEye, presta atención a:
     
     - IPs que no reconoces comunicándose con tu PC
     - Muchas conexiones a una misma IP desconocida
@@ -195,7 +195,7 @@ whois 8.8.8.8
 curl ipinfo.io/8.8.8.8
 ```
 
-## 💡 Práctica en NetMentor
+## 💡 Práctica en LeirEye
 
 1. **Captura tráfico** por 1 minuto
 2. **Identifica** qué IPs son locales vs públicas

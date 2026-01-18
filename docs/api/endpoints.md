@@ -1,6 +1,6 @@
 # Endpoints de la API
 
-Referencia completa de todos los endpoints disponibles en NetMentor.
+Referencia completa de todos los endpoints disponibles en LeirEye.
 
 ## 🔐 Autenticación
 
@@ -428,7 +428,7 @@ GET /api/system/info
     "memory_percent": 45.8,
     "disk_percent": 62.1
   },
-  "netmentor": {
+  "leireye": {
     "version": "2.0.0",
     "uptime_seconds": 3600
   }

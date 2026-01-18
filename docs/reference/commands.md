@@ -1,6 +1,6 @@
 # Referencia de Comandos
 
-Guía rápida de todos los comandos necesarios para trabajar con NetMentor.
+Guía rápida de todos los comandos necesarios para trabajar con LeirEye.
 
 ## 🚀 Inicio Rápido
 
@@ -66,10 +66,10 @@ docker-compose down -v
 
 ```bash
 # Conectar al contenedor
-docker exec -it netmentor-postgres psql -U postgres -d netmentor
+docker exec -it leireye-postgres psql -U postgres -d leireye
 
 # O desde fuera
-psql -h localhost -U postgres -d netmentor
+psql -h localhost -U postgres -d leireye
 # Password: postgres
 ```
 
@@ -299,7 +299,7 @@ curl http://localhost:3001
 
 ```bash
 # Backend (si hay archivo de log)
-tail -f backend/logs/netmentor.log
+tail -f backend/logs/leireye.log
 
 # Docker logs
 docker-compose logs -f
@@ -366,7 +366,7 @@ htop  # Si está instalado
 # Uso de disco
 df -h
 
-# Procesos de NetMentor
+# Procesos de LeirEye
 ps aux | grep -E "python|node|docker"
 ```
 

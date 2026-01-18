@@ -1,4 +1,4 @@
-# NetMentor - Roadmap de Desarrollo
+# LeirEye - Roadmap de Desarrollo
 
 > **"Tu red, explicada"** - Analizador de red educativo con IA local
 

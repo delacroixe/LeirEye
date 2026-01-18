@@ -1,6 +1,6 @@
-# API de NetMentor
+# API de LeirEye
 
-Documentación de la API REST de NetMentor para integración y automatización.
+Documentación de la API REST de LeirEye para integración y automatización.
 
 ## 🌐 Información General
 

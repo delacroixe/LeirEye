@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Soluciones a problemas comunes en NetMentor.
+Soluciones a problemas comunes en LeirEye.
 
 ## 🔍 Diagnóstico Rápido
 
@@ -196,7 +196,7 @@ El frontend debería renovar automáticamente. Si no funciona, verificar que el 
 
 ```bash
 # Base de datos accesible
-psql -h localhost -U postgres -d netmentor -c "SELECT 1"
+psql -h localhost -U postgres -d leireye -c "SELECT 1"
 
 # Migraciones aplicadas
 cd backend
@@ -348,7 +348,7 @@ lsof -i :3001,:8000,:5432,:6379,:11434 2>/dev/null | grep LISTEN
 
 Si el problema persiste, incluye:
 
-1. Versión de NetMentor
+1. Versión de LeirEye
 2. Sistema operativo
 3. Logs relevantes
 4. Pasos para reproducir

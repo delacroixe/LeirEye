@@ -1,6 +1,6 @@
 # WebSocket API
 
-NetMentor usa WebSocket para streaming de paquetes en tiempo real.
+LeirEye usa WebSocket para streaming de paquetes en tiempo real.
 
 ## 🔌 Conexión
 
@@ -195,7 +195,7 @@ sequenceDiagram
 ### JavaScript/TypeScript
 
 ```typescript
-class NetMentorWebSocket {
+class LeirEyeWebSocket {
   private ws: WebSocket;
   private token: string;
   private reconnectAttempts = 0;
@@ -209,7 +209,7 @@ class NetMentorWebSocket {
     this.ws = new WebSocket(`ws://localhost:8000/ws/capture?token=${this.token}`);
     
     this.ws.onopen = () => {
-      console.log('Connected to NetMentor');
+      console.log('Connected to LeirEye');
       this.reconnectAttempts = 0;
       this.subscribe('packets');
     };
@@ -293,7 +293,7 @@ class NetMentorWebSocket {
 }
 
 // Uso
-const ws = new NetMentorWebSocket('eyJhbGci...');
+const ws = new LeirEyeWebSocket('eyJhbGci...');
 
 ws.onPacket = (packet) => {
   // Agregar paquete a la tabla
@@ -313,7 +313,7 @@ import asyncio
 import websockets
 import json
 
-class NetMentorWebSocket:
+class LeirEyeWebSocket:
     def __init__(self, token: str):
         self.token = token
         self.uri = f"ws://localhost:8000/ws/capture?token={token}"
@@ -349,7 +349,7 @@ class NetMentorWebSocket:
 
 # Uso
 async def main():
-    client = NetMentorWebSocket("eyJhbGci...")
+    client = LeirEyeWebSocket("eyJhbGci...")
     await client.connect()
 
 asyncio.run(main())

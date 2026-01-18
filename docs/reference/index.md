@@ -1,6 +1,6 @@
 # Referencia
 
-Documentación de referencia rápida para NetMentor.
+Documentación de referencia rápida para LeirEye.
 
 ## 📚 Contenido
 
@@ -79,7 +79,7 @@ docker-compose down
 ## 📁 Estructura
 
 ```
-netmentor/
+leireye/
 ├── backend/           # API FastAPI
 │   ├── app/
 │   │   ├── core/      # Config, DB, Security

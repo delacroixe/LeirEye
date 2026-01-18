@@ -138,7 +138,7 @@ softwareupdate -l
 
 ## 📊 Monitoreo
 
-### Con NetMentor
+### Con LeirEye
 
 **Rutina semanal:**
 
@@ -249,7 +249,7 @@ ls -la /Volumes/BackupDrive/Documents/
 
 ### Semanal
 
-- [ ] Captura baseline con NetMentor
+- [ ] Captura baseline con LeirEye
 - [ ] Revisar mapa de red (dispositivos nuevos)
 - [ ] Instalar actualizaciones pendientes
 - [ ] Revisar logs de auth
@@ -304,7 +304,7 @@ mindmap
       Automáticas
       Priorizadas
     Monitoreo
-      NetMentor
+      LeirEye
       Logs
       Alertas
     Datos

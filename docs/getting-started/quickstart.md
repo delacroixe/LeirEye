@@ -1,12 +1,12 @@
 # Inicio Rápido
 
-¡Instala y ejecuta NetMentor en menos de 5 minutos!
+¡Instala y ejecuta LeirEye en menos de 5 minutos!
 
 ## Paso 1: Clonar el Repositorio
 
 ```bash
-git clone https://github.com/yourusername/netmentor.git
-cd netmentor
+git clone https://github.com/yourusername/leireye.git
+cd leireye
 ```
 
 ## Paso 2: Iniciar los Servicios con Docker
@@ -94,7 +94,7 @@ Si no se abre, ve a [http://localhost:3001](http://localhost:3001) manualmente.
 
 ## 🎉 ¡Listo!
 
-¡Ya tienes NetMentor funcionando! Ahora puedes:
+¡Ya tienes LeirEye funcionando! Ahora puedes:
 
 - 📡 [Capturar paquetes](../guide/packet-capture.md)
 - 🤖 [Usar la IA explicativa](../guide/ai-explainer.md)

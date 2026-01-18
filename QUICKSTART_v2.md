@@ -1,8 +1,8 @@
-# 🚀 NetMentor v2.0.0 - Quick Start
+# 🚀 LeirEye v2.0.0 - Quick Start
 
 ## What's New?
 
-Your NetMentor project has been upgraded with professional features:
+Your LeirEye project has been upgraded with professional features:
 
 ✅ **PostgreSQL Database** - Persistent user data  
 ✅ **JWT Authentication** - Secure login system  
@@ -257,7 +257,7 @@ User → Login Page → JWT Token → Protected Routes
 
 ## Version Info
 
-- **NetMentor**: v2.0.0
+- **LeirEye**: v2.0.0
 - **Backend**: FastAPI + PostgreSQL + SQLAlchemy
 - **Frontend**: React 19 + TypeScript + React Router
 - **AI**: Ollama + llama3.2:3b

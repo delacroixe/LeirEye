@@ -1,6 +1,6 @@
 # Guía de Uso
 
-NetMentor ofrece múltiples herramientas para el análisis de redes. Esta sección explica cómo usar cada una.
+LeirEye ofrece múltiples herramientas para el análisis de redes. Esta sección explica cómo usar cada una.
 
 ## 🎛️ Panel Principal
 
@@ -50,7 +50,7 @@ NetMentor ofrece múltiples herramientas para el análisis de redes. Esta secci�
 
 ## 🧭 Navegación
 
-La interfaz de NetMentor usa una **barra lateral profesional** con:
+La interfaz de LeirEye usa una **barra lateral profesional** con:
 
 - **Logo** y nombre del proyecto arriba
 - **Secciones principales** con iconos descriptivos

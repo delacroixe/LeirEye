@@ -1,5 +1,5 @@
 """
-Dependencias de FastAPI para NetMentor
+Dependencias de FastAPI para LeirEye
 """
 from .auth import (
     get_current_user,

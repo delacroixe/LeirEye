@@ -8,7 +8,7 @@ Guía práctica para identificar actividad maliciosa en capturas de red.
 
 **Qué es:** Atacante explorando qué servicios tienes abiertos.
 
-**En NetMentor:**
+**En LeirEye:**
 ```
 #1 | TCP | 1.2.3.4:54321 → TuIP:21   | [SYN]
 #2 | TCP | 1.2.3.4:54322 → TuIP:22   | [SYN]
@@ -35,7 +35,7 @@ Guía práctica para identificar actividad maliciosa en capturas de red.
 
 **Qué es:** Malware "llamando a casa" para recibir instrucciones.
 
-**En NetMentor:**
+**En LeirEye:**
 ```
 10:00:00 | TCP | TuIP → 1.2.3.4:443 | 128 bytes
 10:01:00 | TCP | TuIP → 1.2.3.4:443 | 128 bytes
@@ -64,7 +64,7 @@ Paquetes por minuto a 1.2.3.4
 
 **Qué es:** Exfiltrar datos o C2 disfrazado de tráfico DNS.
 
-**En NetMentor:**
+**En LeirEye:**
 ```
 #1 | DNS | Query: aGVsbG8gd29ybGQ.evil.tk
 #2 | DNS | Query: dGhpcyBpcyBkYXRh.evil.tk
@@ -92,7 +92,7 @@ DNS Query: YWJjZGVmZ2hpamtsbW5vcHFy.evil.pw
 
 **Qué es:** Robo de información hacia el exterior.
 
-**En NetMentor:**
+**En LeirEye:**
 ```
 23:00:00 | TCP | TuIP → Desconocido:443 | 15 MB
 23:00:30 | TCP | TuIP → Desconocido:443 | 20 MB
@@ -117,7 +117,7 @@ Top Destinos por Volumen:
 
 **Qué es:** Intentos repetidos de adivinar credenciales.
 
-**En NetMentor:**
+**En LeirEye:**
 ```
 10:00:00 | SSH | 1.2.3.4 → TuIP:22 | Connection
 10:00:01 | SSH | 1.2.3.4 → TuIP:22 | Connection
@@ -160,7 +160,7 @@ Paquetes/segundo
 
 **Qué es:** Atacante se hace pasar por el gateway para interceptar tráfico.
 
-**En NetMentor:**
+**En LeirEye:**
 ```
 #1 | ARP | 192.168.1.1 is at aa:bb:cc:dd:ee:ff (real)
 #2 | ARP | 192.168.1.1 is at 11:22:33:44:55:66 (falso!)
@@ -234,7 +234,7 @@ whois dominio-sospechoso.tk
 nmap -sS localhost
 ```
 
-Captura con NetMentor y observa el patrón.
+Captura con LeirEye y observa el patrón.
 
 ### Ejercicio 2: Analizar Baseline
 

@@ -103,7 +103,7 @@ ssh usuario@servidor
 # ¡Entra directamente!
 ```
 
-## 🔍 En NetMentor
+## 🔍 En LeirEye
 
 ### Handshake Inicial
 
@@ -210,7 +210,7 @@ Port 2222
 
 ### Señales de Ataque
 
-!!! warning "En NetMentor busca:"
+!!! warning "En LeirEye busca:"
     - Muchos intentos de conexión al puerto 22
     - Conexiones desde IPs desconocidas
     - Conexiones SSH a horas inusuales
@@ -232,7 +232,7 @@ Mitigación:
 - Instalar `fail2ban`
 - Cambiar puerto (seguridad por obscuridad)
 
-## 💡 Práctica en NetMentor
+## 💡 Práctica en LeirEye
 
 ### Experimento 1: Capturar Handshake SSH
 

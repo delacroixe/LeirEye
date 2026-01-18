@@ -1,4 +1,4 @@
-# NetMentor v2.0.0 - Testing Checklist
+# LeirEye v2.0.0 - Testing Checklist
 
 ## Pre-Launch Verification
 
@@ -50,7 +50,7 @@
 
 - [ ] **Sidebar**
   - [ ] Sidebar visible when authenticated
-  - [ ] Logo displays (NetMentor)
+  - [ ] Logo displays (LeirEye)
   - [ ] Menu items show (Dashboard, Capture, etc.)
   - [ ] Responsive on mobile (hamburger menu)
   - [ ] User profile card at bottom
@@ -228,7 +228,7 @@ curl http://localhost:8000/health
 ### ✅ Table Structure
 ```sql
 -- Connect to PostgreSQL
-psql -U postgres -h localhost -d netmentor
+psql -U postgres -h localhost -d leireye
 
 -- Check users table
 SELECT column_name, data_type, is_nullable 
@@ -432,7 +432,7 @@ Expected:
 ```bash
 #!/bin/bash
 
-echo "🧪 NetMentor v2.0.0 - Quick Test Suite"
+echo "🧪 LeirEye v2.0.0 - Quick Test Suite"
 echo "========================================"
 
 # 1. Check Docker
@@ -446,7 +446,7 @@ curl -s http://localhost:8000/health | grep healthy && echo "  ✓ Backend healt
 
 # 3. Check Database
 echo "✓ Checking Database..."
-psql -U postgres -h localhost -d netmentor -c "SELECT count(*) FROM users;" && echo "  ✓ Users table accessible" || echo "  ✗ Database NOT responding"
+psql -U postgres -h localhost -d leireye -c "SELECT count(*) FROM users;" && echo "  ✓ Users table accessible" || echo "  ✗ Database NOT responding"
 
 # 4. Check Frontend
 echo "✓ Checking Frontend..."

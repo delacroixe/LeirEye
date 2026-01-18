@@ -1,5 +1,5 @@
 ---
-title: NetMentor - Analizador de Red Educativo con IA
+title: LeirEye - Analizador de Red Educativo con IA
 hide:
   - navigation
   - toc
@@ -16,7 +16,7 @@ hide:
 
 <div class="hero" markdown>
 
-# 🌐 NetMentor
+# 🌐 LeirEye
 
 ## El analizador de red que te **enseña** mientras capturas
 
@@ -24,7 +24,7 @@ Herramienta educativa de análisis de tráfico de red con IA local.
 Captura, visualiza, y **entiende** qué está pasando en tu red.
 
 [Empezar :rocket:](getting-started/index.md){ .md-button .md-button--primary }
-[GitHub :fontawesome-brands-github:](https://github.com/yourusername/netmentor){ .md-button }
+[GitHub :fontawesome-brands-github:](https://github.com/yourusername/leireye){ .md-button }
 
 </div>
 
@@ -98,8 +98,8 @@ Captura, visualiza, y **entiende** qué está pasando en tu red.
 
     ```bash
     # 1. Clonar repositorio
-    git clone https://github.com/yourusername/netmentor.git
-    cd netmentor
+    git clone https://github.com/yourusername/leireye.git
+    cd leireye
 
     # 2. Iniciar servicios
     docker-compose up -d
@@ -142,7 +142,7 @@ Captura, visualiza, y **entiende** qué está pasando en tu red.
 
 ---
 
-## 🎯 ¿Para quién es NetMentor?
+## 🎯 ¿Para quién es LeirEye?
 
 <div class="grid" markdown>
 
@@ -201,7 +201,7 @@ Captura, visualiza, y **entiende** qué está pasando en tu red.
 
 -   :material-cloud-upload: [**Despliegue**](deployment/index.md)
 
-    Llevar NetMentor a producción
+    Llevar LeirEye a producción
 
 </div>
 
@@ -209,11 +209,11 @@ Captura, visualiza, y **entiende** qué está pasando en tu red.
 
 ## 🤝 Contribuir
 
-NetMentor es open source. ¡Las contribuciones son bienvenidas!
+LeirEye es open source. ¡Las contribuciones son bienvenidas!
 
-- :fontawesome-brands-github: [Ver código fuente](https://github.com/yourusername/netmentor)
-- :material-bug: [Reportar un bug](https://github.com/yourusername/netmentor/issues)
-- :material-lightbulb: [Sugerir mejora](https://github.com/yourusername/netmentor/discussions)
+- :fontawesome-brands-github: [Ver código fuente](https://github.com/yourusername/leireye)
+- :material-bug: [Reportar un bug](https://github.com/yourusername/leireye/issues)
+- :material-lightbulb: [Sugerir mejora](https://github.com/yourusername/leireye/discussions)
 
 ---
 

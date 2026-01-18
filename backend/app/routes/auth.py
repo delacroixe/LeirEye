@@ -1,5 +1,5 @@
 """
-Rutas de autenticación para NetMentor
+Rutas de autenticación para LeirEye
 """
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status

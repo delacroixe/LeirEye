@@ -1,6 +1,6 @@
 # Changelog
 
-Historial de cambios de NetMentor.
+Historial de cambios de LeirEye.
 
 ## 📋 Versiones
 
@@ -145,7 +145,7 @@ npm install
 
 ## 🏷️ Convenciones de Versionado
 
-NetMentor sigue [Semantic Versioning](https://semver.org/):
+LeirEye sigue [Semantic Versioning](https://semver.org/):
 
 - **MAJOR** (x.0.0): Cambios incompatibles
 - **MINOR** (0.x.0): Nueva funcionalidad compatible

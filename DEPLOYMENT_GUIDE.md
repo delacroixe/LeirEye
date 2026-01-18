@@ -1,6 +1,6 @@
-# 🚀 NetMentor v2.0.0 - Production Deployment Guide
+# 🚀 LeirEye v2.0.0 - Production Deployment Guide
 
-Guía completa para desplegar NetMentor en producción.
+Guía completa para desplegar LeirEye en producción.
 
 ---
 
@@ -53,7 +53,7 @@ Guía completa para desplegar NetMentor en producción.
 # backend/.env (DO NOT COMMIT TO GIT)
 
 # Database
-DATABASE_URL=postgresql+asyncpg://username:password@db.example.com:5432/netmentor_prod
+DATABASE_URL=postgresql+asyncpg://username:password@db.example.com:5432/leireye_prod
 
 # Security
 SECRET_KEY=<generate-with: python -c "import secrets; print(secrets.token_urlsafe(64))">
@@ -62,7 +62,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 REFRESH_TOKEN_EXPIRE_DAYS=7
 
 # CORS (production domains only)
-CORS_ORIGINS=["https://netmentor.example.com","https://app.netmentor.example.com"]
+CORS_ORIGINS=["https://leireye.example.com","https://app.leireye.example.com"]
 
 # Ollama
 OLLAMA_BASE_URL=http://localhost:11434
@@ -70,7 +70,7 @@ OLLAMA_MODEL=llama3.2:3b
 
 # Logging
 LOG_LEVEL=INFO
-LOG_FILE=/var/log/netmentor/backend.log
+LOG_FILE=/var/log/leireye/backend.log
 
 # Deployment
 ENVIRONMENT=production
@@ -89,8 +89,8 @@ python3 -c "import secrets; print(secrets.token_urlsafe(64))"
 # frontend/.env.production
 
 # Backend API
-REACT_APP_API_URL=https://api.netmentor.example.com
-REACT_APP_WS_URL=wss://api.netmentor.example.com/ws
+REACT_APP_API_URL=https://api.leireye.example.com
+REACT_APP_WS_URL=wss://api.leireye.example.com/ws
 
 # Analytics (optional)
 REACT_APP_ANALYTICS_ID=your-analytics-id
@@ -114,15 +114,15 @@ REACT_APP_VERSION=2.0.0
 # - Backup retention: 30 days
 
 # 2. Get endpoint
-# - Example: netmentor-db.xxxxxx.us-east-1.rds.amazonaws.com
+# - Example: leireye-db.xxxxxx.us-east-1.rds.amazonaws.com
 
 # 3. Create database
-psql -h netmentor-db.xxxxxx.us-east-1.rds.amazonaws.com \
+psql -h leireye-db.xxxxxx.us-east-1.rds.amazonaws.com \
   -U postgres \
-  -c "CREATE DATABASE netmentor_prod;"
+  -c "CREATE DATABASE leireye_prod;"
 
 # 4. Set DATABASE_URL
-DATABASE_URL=postgresql+asyncpg://postgres:password@netmentor-db.xxxxxx.us-east-1.rds.amazonaws.com:5432/netmentor_prod
+DATABASE_URL=postgresql+asyncpg://postgres:password@leireye-db.xxxxxx.us-east-1.rds.amazonaws.com:5432/leireye_prod
 ```
 
 #### DigitalOcean Database
@@ -158,10 +158,10 @@ sudo apt install postgresql postgresql-contrib
 sudo su - postgres
 psql
 
-CREATE DATABASE netmentor_prod;
-CREATE USER netmentor WITH PASSWORD 'secure-password-here';
-GRANT ALL PRIVILEGES ON DATABASE netmentor_prod TO netmentor;
-ALTER DATABASE netmentor_prod OWNER TO netmentor;
+CREATE DATABASE leireye_prod;
+CREATE USER leireye WITH PASSWORD 'secure-password-here';
+GRANT ALL PRIVILEGES ON DATABASE leireye_prod TO leireye;
+ALTER DATABASE leireye_prod OWNER TO leireye;
 \q
 
 # 3. Enable remote connections (if needed)
@@ -175,7 +175,7 @@ host    all             all             0.0.0.0/0               md5
 sudo systemctl restart postgresql
 
 # 5. Set DATABASE_URL
-DATABASE_URL=postgresql+asyncpg://netmentor:secure-password-here@localhost:5432/netmentor_prod
+DATABASE_URL=postgresql+asyncpg://leireye:secure-password-here@localhost:5432/leireye_prod
 ```
 
 ### Run Migrations
@@ -190,7 +190,7 @@ source venv/bin/activate
 alembic upgrade head
 
 # Verify
-psql -h <host> -U <user> -d netmentor_prod -c "\dt"
+psql -h <host> -U <user> -d leireye_prod -c "\dt"
 # Should show: users table
 ```
 
@@ -202,18 +202,18 @@ psql -h <host> -U <user> -d netmentor_prod -c "\dt"
 
 #### Create Service File
 ```bash
-# /etc/systemd/system/netmentor-backend.service
+# /etc/systemd/system/leireye-backend.service
 
 [Unit]
-Description=NetMentor Backend API
+Description=LeirEye Backend API
 After=network.target postgresql.service
 
 [Service]
 Type=notify
-User=netmentor
-WorkingDirectory=/home/netmentor/netmentor/backend
-Environment="PATH=/home/netmentor/netmentor/backend/venv/bin"
-ExecStart=/home/netmentor/netmentor/backend/venv/bin/python run.py
+User=leireye
+WorkingDirectory=/home/leireye/leireye/backend
+Environment="PATH=/home/leireye/leireye/backend/venv/bin"
+ExecStart=/home/leireye/leireye/backend/venv/bin/python run.py
 Restart=always
 RestartSec=10
 
@@ -223,23 +223,23 @@ WantedBy=multi-user.target
 
 #### Install and Run
 ```bash
-# Copy application to /home/netmentor/netmentor
-sudo cp -r /path/to/netmentor /home/netmentor/
+# Copy application to /home/leireye/leireye
+sudo cp -r /path/to/leireye /home/leireye/
 
 # Set permissions
-sudo chown -R netmentor:netmentor /home/netmentor/netmentor
+sudo chown -R leireye:leireye /home/leireye/leireye
 
 # Create log directory
-sudo mkdir -p /var/log/netmentor
-sudo chown netmentor:netmentor /var/log/netmentor
+sudo mkdir -p /var/log/leireye
+sudo chown leireye:leireye /var/log/leireye
 
 # Enable and start service
 sudo systemctl daemon-reload
-sudo systemctl enable netmentor-backend
-sudo systemctl start netmentor-backend
+sudo systemctl enable leireye-backend
+sudo systemctl start leireye-backend
 
 # Check status
-sudo systemctl status netmentor-backend
+sudo systemctl status leireye-backend
 ```
 
 ### Option 2: Docker Container (Recommended)
@@ -282,11 +282,11 @@ services:
     image: postgres:15-alpine
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: netmentor_prod
+      POSTGRES_DB: leireye_prod
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - netmentor-network
+      - leireye-network
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -297,7 +297,7 @@ services:
   redis:
     image: redis:7-alpine
     networks:
-      - netmentor-network
+      - leireye-network
     restart: always
     command: redis-server --appendonly yes
     volumes:
@@ -315,7 +315,7 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - netmentor-network
+      - leireye-network
     restart: always
     ports:
       - "8000:8000"
@@ -331,7 +331,7 @@ services:
     depends_on:
       - backend
     networks:
-      - netmentor-network
+      - leireye-network
     restart: always
 
 volumes:
@@ -339,7 +339,7 @@ volumes:
   redis_data:
 
 networks:
-  netmentor-network:
+  leireye-network:
     driver: bridge
 ```
 
@@ -348,7 +348,7 @@ networks:
 # Set environment variables
 export DATABASE_URL=postgresql+asyncpg://...
 export SECRET_KEY=...
-export CORS_ORIGINS='["https://netmentor.example.com"]'
+export CORS_ORIGINS='["https://leireye.example.com"]'
 
 # Build and run
 docker-compose -f docker-compose.prod.yml up -d
@@ -366,8 +366,8 @@ docker-compose -f docker-compose.prod.yml exec backend alembic upgrade head
 ```bash
 # 1. Push image to ECR
 aws ecr get-login-password | docker login --username AWS --password-stdin <account>.dkr.ecr.us-east-1.amazonaws.com
-docker tag netmentor-backend:latest <account>.dkr.ecr.us-east-1.amazonaws.com/netmentor-backend:latest
-docker push <account>.dkr.ecr.us-east-1.amazonaws.com/netmentor-backend:latest
+docker tag leireye-backend:latest <account>.dkr.ecr.us-east-1.amazonaws.com/leireye-backend:latest
+docker push <account>.dkr.ecr.us-east-1.amazonaws.com/leireye-backend:latest
 
 # 2. Create ECS service
 # - Use CloudFormation or AWS Console
@@ -389,11 +389,11 @@ docker push <account>.dkr.ecr.us-east-1.amazonaws.com/netmentor-backend:latest
 #### DigitalOcean App Platform
 ```bash
 # 1. Create app.yaml
-name: netmentor
+name: leireye
 services:
 - name: backend
   github:
-    repo: your-github/netmentor
+    repo: your-github/leireye
     branch: main
   build_command: pip install -r requirements.txt
   run_command: python run.py
@@ -405,7 +405,7 @@ services:
 
 - name: frontend
   github:
-    repo: your-github/netmentor
+    repo: your-github/leireye
     branch: main
   source_dir: frontend
   build_command: npm install && npm run build
@@ -466,20 +466,20 @@ npm install -g vercel
 vercel --prod
 
 # 3. Set environment variables in Vercel dashboard
-REACT_APP_API_URL=https://api.netmentor.example.com
-REACT_APP_WS_URL=wss://api.netmentor.example.com/ws
+REACT_APP_API_URL=https://api.leireye.example.com
+REACT_APP_WS_URL=wss://api.leireye.example.com/ws
 ```
 
 #### AWS S3 + CloudFront
 ```bash
 # 1. Create S3 bucket
-aws s3 mb s3://netmentor-app-prod
+aws s3 mb s3://leireye-app-prod
 
 # 2. Build
 npm run build
 
 # 3. Upload to S3
-aws s3 sync build/ s3://netmentor-app-prod/
+aws s3 sync build/ s3://leireye-app-prod/
 
 # 4. Create CloudFront distribution
 # - Origin: S3 bucket
@@ -539,7 +539,7 @@ server {
 ### Nginx Configuration (Recommended)
 
 ```nginx
-# /etc/nginx/sites-available/netmentor
+# /etc/nginx/sites-available/leireye
 
 upstream backend {
     server 127.0.0.1:8000;
@@ -547,7 +547,7 @@ upstream backend {
 
 server {
     listen 80;
-    server_name netmentor.example.com api.netmentor.example.com;
+    server_name leireye.example.com api.leireye.example.com;
     
     # Redirect to HTTPS
     return 301 https://$server_name$request_uri;
@@ -555,11 +555,11 @@ server {
 
 server {
     listen 443 ssl http2;
-    server_name api.netmentor.example.com;
+    server_name api.leireye.example.com;
     
     # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/netmentor.example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/netmentor.example.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/leireye.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/leireye.example.com/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
     
@@ -595,13 +595,13 @@ server {
 
 server {
     listen 443 ssl http2;
-    server_name netmentor.example.com;
+    server_name leireye.example.com;
     
-    ssl_certificate /etc/letsencrypt/live/netmentor.example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/netmentor.example.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/leireye.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/leireye.example.com/privkey.pem;
     
     # Frontend static files
-    root /var/www/netmentor/build;
+    root /var/www/leireye/build;
     index index.html;
     
     # Security Headers
@@ -643,7 +643,7 @@ server {
 
 #### Enable Configuration
 ```bash
-sudo ln -s /etc/nginx/sites-available/netmentor /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/leireye /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
@@ -656,8 +656,8 @@ sudo apt install certbot python3-certbot-nginx
 
 # 2. Get certificate
 sudo certbot certonly --nginx \
-  -d netmentor.example.com \
-  -d api.netmentor.example.com
+  -d leireye.example.com \
+  -d api.leireye.example.com
 
 # 3. Auto-renewal (certbot sets this up automatically)
 sudo systemctl enable certbot.timer
@@ -686,7 +686,7 @@ ssl_key_file = '/path/to/server.key'
 CREATE EXTENSION pgcrypto;
 
 -- Regular backups
-pg_dump -h host -U user -d netmentor_prod | gzip > backup_$(date +%Y%m%d).sql.gz
+pg_dump -h host -U user -d leireye_prod | gzip > backup_$(date +%Y%m%d).sql.gz
 ```
 
 ### Application Security
@@ -696,8 +696,8 @@ pg_dump -h host -U user -d netmentor_prod | gzip > backup_$(date +%Y%m%d).sql.gz
 
 # Update for production
 CORS_ORIGINS = [
-    "https://netmentor.example.com",
-    "https://app.netmentor.example.com"
+    "https://leireye.example.com",
+    "https://app.leireye.example.com"
 ]
 
 # Enforce HTTPS
@@ -761,7 +761,7 @@ logging.getLogger().addHandler(logHandler)
 
 ```bash
 # Health check (already implemented)
-curl https://api.netmentor.example.com/health
+curl https://api.leireye.example.com/health
 
 # Expected response
 {
@@ -781,7 +781,7 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
-  - job_name: 'netmentor'
+  - job_name: 'leireye'
     static_configs:
       - targets: ['localhost:8000']
 ```
@@ -792,7 +792,7 @@ scrape_configs:
 {
   "input": {
     "file": {
-      "path": "/var/log/netmentor/backend.log"
+      "path": "/var/log/leireye/backend.log"
     }
   },
   "output": {
@@ -822,7 +822,7 @@ services:
         parallelism: 1
         delay: 10s
     networks:
-      - netmentor-network
+      - leireye-network
 
   nginx:
     image: nginx:alpine
@@ -899,7 +899,7 @@ def cache_user(user_id: str, user_data: dict):
 
 ```bash
 # 1. Stop current deployment
-sudo systemctl stop netmentor-backend
+sudo systemctl stop leireye-backend
 docker-compose -f docker-compose.prod.yml down
 
 # 2. Restore previous version
@@ -910,7 +910,7 @@ docker-compose -f docker-compose.prod.yml up -d
 alembic upgrade head
 
 # 4. Verify
-curl https://api.netmentor.example.com/health
+curl https://api.leireye.example.com/health
 ```
 
 ### Database Rollback
@@ -922,7 +922,7 @@ alembic downgrade -1  # Undo last migration
 alembic upgrade head  # Reapply
 
 # Or restore from backup
-psql -h host -U user -d netmentor_prod < backup_20240118.sql
+psql -h host -U user -d leireye_prod < backup_20240118.sql
 ```
 
 ---

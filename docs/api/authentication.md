@@ -1,6 +1,6 @@
 # Autenticación
 
-NetMentor usa JWT (JSON Web Tokens) para autenticación segura.
+LeirEye usa JWT (JSON Web Tokens) para autenticación segura.
 
 ## 🔐 Flujo de Autenticación
 
@@ -297,7 +297,7 @@ import time
 
 BASE_URL = "http://localhost:8000"
 
-class NetMentorClient:
+class LeirEyeClient:
     def __init__(self):
         self.access_token = None
         self.refresh_token = None
@@ -341,7 +341,7 @@ class NetMentorClient:
         return response.json()
 
 # Uso
-client = NetMentorClient()
+client = LeirEyeClient()
 client.login("user@example.com", "Password123")
 packets = client.get_packets()
 print(packets)

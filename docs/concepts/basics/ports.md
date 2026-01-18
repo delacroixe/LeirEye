@@ -92,7 +92,7 @@ sequenceDiagram
 - Puerto 443 = siempre HTTPS
 - Puerto 80 = siempre HTTP
 
-## 📊 En NetMentor
+## 📊 En LeirEye
 
 En la captura verás algo como:
 
@@ -149,7 +149,7 @@ Algunos puertos merecen atención especial:
 | 31337 | "Elite" - backdoors clásicos |
 | 1337 | "Leet" - otro puerto de hackers |
 
-!!! warning "En NetMentor"
+!!! warning "En LeirEye"
     Si ves tráfico significativo a estos puertos,
     investiga qué proceso lo está generando:
     ```bash
@@ -188,7 +188,7 @@ nmap -F 192.168.1.1
 nmap -p- 192.168.1.1
 ```
 
-## 💡 Práctica en NetMentor
+## 💡 Práctica en LeirEye
 
 1. **Captura tráfico** mientras navegas
 2. **Filtra** por puerto 443 (HTTPS)
@@ -204,7 +204,7 @@ python -m http.server 8000
 # En el navegador
 # Abre http://localhost:8000
 
-# En NetMentor
+# En LeirEye
 # Captura en interfaz lo0 (loopback)
 # Verás tráfico al puerto 8000
 ```

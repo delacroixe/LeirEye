@@ -1,4 +1,4 @@
-# 📝 NetMentor v2.0.0 - Complete Change Log
+# 📝 LeirEye v2.0.0 - Complete Change Log
 
 ## Overview
 This document details every file created, modified, and configured for the v2.0.0 release.
@@ -316,7 +316,7 @@ This document details every file created, modified, and configured for the v2.0.
 
 #### 3. `frontend/public/index.html`
 - **Changes**:
-  - Updated title: "NetMentor - Network Traffic Analyzer"
+  - Updated title: "LeirEye - Network Traffic Analyzer"
   - Updated description
   - Changed lang to "es" (Spanish)
   - Updated theme color
@@ -353,7 +353,7 @@ Services:
 
 #### 1. `backend/.env` (New)
 ```
-DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/netmentor
+DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/leireye
 SECRET_KEY=your-secret-key-change-this
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 REFRESH_TOKEN_EXPIRE_DAYS=7

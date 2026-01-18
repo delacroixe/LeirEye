@@ -73,7 +73,7 @@ flowchart LR
     style G fill:#ff0000
 ```
 
-| Fase | En NetMentor verás... |
+| Fase | En LeirEye verás... |
 |------|----------------------|
 | **Reconocimiento** | Escaneos de puertos, DNS queries |
 | **Entrega** | Email con adjunto, descarga sospechosa |
@@ -134,7 +134,7 @@ pie title Tráfico Típico de Red Hogareña
 | Contraseñas visibles | Contraseñas protegidas |
 | Fácil de modificar (MITM) | Detecta modificaciones |
 
-### En NetMentor
+### En LeirEye
 
 | Protocolo | Puerto | Contenido visible |
 |-----------|--------|-------------------|
@@ -175,9 +175,9 @@ flowchart TD
 | **Auth** | Logins exitosos/fallidos | 1 año |
 | **Aplicación** | Errores, acciones críticas | 90 días |
 
-### Análisis con NetMentor
+### Análisis con LeirEye
 
-NetMentor complementa tus logs:
+LeirEye complementa tus logs:
 - Captura el tráfico real (no solo logs)
 - Permite análisis post-incidente
 - Detecta lo que logs no capturan

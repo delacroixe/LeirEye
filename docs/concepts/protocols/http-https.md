@@ -25,7 +25,7 @@ sequenceDiagram
 | **Cifrado** | ❌ No | ✅ Sí (TLS) |
 | **Certificado** | ❌ No | ✅ Sí |
 | **Seguridad** | ⚠️ Inseguro | ✅ Seguro |
-| **En NetMentor** | Puedes ver datos | Solo ves "Application Data" |
+| **En LeirEye** | Puedes ver datos | Solo ves "Application Data" |
 
 ## 📝 Métodos HTTP
 
@@ -154,7 +154,7 @@ sequenceDiagram
 - ❌ **Tamaño del tráfico**: Se puede inferir actividad
 - ❌ **Servidor malicioso**: HTTPS no significa "seguro"
 
-## 🔍 En NetMentor
+## 🔍 En LeirEye
 
 ### HTTP (Puerto 80)
 
@@ -195,7 +195,7 @@ Solo puedes ver:
 
 ### Amenazas HTTP (sin cifrar)
 
-| Ataque | Descripción | En NetMentor |
+| Ataque | Descripción | En LeirEye |
 |--------|-------------|--------------|
 | **Sniffing** | Ver tráfico | Datos visibles |
 | **MITM** | Interceptar/modificar | Posible |
@@ -203,7 +203,7 @@ Solo puedes ver:
 
 ### Señales de Alerta
 
-!!! warning "Busca en NetMentor:"
+!!! warning "Busca en LeirEye:"
     - Tráfico HTTP a sitios que deberían ser HTTPS
     - Credenciales en texto plano
     - APIs enviando datos sin cifrar
@@ -245,7 +245,7 @@ http https://api.github.com
 http POST https://api.example.com/data key=value
 ```
 
-## 💡 Práctica en NetMentor
+## 💡 Práctica en LeirEye
 
 ### Experimento 1: Ver HTTP en Texto Plano
 

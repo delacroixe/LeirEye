@@ -1,6 +1,6 @@
-# 📚 Aprende Redes con NetMentor
+# 📚 Aprende Redes con LeirEye
 
-Bienvenido a la sección educativa de NetMentor. Aquí aprenderás los conceptos fundamentales de redes y seguridad que te permitirán entender lo que ves en la herramienta.
+Bienvenido a la sección educativa de LeirEye. Aquí aprenderás los conceptos fundamentales de redes y seguridad que te permitirán entender lo que ves en la herramienta.
 
 ## 🎯 ¿Por Qué Aprender Esto?
 
@@ -27,7 +27,7 @@ Entender redes te permite:
 
     ---
 
-    HTTP, DNS, SSH y otros protocolos que verás en NetMentor
+    HTTP, DNS, SSH y otros protocolos que verás en LeirEye
 
     [:octicons-arrow-right-24: Explorar](protocols/index.md)
 
@@ -75,7 +75,7 @@ flowchart TD
 1. [¿Qué es un paquete?](basics/what-is-a-packet.md)
 2. [Direcciones IP explicadas](basics/ip-addresses.md)
 3. [Puertos: las puertas de tu computadora](basics/ports.md)
-4. [Tu primera captura con NetMentor](../guide/packet-capture.md)
+4. [Tu primera captura con LeirEye](../guide/packet-capture.md)
 
 ### 🧑‍💻 Intermedio (4-5 horas)
 
@@ -93,9 +93,9 @@ flowchart TD
 
 ## 📊 El Modelo OSI Simplificado
 
-NetMentor trabaja principalmente con las capas 3-7:
+LeirEye trabaja principalmente con las capas 3-7:
 
-| Capa | Nombre | Qué Ves en NetMentor |
+| Capa | Nombre | Qué Ves en LeirEye |
 |------|--------|---------------------|
 | 7 | Aplicación | HTTP, DNS, datos |
 | 4 | Transporte | TCP, UDP, puertos |

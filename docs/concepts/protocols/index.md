@@ -117,9 +117,9 @@ sequenceDiagram
     Server->>Browser: 10. HTTP 200 + HTML (cifrado)
 ```
 
-## 🎯 Qué Verás en NetMentor
+## 🎯 Qué Verás en LeirEye
 
-Para cada protocolo, NetMentor muestra información específica:
+Para cada protocolo, LeirEye muestra información específica:
 
 ### DNS
 ```

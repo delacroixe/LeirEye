@@ -1,4 +1,4 @@
-# NetMentor v2.0.0 - Architecture Diagram
+# LeirEye v2.0.0 - Architecture Diagram
 
 ## System Overview
 

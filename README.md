@@ -1,11 +1,11 @@
-# 🌐 NetMentor v2.0.0
+# 🌐 LeirEye v2.0.0
 
 ## El Analizador de Red que te Enseña Mientras Capturas
 
-> **NetMentor** es una herramienta educativa profesional para análisis de tráfico de red en tiempo real.  
+> **LeirEye** es una herramienta educativa profesional para análisis de tráfico de red en tiempo real.  
 > A diferencia de Wireshark, cada paquete se explica con IA usando Ollama (LLM local).
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?logo=github)](https://github.com/yourusername/netmentor)
+[![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?logo=github)](https://github.com/yourusername/leireye)
 [![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green?logo=fastapi)](https://fastapi.tiangolo.com/)
@@ -17,8 +17,8 @@
 
 ```bash
 # 1. Clonar
-git clone https://github.com/yourusername/netmentor.git
-cd netmentor
+git clone https://github.com/yourusername/leireye.git
+cd leireye
 
 # 2. Instalar
 pip install -r backend/requirements.txt
@@ -42,9 +42,9 @@ cd frontend && npm start
 
 ## ✨ ¿Qué lo Diferencia?
 
-### NetMentor vs Wireshark
+### LeirEye vs Wireshark
 
-| Aspecto | NetMentor | Wireshark |
+| Aspecto | LeirEye | Wireshark |
 |--------|-----------|-----------|
 | **Interfaz** | React moderna | GTK clásico |
 | **Explicaciones** | 🤖 IA local (Ollama) | ❌ Solo datos crudos |
@@ -123,7 +123,7 @@ IA Explica:
 
 ## 📚 Documentación
 
-Accede a la **[Documentación Completa](https://yourusername.github.io/netmentor/)** en GitHub Pages.
+Accede a la **[Documentación Completa](https://yourusername.github.io/leireye/)** en GitHub Pages.
 
 ### Guías Rápidas
 
@@ -180,7 +180,7 @@ Depura problemas de red viendo exactamente qué se envía/recibe.
 
 ## 🤝 Contribuir
 
-¿Quieres mejorar NetMentor?
+¿Quieres mejorar LeirEye?
 
 1. **Fork** el repositorio
 2. Crea una **rama** (`git checkout -b feature/mifeature`)
@@ -189,11 +189,11 @@ Depura problemas de red viendo exactamente qué se envía/recibe.
 5. Abre un **Pull Request**
 
 ### Cómo reportar bugs
-- Abre un [Issue en GitHub](https://github.com/yourusername/netmentor/issues)
+- Abre un [Issue en GitHub](https://github.com/yourusername/leireye/issues)
 - Describe el bug, pasos para reproducir, y entorno (SO, versión Python, etc.)
 
 ### Sugerir mejoras
-- Usa [Discussions en GitHub](https://github.com/yourusername/netmentor/discussions)
+- Usa [Discussions en GitHub](https://github.com/yourusername/leireye/discussions)
 - Discute ideas antes de implementar
 
 ---
@@ -225,8 +225,8 @@ Creado con ❤️ para educación en ciberseguridad.
 ## 📞 Soporte
 
 - 📖 [Documentación Completa](./docs/)
-- 🐛 [Reportar Bug](https://github.com/yourusername/netmentor/issues)
-- 💬 [Hacer Pregunta](https://github.com/yourusername/netmentor/discussions)
+- 🐛 [Reportar Bug](https://github.com/yourusername/leireye/issues)
+- 💬 [Hacer Pregunta](https://github.com/yourusername/leireye/discussions)
 - 📧 Email: tu@email.com
 
 ---

@@ -1,6 +1,6 @@
 # Captura de Paquetes
 
-La captura de paquetes es la función principal de NetMentor. Permite interceptar y analizar el tráfico de red en tiempo real.
+La captura de paquetes es la función principal de LeirEye. Permite interceptar y analizar el tráfico de red en tiempo real.
 
 ## 🎯 ¿Qué es la Captura de Paquetes?
 

@@ -10,7 +10,7 @@
 
 📊 RESUMEN EJECUTIVO
 
-NetMentor v2.0.0 ha sido transformado de un "proyecto con excelente código
+LeirEye v2.0.0 ha sido transformado de un "proyecto con excelente código
 pero documentación dispersa" a una "solución profesional con documentación
 estructurada y accesible".
 
@@ -156,7 +156,7 @@ Tiempo:
 3. GitHub Actions dispara
 4. mkdocs build (< 1s)
 5. Deploy a GitHub Pages
-6. Sitio en vivo: https://yourusername.github.io/netmentor
+6. Sitio en vivo: https://yourusername.github.io/leireye
 
 ═══════════════════════════════════════════════════════════════════════════
 
@@ -210,10 +210,10 @@ LARGO PLAZO (Trimestre 1):
 
 📧 CONTACTO Y SOPORTE
 
-Documentación: https://yourusername.github.io/netmentor
-GitHub: https://github.com/yourusername/netmentor
-Issues: https://github.com/yourusername/netmentor/issues
-Discussions: https://github.com/yourusername/netmentor/discussions
+Documentación: https://yourusername.github.io/leireye
+GitHub: https://github.com/yourusername/leireye
+Issues: https://github.com/yourusername/leireye/issues
+Discussions: https://github.com/yourusername/leireye/discussions
 
 ═══════════════════════════════════════════════════════════════════════════
 

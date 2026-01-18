@@ -51,9 +51,9 @@ Un paquete tiene varias partes:
 - El contenido real: texto, imágenes, videos
 - Puede estar cifrado (HTTPS)
 
-## 📊 En NetMentor
+## 📊 En LeirEye
 
-Cuando capturas un paquete, NetMentor te muestra:
+Cuando capturas un paquete, LeirEye te muestra:
 
 ```
 #1 | 14:32:01.123 | 192.168.1.100 → 8.8.8.8 | UDP | 64 bytes | DNS Query
@@ -123,7 +123,7 @@ flowchart LR
 - Si algo falla, hay que reenviar TODO
 - Una conexión lenta afecta a todas
 
-## 💡 Experimenta en NetMentor
+## 💡 Experimenta en LeirEye
 
 1. **Inicia una captura**
 2. **Abre** una página web simple

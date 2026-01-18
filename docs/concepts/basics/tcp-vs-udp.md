@@ -77,7 +77,7 @@ Cliente                    Servidor
 
 ### Flags TCP
 
-En NetMentor verás estos flags:
+En LeirEye verás estos flags:
 
 | Flag | Nombre | Significado |
 |------|--------|-------------|
@@ -88,7 +88,7 @@ En NetMentor verás estos flags:
 | PSH | Push | "Procesa estos datos ya" |
 | URG | Urgent | "Datos urgentes" |
 
-### Ejemplo en NetMentor
+### Ejemplo en LeirEye
 
 ```
 #   Tiempo   Origen→Destino              Flags    Info
@@ -148,7 +148,7 @@ Cliente                    Servidor
 
 Solo 8 bytes de cabecera (TCP tiene 20-60 bytes).
 
-### Ejemplo en NetMentor
+### Ejemplo en LeirEye
 
 ```
 #   Tiempo   Origen→Destino         Proto  Info
@@ -206,7 +206,7 @@ Solo 8 bytes de cabecera (TCP tiene 20-60 bytes).
 - **Amplificación DNS**: Pequeña consulta = gran respuesta
 - **Difícil de trackear**: No hay estado de conexión
 
-## 💡 Práctica en NetMentor
+## 💡 Práctica en LeirEye
 
 ### Experimento 1: Ver TCP Handshake
 

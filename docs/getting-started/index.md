@@ -1,6 +1,6 @@
-# Empezar con NetMentor
+# Empezar con LeirEye
 
-Bienvenido a la guía de inicio rápido de NetMentor. Esta sección te guiará a través de todo lo necesario para tener la herramienta funcionando.
+Bienvenido a la guía de inicio rápido de LeirEye. Esta sección te guiará a través de todo lo necesario para tener la herramienta funcionando.
 
 ## 📋 Requisitos Previos
 
@@ -29,8 +29,8 @@ ollama --version    # Última versión
 
     ```bash
     # Clonar el repositorio
-    git clone https://github.com/tu-usuario/netmentor.git
-    cd netmentor
+    git clone https://github.com/tu-usuario/leireye.git
+    cd leireye
     
     # Iniciar servicios de Docker
     docker-compose up -d
@@ -53,7 +53,7 @@ ollama --version    # Última versión
     # 1. PostgreSQL manual
     brew install postgresql@15
     brew services start postgresql@15
-    createdb netmentor
+    createdb leireye
     
     # 2. Redis manual
     brew install redis
@@ -162,7 +162,7 @@ open http://localhost:8000/docs
 
     ---
 
-    Aprende a usar todas las funcionalidades de NetMentor
+    Aprende a usar todas las funcionalidades de LeirEye
 
     [:octicons-arrow-right-24: Ir a la Guía](../guide/index.md)
 

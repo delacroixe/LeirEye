@@ -1,6 +1,6 @@
 # Despliegue con Docker
 
-Guía completa para desplegar NetMentor usando Docker.
+Guía completa para desplegar LeirEye usando Docker.
 
 ## 🐳 Requisitos
 
@@ -25,11 +25,11 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: netmentor-postgres
+    container_name: leireye-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: netmentor
+      POSTGRES_DB: leireye
     ports:
       - "5432:5432"
     volumes:
@@ -42,7 +42,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: netmentor-redis
+    container_name: leireye-redis
     ports:
       - "6379:6379"
     volumes:
@@ -87,11 +87,11 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: netmentor-postgres
+    container_name: leireye-postgres
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME:-netmentor}
+      POSTGRES_DB: ${DB_NAME:-leireye}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -103,7 +103,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: netmentor-redis
+    container_name: leireye-redis
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
@@ -118,7 +118,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: netmentor-backend
+    container_name: leireye-backend
     environment:
       DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
@@ -144,7 +144,7 @@ services:
       dockerfile: Dockerfile
       args:
         REACT_APP_API_URL: ${API_URL:-http://localhost:8000}
-    container_name: netmentor-frontend
+    container_name: leireye-frontend
     ports:
       - "3001:80"
     depends_on:
@@ -153,7 +153,7 @@ services:
 
   ollama:
     image: ollama/ollama:latest
-    container_name: netmentor-ollama
+    container_name: leireye-ollama
     volumes:
       - ollama_data:/root/.ollama
     ports:
@@ -170,9 +170,9 @@ volumes:
 
 ```bash
 # .env.prod
-DB_USER=netmentor
+DB_USER=leireye
 DB_PASSWORD=SecurePassword123!
-DB_NAME=netmentor
+DB_NAME=leireye
 
 REDIS_PASSWORD=RedisSecurePass456!
 
@@ -279,8 +279,8 @@ server {
 
 ```bash
 # Clonar repositorio
-git clone https://github.com/tu-usuario/netmentor.git
-cd netmentor
+git clone https://github.com/tu-usuario/leireye.git
+cd leireye
 
 # Crear archivo de entorno
 cp .env.example .env.prod
@@ -347,11 +347,11 @@ docker-compose -f docker-compose.prod.yml exec backend \
 ```bash
 # Backup
 docker-compose exec postgres \
-    pg_dump -U postgres netmentor > backup_$(date +%Y%m%d).sql
+    pg_dump -U postgres leireye > backup_$(date +%Y%m%d).sql
 
 # Restore
 docker-compose exec -T postgres \
-    psql -U postgres netmentor < backup_20240120.sql
+    psql -U postgres leireye < backup_20240120.sql
 ```
 
 ### Automatizar Backups
@@ -364,7 +364,7 @@ DATE=$(date +%Y%m%d_%H%M%S)
 
 # PostgreSQL
 docker-compose exec -T postgres \
-    pg_dump -U postgres netmentor | gzip > $BACKUP_DIR/db_$DATE.sql.gz
+    pg_dump -U postgres leireye | gzip > $BACKUP_DIR/db_$DATE.sql.gz
 
 # Limpiar backups antiguos (30 días)
 find $BACKUP_DIR -name "*.gz" -mtime +30 -delete

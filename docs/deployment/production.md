@@ -1,6 +1,6 @@
 # Producción
 
-Guía para desplegar NetMentor en un entorno de producción.
+Guía para desplegar LeirEye en un entorno de producción.
 
 ## 🔒 Checklist de Seguridad
 
@@ -26,15 +26,15 @@ Antes de poner en producción:
 SECRET_KEY=tu-clave-secreta-muy-larga-y-aleatoria
 
 # Base de datos
-DB_USER=netmentor_prod
+DB_USER=leireye_prod
 DB_PASSWORD=ContraseñaMuySegura123!
-DB_NAME=netmentor_prod
+DB_NAME=leireye_prod
 
 # Redis
 REDIS_PASSWORD=OtraContraseñaSegura456!
 
 # CORS - Solo tu dominio
-CORS_ORIGINS=https://netmentor.tudominio.com
+CORS_ORIGINS=https://leireye.tudominio.com
 
 # Debug desactivado
 DEBUG=false
@@ -61,7 +61,7 @@ sudo apt install nginx certbot python3-certbot-nginx
 ### Configuración Nginx
 
 ```nginx
-# /etc/nginx/sites-available/netmentor
+# /etc/nginx/sites-available/leireye
 upstream backend {
     server 127.0.0.1:8000;
 }
@@ -73,17 +73,17 @@ upstream frontend {
 # Redireccionar HTTP a HTTPS
 server {
     listen 80;
-    server_name netmentor.tudominio.com;
+    server_name leireye.tudominio.com;
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name netmentor.tudominio.com;
+    server_name leireye.tudominio.com;
 
     # SSL (certbot los configura)
-    ssl_certificate /etc/letsencrypt/live/netmentor.tudominio.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/netmentor.tudominio.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/leireye.tudominio.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/leireye.tudominio.com/privkey.pem;
     
     # SSL Security
     ssl_protocols TLSv1.2 TLSv1.3;
@@ -148,7 +148,7 @@ limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
 
 ```bash
 # Enlazar configuración
-sudo ln -s /etc/nginx/sites-available/netmentor /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/leireye /etc/nginx/sites-enabled/
 
 # Verificar configuración
 sudo nginx -t
@@ -161,7 +161,7 @@ sudo systemctl reload nginx
 
 ```bash
 # Obtener certificado con Certbot
-sudo certbot --nginx -d netmentor.tudominio.com
+sudo certbot --nginx -d leireye.tudominio.com
 
 # Renovación automática
 sudo certbot renew --dry-run
@@ -221,11 +221,11 @@ volumes:
 
 ```bash
 # Enviar logs a archivo
-docker-compose logs -f > /var/log/netmentor/all.log 2>&1 &
+docker-compose logs -f > /var/log/leireye/all.log 2>&1 &
 
 # Rotar logs
-cat > /etc/logrotate.d/netmentor <<EOF
-/var/log/netmentor/*.log {
+cat > /etc/logrotate.d/leireye <<EOF
+/var/log/leireye/*.log {
     daily
     missingok
     rotate 14
@@ -243,11 +243,11 @@ EOF
 
 ```bash
 #!/bin/bash
-# /opt/netmentor/backup.sh
+# /opt/leireye/backup.sh
 
 set -e
 
-BACKUP_DIR="/backups/netmentor"
+BACKUP_DIR="/backups/leireye"
 DATE=$(date +%Y%m%d_%H%M%S)
 RETAIN_DAYS=30
 
@@ -255,7 +255,7 @@ mkdir -p $BACKUP_DIR
 
 # PostgreSQL
 echo "Backing up PostgreSQL..."
-docker exec netmentor-postgres pg_dump -U postgres netmentor | \
+docker exec leireye-postgres pg_dump -U postgres leireye | \
     gzip > $BACKUP_DIR/db_$DATE.sql.gz
 
 # Subir a S3 (opcional)
@@ -274,7 +274,7 @@ echo "Backup completado: db_$DATE.sql.gz"
 crontab -e
 
 # Agregar backup diario a las 3 AM
-0 3 * * * /opt/netmentor/backup.sh >> /var/log/netmentor/backup.log 2>&1
+0 3 * * * /opt/leireye/backup.sh >> /var/log/leireye/backup.log 2>&1
 ```
 
 ## 🔄 CI/CD
@@ -302,7 +302,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /opt/netmentor
+            cd /opt/leireye
             git pull origin main
             docker-compose -f docker-compose.prod.yml build
             docker-compose -f docker-compose.prod.yml up -d
@@ -319,7 +319,7 @@ docker-compose -f docker-compose.prod.yml down
 
 # Restaurar base de datos
 gunzip -c backup_20240120.sql.gz | \
-    docker exec -i netmentor-postgres psql -U postgres netmentor
+    docker exec -i leireye-postgres psql -U postgres leireye
 
 # Iniciar servicios
 docker-compose -f docker-compose.prod.yml up -d

@@ -1,5 +1,5 @@
 """
-Esquemas Pydantic para NetMentor
+Esquemas Pydantic para LeirEye
 """
 from .auth import (
     UserRegister,

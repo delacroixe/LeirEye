@@ -1,6 +1,6 @@
 # Instalación Completa
 
-Guía detallada de instalación de NetMentor en diferentes plataformas.
+Guía detallada de instalación de LeirEye en diferentes plataformas.
 
 ## Requisitos del Sistema
 
@@ -43,11 +43,11 @@ Descarga desde [docker.com](https://www.docker.com/products/docker-desktop/) e i
 
 Luego inicia Docker Desktop desde Applications.
 
-#### 4. Clonar NetMentor
+#### 4. Clonar LeirEye
 
 ```bash
-git clone https://github.com/yourusername/netmentor.git
-cd netmentor
+git clone https://github.com/yourusername/leireye.git
+cd leireye
 ```
 
 #### 5. Instalar dependencias Python
@@ -119,11 +119,11 @@ docker --version
 docker-compose --version
 ```
 
-#### 4. Clonar NetMentor
+#### 4. Clonar LeirEye
 
 ```bash
-git clone https://github.com/yourusername/netmentor.git
-cd netmentor
+git clone https://github.com/yourusername/leireye.git
+cd leireye
 ```
 
 #### 5. Crear entorno virtual
@@ -204,11 +204,11 @@ Descarga desde [docker.com](https://www.docker.com/products/docker-desktop/)
 
 En Docker Desktop → Settings → General → marcar "Use WSL 2 based engine"
 
-##### 6. Instalar NetMentor
+##### 6. Instalar LeirEye
 
 ```bash
-git clone https://github.com/yourusername/netmentor.git
-cd netmentor
+git clone https://github.com/yourusername/leireye.git
+cd leireye
 
 # Backend
 python3.11 -m venv venv
@@ -264,7 +264,7 @@ Debe responder con: `{"status":"ok"}`
 docker-compose ps
 ```
 
-Debe mostrar `netmentor_db_1` como `Up`
+Debe mostrar `leireye_db_1` como `Up`
 
 ### Frontend
 
@@ -280,10 +280,10 @@ Crea un archivo `.env` en la raíz:
 
 ```bash
 # Backend
-POSTGRES_USER=netmentor
+POSTGRES_USER=leireye
 POSTGRES_PASSWORD=securepassword123
-POSTGRES_DB=netmentor_db
-DATABASE_URL=postgresql://netmentor:securepassword123@db:5432/netmentor_db
+POSTGRES_DB=leireye_db
+DATABASE_URL=postgresql://leireye:securepassword123@db:5432/leireye_db
 SECRET_KEY=your-secret-key-here-min-32-chars
 DEBUG=false
 ```
@@ -312,9 +312,9 @@ sudo systemctl start postgresql
 
 # Crear base de datos
 psql -U postgres
-CREATE DATABASE netmentor_db;
-CREATE USER netmentor WITH PASSWORD 'password';
-GRANT ALL PRIVILEGES ON DATABASE netmentor_db TO netmentor;
+CREATE DATABASE leireye_db;
+CREATE USER leireye WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE leireye_db TO leireye;
 \q
 ```
 

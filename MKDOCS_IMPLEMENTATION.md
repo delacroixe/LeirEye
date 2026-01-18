@@ -1,8 +1,8 @@
-# 📚 NetMentor MkDocs - Resumen de Implementación
+# 📚 LeirEye MkDocs - Resumen de Implementación
 
 ## ✅ Estado: COMPLETADO
 
-La plataforma de documentación de NetMentor v2.0.0 está **100% operativa**.
+La plataforma de documentación de LeirEye v2.0.0 está **100% operativa**.
 
 ---
 
@@ -155,7 +155,7 @@ README.md                             (Reescrito profesionalmente)
    ↓
 4. Deploy automático a GitHub Pages
    ↓
-5. Sitio disponible en: https://yourusername.github.io/netmentor
+5. Sitio disponible en: https://yourusername.github.io/leireye
 ```
 
 ### Para desplegar manualmente:
@@ -169,8 +169,8 @@ mkdocs gh-deploy
 
 ```yaml
 # Básico
-site_name: NetMentor
-site_url: https://yourusername.github.io/netmentor
+site_name: LeirEye
+site_url: https://yourusername.github.io/leireye
 language: es
 
 # Tema Material
@@ -245,7 +245,7 @@ Se agregaron estilos para:
    - Monitoreo de tráfico
 
 3. **Mejoras visuales**
-   - Logo SVG de NetMentor
+   - Logo SVG de LeirEye
    - Iconos personalizados
    - Paleta de colores extendida
 
@@ -294,9 +294,9 @@ mkdocs gh-deploy
 
 ---
 
-## 🎯 Diferenciadores de NetMentor
+## 🎯 Diferenciadores de LeirEye
 
-La documentación refleja el **valor único** de NetMentor:
+La documentación refleja el **valor único** de LeirEye:
 
 1. **Educativo**: Sección completa de "Conceptos" para aprender redes
 2. **Con IA**: Explicaciones de paquetes con Ollama (LLM local)
@@ -308,7 +308,7 @@ La documentación refleja el **valor único** de NetMentor:
 
 ## ✨ Resultado Final
 
-**NetMentor ahora tiene una presencia profesional en línea:**
+**LeirEye ahora tiene una presencia profesional en línea:**
 - 📖 Documentación clara y estructurada
 - 🚀 Fácil de instalar y usar (5 minutos)
 - 🎓 Educativa (aprende redes mientras capturas)
