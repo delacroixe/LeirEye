@@ -7,6 +7,7 @@ from datetime import datetime
 import logging
 from scapy.all import sniff, IP, TCP, UDP, ICMP, get_if_list
 from ..models import PacketData, CaptureStats
+from .system_info import connection_cache
 
 logger = logging.getLogger(__name__)
 
@@ -114,6 +115,8 @@ class PacketCaptureService:
             protocol = "UNKNOWN"
             payload_preview = None
             flags = None
+            process_name = None
+            pid = None
             
             if TCP in packet:
                 protocol = "TCP"
@@ -133,6 +136,13 @@ class PacketCaptureService:
             elif packet[IP].proto == 1:
                 protocol = "ICMP"
             
+            # Buscar el proceso asociado a este puerto local
+            if src_port:
+                proc_info = connection_cache.get_process(src_port)
+                if proc_info:
+                    process_name = proc_info.get('name')
+                    pid = proc_info.get('pid')
+            
             return PacketData(
                 timestamp=datetime.now(),
                 src_ip=src_ip,
@@ -142,7 +152,9 @@ class PacketCaptureService:
                 protocol=protocol,
                 length=len(packet),
                 payload_preview=payload_preview,
-                flags=flags
+                flags=flags,
+                process_name=process_name,
+                pid=pid
             )
         except Exception as e:
             logger.error(f"Error parseando paquete: {e}")
@@ -152,6 +164,10 @@ class PacketCaptureService:
         """Actualiza estadísticas"""
         self.stats['ips_src'][packet_info.src_ip] += 1
         self.stats['ips_dst'][packet_info.dst_ip] += 1
+        
+        # Registrar conexión para mapa de red
+        connection_key = f"{packet_info.src_ip}->{packet_info.dst_ip}"
+        self.stats['connections'][connection_key] += 1
         
         if packet_info.protocol == "TCP":
             self.stats['tcp'] += 1
@@ -200,6 +216,7 @@ class PacketCaptureService:
             'ips_src': defaultdict(int),
             'ips_dst': defaultdict(int),
             'ports': defaultdict(int),
+            'connections': defaultdict(int),  # (src_ip->dst_ip) -> count
         }
         
         logger.info(f"✓ Iniciando captura en {interface or 'todas las interfaces'}")

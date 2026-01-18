@@ -1,6 +1,6 @@
 """Modelos de datos para la API"""
 from pydantic import BaseModel
-from typing import Optional, Dict, List, Any
+from typing import Optional, Dict
 from datetime import datetime
 
 
@@ -15,6 +15,8 @@ class PacketData(BaseModel):
     length: int
     payload_preview: Optional[str] = None
     flags: Optional[str] = None
+    process_name: Optional[str] = None  # Nombre del proceso que generó el paquete
+    pid: Optional[int] = None  # PID del proceso
 
 
 class CaptureStats(BaseModel):
