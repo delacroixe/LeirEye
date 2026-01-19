@@ -76,7 +76,7 @@ describe('useNetworkMap', () => {
     jest.useRealTimers();
   });
 
-  test('proporciona estado inicial correcto', () => {
+  test('provides correct initial state', () => {
     const { result } = renderHook(() => useNetworkMap());
 
     expect(result.current.mapData).toBeNull();
@@ -87,7 +87,7 @@ describe('useNetworkMap', () => {
     expect(result.current.userLocation).toEqual([43.3, -2.0]);
   });
 
-  test('carga datos del mapa de red correctamente', async () => {
+  test('loads network map data correctly', async () => {
     const { result } = renderHook(() => useNetworkMap());
 
     await waitFor(() => {
@@ -99,7 +99,7 @@ describe('useNetworkMap', () => {
     expect(result.current.error).toBeNull();
   });
 
-  test('maneja errores al cargar datos del mapa', async () => {
+  test('handles errors when loading map data', async () => {
     const errorMessage = 'Network error';
     mockApiService.getNetworkMap.mockRejectedValueOnce(new Error(errorMessage));
 
@@ -113,7 +113,7 @@ describe('useNetworkMap', () => {
     expect(result.current.error).toBe('Error al cargar el mapa de red');
   });
 
-  test('actualiza selectedNode correctamente', async () => {
+  test('updates selectedNode correctly', async () => {
     const { result } = renderHook(() => useNetworkMap());
 
     await waitFor(() => {
@@ -135,7 +135,7 @@ describe('useNetworkMap', () => {
     expect(result.current.selectedNode).toBeNull();
   });
 
-  test('refresh recarga los datos del mapa', async () => {
+  test('refresh reloads map data', async () => {
     const { result } = renderHook(() => useNetworkMap());
 
     await waitFor(() => {
@@ -153,7 +153,7 @@ describe('useNetworkMap', () => {
     });
   });
 
-  test('autoRefresh actualiza datos periódicamente', async () => {
+  test('autoRefresh updates data periodically', async () => {
     const autoRefreshInterval = 10000;
     const { result } = renderHook(() =>
       useNetworkMap({ autoRefreshInterval })
@@ -202,7 +202,7 @@ describe('useNetworkMap', () => {
     expect(mockApiService.getNetworkMap).toHaveBeenCalledTimes(3);
   });
 
-  test('usa intervalo de auto-refresh por defecto', async () => {
+  test('uses default auto-refresh interval', async () => {
     const { result } = renderHook(() => useNetworkMap());
 
     await waitFor(() => {
@@ -223,7 +223,7 @@ describe('useNetworkMap', () => {
     });
   });
 
-  test('limpia el intervalo de auto-refresh al desmontar', async () => {
+  test('cleans up auto-refresh interval on unmount', async () => {
     const { result, unmount } = renderHook(() =>
       useNetworkMap({ autoRefreshInterval: 10000 })
     );
@@ -247,7 +247,7 @@ describe('useNetworkMap', () => {
     expect(mockApiService.getNetworkMap).toHaveBeenCalledTimes(1);
   });
 
-  test('obtiene ubicación del usuario correctamente', async () => {
+  test('fetches user location correctly', async () => {
     const mockUserLocation = {
       status: 'success',
       lat: 40.7128,
@@ -270,7 +270,7 @@ describe('useNetworkMap', () => {
     });
   });
 
-  test('usa ubicación por defecto si falla la obtención de ubicación del usuario', async () => {
+  test('uses default location if user location fetch fails', async () => {
     (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
     const { result } = renderHook(() => useNetworkMap());
@@ -283,7 +283,7 @@ describe('useNetworkMap', () => {
     expect(result.current.userLocation).toEqual([43.3, -2.0]);
   });
 
-  test('usa ubicación por defecto si la respuesta de geo IP no es exitosa', async () => {
+  test('uses default location if geo IP response is not successful', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
@@ -301,7 +301,7 @@ describe('useNetworkMap', () => {
     expect(result.current.userLocation).toEqual([43.3, -2.0]);
   });
 
-  test('auto-refresh no muestra loading en actualizaciones periódicas', async () => {
+  test('auto-refresh does not show loading on periodic updates', async () => {
     const { result } = renderHook(() =>
       useNetworkMap({ autoRefreshInterval: 10000 })
     );
@@ -329,7 +329,7 @@ describe('useNetworkMap', () => {
     });
   });
 
-  test('refresh manual muestra loading', async () => {
+  test('manual refresh shows loading', async () => {
     const { result } = renderHook(() => useNetworkMap());
 
     await waitFor(() => {
