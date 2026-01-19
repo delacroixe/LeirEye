@@ -106,7 +106,7 @@ async def get_known_patterns():
     Lista los patrones de tráfico conocidos que tienen explicación en cache.
     Útil para debugging y para ver qué puertos/protocolos están documentados.
     """
-    from ..services.ai_explainer import KNOWN_PATTERNS, KNOWN_SERVICES
+    from ..services.ai_explainer.patterns import KNOWN_PATTERNS, KNOWN_SERVICES
     
     return {
         "patterns_count": len(KNOWN_PATTERNS),
