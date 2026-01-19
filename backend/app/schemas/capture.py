@@ -1,6 +1,7 @@
 """
 Modelos Pydantic para captura de paquetes
 """
+
 from pydantic import BaseModel
 from typing import Optional, Dict
 from datetime import datetime
@@ -8,6 +9,7 @@ from datetime import datetime
 
 class PacketData(BaseModel):
     """Datos de un paquete capturado"""
+
     timestamp: datetime
     src_ip: str
     dst_ip: str
@@ -23,6 +25,7 @@ class PacketData(BaseModel):
 
 class CaptureStats(BaseModel):
     """Estadísticas de captura"""
+
     total_packets: int
     tcp_packets: int
     udp_packets: int
@@ -36,6 +39,7 @@ class CaptureStats(BaseModel):
 
 class CaptureRequest(BaseModel):
     """Request para iniciar captura"""
+
     interface: Optional[str] = None
     packet_filter: Optional[str] = None
     max_packets: int = 1000
@@ -43,6 +47,7 @@ class CaptureRequest(BaseModel):
 
 class CaptureStatus(BaseModel):
     """Status de la captura"""
+
     is_running: bool
     packets_captured: int
     interface: Optional[str] = None

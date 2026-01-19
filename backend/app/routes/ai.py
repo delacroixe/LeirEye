@@ -15,6 +15,7 @@ router = APIRouter()
 
 class PacketExplainRequest(BaseModel):
     """Solicitud para explicar un paquete."""
+
     protocol: str
     src_ip: str
     dst_ip: str
@@ -27,6 +28,7 @@ class PacketExplainRequest(BaseModel):
 
 class AlertExplainRequest(BaseModel):
     """Solicitud para explicar una alerta."""
+
     alert_type: str
     context: Dict[str, Any] = {}
 
@@ -35,7 +37,7 @@ class AlertExplainRequest(BaseModel):
 async def get_ai_status():
     """
     Verifica el estado del servicio de IA (Ollama).
-    
+
     Retorna:
     - available: Si Ollama está corriendo
     - models: Lista de modelos disponibles
@@ -49,12 +51,12 @@ async def get_ai_status():
 async def explain_packet(request: PacketExplainRequest):
     """
     Genera una explicación educativa de un paquete de red.
-    
+
     Estrategia de 3 niveles:
     1. Cache de patrones conocidos (instantáneo)
     2. Ollama IA local (1-3 segundos)
     3. Explicación básica (fallback)
-    
+
     Retorna explicación con:
     - app: Aplicación/servicio identificado
     - explanation: Qué está pasando en lenguaje simple
@@ -70,7 +72,7 @@ async def explain_packet(request: PacketExplainRequest):
             dst_port=request.dst_port,
             flags=request.flags,
             length=request.length,
-            use_ai=request.use_ai
+            use_ai=request.use_ai,
         )
         return explanation
     except Exception as e:
@@ -82,7 +84,7 @@ async def explain_packet(request: PacketExplainRequest):
 async def explain_alert(request: AlertExplainRequest):
     """
     Explica una alerta de seguridad de forma educativa.
-    
+
     Tipos de alerta soportados:
     - http_unencrypted: Conexión HTTP sin cifrar
     - unusual_port: Puerto no estándar
@@ -91,8 +93,7 @@ async def explain_alert(request: AlertExplainRequest):
     """
     try:
         explanation = await ai_service.explain_alert(
-            alert_type=request.alert_type,
-            context=request.context
+            alert_type=request.alert_type, context=request.context
         )
         return explanation
     except Exception as e:
@@ -107,10 +108,10 @@ async def get_known_patterns():
     Útil para debugging y para ver qué puertos/protocolos están documentados.
     """
     from ..services.ai_explainer.patterns import KNOWN_PATTERNS, KNOWN_SERVICES
-    
+
     return {
         "patterns_count": len(KNOWN_PATTERNS),
         "services_count": len(KNOWN_SERVICES),
         "patterns": list(KNOWN_PATTERNS.keys()),
-        "services": list(KNOWN_SERVICES.keys())
+        "services": list(KNOWN_SERVICES.keys()),
     }

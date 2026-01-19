@@ -1,6 +1,7 @@
 """
 Servicio de información del sistema y procesos de red
 """
+
 import socket
 import platform
 import time
@@ -21,6 +22,7 @@ def _load_psutil():
     if psutil is None:
         try:
             import psutil as _psutil
+
             psutil = _psutil
         except ImportError:
             logger.error("psutil no instalado. Ejecutar: pip install psutil")
@@ -33,6 +35,7 @@ def _load_netifaces():
     if netifaces is None:
         try:
             import netifaces as _netifaces
+
             netifaces = _netifaces
         except ImportError:
             logger.warning("netifaces no instalado, usando alternativas")
@@ -41,6 +44,7 @@ def _load_netifaces():
 
 
 # ==================== MODELOS ====================
+
 
 class NetworkInterface(BaseModel):
     name: str
@@ -104,15 +108,16 @@ class ProcessWithConnections(BaseModel):
 
 # ==================== FUNCIONES ====================
 
+
 def get_system_info() -> SystemInfo:
     """Obtiene información del sistema"""
     ps = _load_psutil()
-    
+
     mem = ps.virtual_memory()
-    disk = ps.disk_usage('/')
+    disk = ps.disk_usage("/")
     boot_time = ps.boot_time()
     uptime_seconds = time.time() - boot_time
-    
+
     return SystemInfo(
         hostname=socket.gethostname(),
         os=platform.system(),
@@ -126,39 +131,43 @@ def get_system_info() -> SystemInfo:
         disk_total_gb=round(disk.total / (1024**3), 2),
         disk_used_gb=round(disk.used / (1024**3), 2),
         disk_percent=disk.percent,
-        uptime_hours=round(uptime_seconds / 3600, 1)
+        uptime_hours=round(uptime_seconds / 3600, 1),
     )
 
 
 def get_network_interfaces() -> List[NetworkInterface]:
     """Obtiene las interfaces de red"""
     ps = _load_psutil()
-    
+
     interfaces = []
     addrs = ps.net_if_addrs()
     stats = ps.net_if_stats()
-    
+
     for iface_name, iface_addrs in addrs.items():
         iface = NetworkInterface(name=iface_name)
-        
+
         for addr in iface_addrs:
-            family_name = addr.family.name if hasattr(addr.family, 'name') else str(addr.family)
-            if 'AF_INET' == family_name and not family_name.endswith('6'):
+            family_name = (
+                addr.family.name if hasattr(addr.family, "name") else str(addr.family)
+            )
+            if "AF_INET" == family_name and not family_name.endswith("6"):
                 iface.ipv4 = addr.address
-            elif 'AF_INET6' in family_name:
+            elif "AF_INET6" in family_name:
                 iface.ipv6 = addr.address
-            elif 'AF_LINK' in family_name or 'AF_PACKET' in family_name:
+            elif "AF_LINK" in family_name or "AF_PACKET" in family_name:
                 iface.mac = addr.address
-        
+
         if iface_name in stats:
             iface.is_up = stats[iface_name].isup
-            iface.speed = stats[iface_name].speed if stats[iface_name].speed > 0 else None
-        
+            iface.speed = (
+                stats[iface_name].speed if stats[iface_name].speed > 0 else None
+            )
+
         interfaces.append(iface)
-    
+
     # Ordenar: activas primero, luego por nombre
     interfaces.sort(key=lambda x: (not x.is_up, x.name))
-    
+
     return interfaces
 
 
@@ -177,34 +186,33 @@ def get_private_ip() -> str:
 def get_gateway() -> Optional[str]:
     """Obtiene el gateway por defecto"""
     nf = _load_netifaces()
-    
+
     if nf:
         try:
             gws = nf.gateways()
-            if 'default' in gws and nf.AF_INET in gws['default']:
-                return gws['default'][nf.AF_INET][0]
+            if "default" in gws and nf.AF_INET in gws["default"]:
+                return gws["default"][nf.AF_INET][0]
         except Exception:
             pass
-    
+
     # Alternativa para macOS
     try:
         result = subprocess.run(
-            ["route", "-n", "get", "default"],
-            capture_output=True, text=True, timeout=2
+            ["route", "-n", "get", "default"], capture_output=True, text=True, timeout=2
         )
-        for line in result.stdout.split('\n'):
-            if 'gateway' in line.lower():
-                return line.split(':')[-1].strip()
+        for line in result.stdout.split("\n"):
+            if "gateway" in line.lower():
+                return line.split(":")[-1].strip()
     except Exception:
         pass
-    
+
     return None
 
 
 def get_dns_servers() -> List[str]:
     """Obtiene los servidores DNS configurados"""
     dns_servers = []
-    
+
     try:
         with open("/etc/resolv.conf", "r") as f:
             for line in f:
@@ -214,27 +222,29 @@ def get_dns_servers() -> List[str]:
                         dns_servers.append(dns)
     except Exception:
         pass
-    
+
     return dns_servers
 
 
-def get_network_connections(kind: str = "inet", status_filter: Optional[str] = None) -> List[NetworkConnection]:
+def get_network_connections(
+    kind: str = "inet", status_filter: Optional[str] = None
+) -> List[NetworkConnection]:
     """Obtiene todas las conexiones de red activas con info de procesos"""
     ps = _load_psutil()
-    
+
     connections = []
-    process_cache: Dict[int, 'psutil.Process'] = {}
-    
+    process_cache: Dict[int, "psutil.Process"] = {}
+
     try:
         for conn in ps.net_connections(kind=kind):
             # Filtrar por status si se especifica
             if status_filter and conn.status != status_filter:
                 continue
-            
+
             # Saltar conexiones sin dirección remota (listening)
             if not conn.raddr:
                 continue
-            
+
             # Info básica de la conexión
             net_conn = NetworkConnection(
                 local_ip=conn.laddr.ip if conn.laddr else "0.0.0.0",
@@ -243,39 +253,41 @@ def get_network_connections(kind: str = "inet", status_filter: Optional[str] = N
                 remote_port=conn.raddr.port if conn.raddr else None,
                 status=conn.status,
                 protocol="TCP" if conn.type == socket.SOCK_STREAM else "UDP",
-                pid=conn.pid
+                pid=conn.pid,
             )
-            
+
             # Obtener info del proceso
             if conn.pid:
                 try:
                     if conn.pid not in process_cache:
                         process_cache[conn.pid] = ps.Process(conn.pid)
-                    
+
                     proc = process_cache[conn.pid]
                     net_conn.process_name = proc.name()
-                    
+
                     try:
                         net_conn.process_user = proc.username()
                     except (ps.AccessDenied, ps.NoSuchProcess):
                         pass
-                    
+
                     try:
                         net_conn.process_cpu = proc.cpu_percent(interval=0)
-                        net_conn.process_memory_mb = round(proc.memory_info().rss / (1024**2), 2)
+                        net_conn.process_memory_mb = round(
+                            proc.memory_info().rss / (1024**2), 2
+                        )
                     except (ps.AccessDenied, ps.NoSuchProcess):
                         pass
-                        
+
                 except (ps.NoSuchProcess, ps.AccessDenied):
                     pass
-            
+
             connections.append(net_conn)
-        
+
         # Ordenar por proceso y luego por IP remota
         connections.sort(key=lambda c: (c.process_name or "zzz", c.remote_ip or ""))
-        
+
         return connections
-        
+
     except ps.AccessDenied:
         logger.warning("Acceso denegado a net_connections. Ejecutar con sudo.")
         return []
@@ -287,33 +299,33 @@ def get_network_connections(kind: str = "inet", status_filter: Optional[str] = N
 def get_processes_with_connections() -> List[ProcessWithConnections]:
     """Agrupa conexiones por proceso"""
     ps = _load_psutil()
-    
+
     process_map: Dict[int, ProcessWithConnections] = {}
-    
+
     try:
-        for conn in ps.net_connections(kind='inet'):
+        for conn in ps.net_connections(kind="inet"):
             if not conn.pid or not conn.raddr:
                 continue
-            
+
             pid = conn.pid
-            
+
             # Crear entrada del proceso si no existe
             if pid not in process_map:
                 try:
                     proc = ps.Process(pid)
-                    
+
                     user = None
                     try:
                         user = proc.username()
                     except (ps.AccessDenied, ps.NoSuchProcess):
                         pass
-                    
+
                     exe = None
                     try:
                         exe = proc.exe()
                     except (ps.AccessDenied, ps.NoSuchProcess):
                         pass
-                    
+
                     process_map[pid] = ProcessWithConnections(
                         pid=pid,
                         name=proc.name(),
@@ -322,11 +334,11 @@ def get_processes_with_connections() -> List[ProcessWithConnections]:
                         memory_mb=round(proc.memory_info().rss / (1024**2), 2),
                         executable=exe,
                         connection_count=0,
-                        connections=[]
+                        connections=[],
                     )
                 except (ps.NoSuchProcess, ps.AccessDenied):
                     continue
-            
+
             # Añadir conexión
             net_conn = NetworkConnection(
                 local_ip=conn.laddr.ip if conn.laddr else "0.0.0.0",
@@ -335,22 +347,22 @@ def get_processes_with_connections() -> List[ProcessWithConnections]:
                 remote_port=conn.raddr.port if conn.raddr else None,
                 status=conn.status,
                 protocol="TCP" if conn.type == socket.SOCK_STREAM else "UDP",
-                pid=pid
+                pid=pid,
             )
             process_map[pid].connections.append(net_conn)
             process_map[pid].connection_count = len(process_map[pid].connections)
-        
+
         # Ordenar por número de conexiones
         result = sorted(
-            process_map.values(),
-            key=lambda p: p.connection_count,
-            reverse=True
+            process_map.values(), key=lambda p: p.connection_count, reverse=True
         )
-        
+
         return result
-        
+
     except ps.AccessDenied:
-        logger.warning("Acceso denegado. Ejecutar con sudo para ver todos los procesos.")
+        logger.warning(
+            "Acceso denegado. Ejecutar con sudo para ver todos los procesos."
+        )
         return []
     except Exception as e:
         logger.error(f"Error: {e}")
@@ -360,10 +372,14 @@ def get_processes_with_connections() -> List[ProcessWithConnections]:
 def lookup_process_for_connection(remote_ip: str, remote_port: int) -> Optional[dict]:
     """Busca qué proceso tiene una conexión a un IP:puerto específico"""
     ps = _load_psutil()
-    
+
     try:
-        for conn in ps.net_connections(kind='inet'):
-            if conn.raddr and conn.raddr.ip == remote_ip and conn.raddr.port == remote_port:
+        for conn in ps.net_connections(kind="inet"):
+            if (
+                conn.raddr
+                and conn.raddr.ip == remote_ip
+                and conn.raddr.port == remote_port
+            ):
                 if conn.pid:
                     try:
                         proc = ps.Process(conn.pid)
@@ -371,13 +387,13 @@ def lookup_process_for_connection(remote_ip: str, remote_port: int) -> Optional[
                             "found": True,
                             "pid": conn.pid,
                             "process_name": proc.name(),
-                            "local_port": conn.laddr.port if conn.laddr else None
+                            "local_port": conn.laddr.port if conn.laddr else None,
                         }
                     except (ps.NoSuchProcess, ps.AccessDenied):
                         pass
-        
+
         return {"found": False}
-        
+
     except Exception as e:
         logger.error(f"Error en lookup: {e}")
         return {"found": False, "error": str(e)}
@@ -386,38 +402,38 @@ def lookup_process_for_connection(remote_ip: str, remote_port: int) -> Optional[
 # Cache para asociar paquetes con procesos
 class ConnectionProcessCache:
     """Cache de mapeo puerto_local -> proceso"""
-    
+
     def __init__(self):
         self._cache: Dict[int, dict] = {}
         self._last_update = 0
         self._update_interval = 2  # segundos
-    
+
     def refresh(self):
         """Actualiza el cache de conexiones"""
         ps = _load_psutil()
-        
+
         now = time.time()
         if now - self._last_update < self._update_interval:
             return
-        
+
         self._cache.clear()
-        
+
         try:
-            for conn in ps.net_connections(kind='inet'):
+            for conn in ps.net_connections(kind="inet"):
                 if conn.laddr and conn.pid:
                     try:
                         proc = ps.Process(conn.pid)
                         self._cache[conn.laddr.port] = {
                             "pid": conn.pid,
-                            "name": proc.name()
+                            "name": proc.name(),
                         }
                     except (ps.NoSuchProcess, ps.AccessDenied):
                         pass
         except Exception:
             pass
-        
+
         self._last_update = now
-    
+
     def get_process(self, local_port: int) -> Optional[dict]:
         self.refresh()
         return self._cache.get(local_port)

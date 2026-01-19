@@ -1,4 +1,5 @@
 """Rutas para captura de paquetes"""
+
 from fastapi import APIRouter, WebSocket, HTTPException
 import json
 import logging
@@ -29,7 +30,7 @@ async def start_capture(request: CaptureRequest):
         capture_service.start_capture(
             interface=request.interface,
             packet_filter=request.packet_filter,
-            max_packets=request.max_packets
+            max_packets=request.max_packets,
         )
         return {"message": "Captura iniciada", "status": capture_service.get_status()}
     except RuntimeError as e:
@@ -55,10 +56,7 @@ async def stop_capture():
     """Detiene la captura"""
     try:
         stats = capture_service.stop_capture()
-        return {
-            "message": "Captura detenida",
-            "stats": stats.model_dump()
-        }
+        return {"message": "Captura detenida", "stats": stats.model_dump()}
     except Exception as e:
         logger.error(f"Error deteniendo captura: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -77,7 +75,7 @@ async def get_packets(limit: int = 100):
     packets = capture_service.get_packets(limit)
     return {
         "count": len(packets),
-        "packets": [p.model_dump(mode='json') for p in packets]
+        "packets": [p.model_dump(mode="json") for p in packets],
     }
 
 
@@ -92,65 +90,62 @@ async def clear_packets():
 async def websocket_endpoint(websocket: WebSocket):
     """WebSocket para streaming de paquetes en tiempo real"""
     await websocket.accept()
-    
+
     try:
         # Enviar estado inicial
-        await websocket.send_json({
-            "type": "status",
-            "data": capture_service.get_status()
-        })
+        await websocket.send_json(
+            {"type": "status", "data": capture_service.get_status()}
+        )
         logger.info("WebSocket: Cliente conectado")
-        
+
         # Loop para enviar paquetes pendientes
         while True:
             try:
                 # Obtener paquetes pendientes de la queue (non-blocking)
                 pending_packets = capture_service.get_pending_packets()
-                
+
                 if pending_packets:
-                    logger.debug(f"Enviando {len(pending_packets)} paquetes via WebSocket")
-                
+                    logger.debug(
+                        f"Enviando {len(pending_packets)} paquetes via WebSocket"
+                    )
+
                 for packet in pending_packets:
                     try:
-                        await websocket.send_json({
-                            "type": "packet",
-                            "data": packet.model_dump(mode='json')
-                        })
-                        logger.debug(f"Paquete enviado via WebSocket: {packet.src_ip} -> {packet.dst_ip}")
+                        await websocket.send_json(
+                            {"type": "packet", "data": packet.model_dump(mode="json")}
+                        )
+                        logger.debug(
+                            f"Paquete enviado via WebSocket: {packet.src_ip} -> {packet.dst_ip}"
+                        )
                     except Exception as e:
                         logger.error(f"Error enviando paquete: {e}")
                         break
-                
+
                 # Escuchar comandos del cliente (con timeout para no bloquear)
                 try:
-                    data = await asyncio.wait_for(
-                        websocket.receive_text(),
-                        timeout=0.5
-                    )
+                    data = await asyncio.wait_for(websocket.receive_text(), timeout=0.5)
                     command = json.loads(data)
-                    
+
                     if command.get("action") == "status":
-                        await websocket.send_json({
-                            "type": "status",
-                            "data": capture_service.get_status()
-                        })
+                        await websocket.send_json(
+                            {"type": "status", "data": capture_service.get_status()}
+                        )
                     elif command.get("action") == "stats":
                         stats = capture_service.stop_capture()
-                        await websocket.send_json({
-                            "type": "stats",
-                            "data": stats.model_dump(mode='json')
-                        })
+                        await websocket.send_json(
+                            {"type": "stats", "data": stats.model_dump(mode="json")}
+                        )
                 except asyncio.TimeoutError:
                     # Timeout normal, continuar
                     pass
-                
+
                 # Pequeña pausa para no saturar CPU
                 await asyncio.sleep(0.1)
-                
+
             except Exception as e:
                 logger.error(f"Error en loop WebSocket: {e}")
                 break
-                
+
     except Exception as e:
         logger.error(f"Error en WebSocket: {e}")
     finally:

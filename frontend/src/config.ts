@@ -4,10 +4,13 @@
  */
 
 // API Backend
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+export const API_BASE_URL = process.env.REACT_APP_API_URL?.trim() || 'http://localhost:8000/api';
 
 // WebSocket
-export const WS_BASE_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:8000/api';
+export const WS_BASE_URL = process.env.REACT_APP_WS_URL?.trim() || 'ws://localhost:8000/api';
+
+// Geo IP API
+export const GEO_IP_API_URL = process.env.REACT_APP_GEO_IP_URL?.trim() || 'http://ip-api.com/json/';
 
 // Configuración de reconexión WebSocket
 export const WS_RECONNECT_ATTEMPTS = 5;

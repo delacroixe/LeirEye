@@ -4,22 +4,22 @@
 
 ```
 ai_explainer/
- __init__.py          # Exporta AIExplainerService y ai_service
- ai_service.py        # Lgggica principal del servicio
- ollama_client.py     # Cliente para comunicacinnn con Ollama
- patterns.py          # Cache de patrones conocidos
- README.md           # Esta documentacinnn
+├── __init__.py          # Exporta AIExplainerService y ai_service
+├── ai_service.py        # Lógica principal del servicio
+├── ollama_client.py     # Cliente para comunicación con Ollama
+├── patterns.py          # Cache de patrones conocidos
+└── README.md            # Esta documentación
 ```
 
 ## Responsabilidades
 
-- **ai_service.py**: Coordinacinnn general, estrategia de explicacinnn
-- **ollama_client.py**: Comunicacinnn HTTP con Ollama
-- **patterns.py**: Patrones predefinidos para respuestas rpidas
+- **ai_service.py**: Coordinación general, estrategia de explicación
+- **ollama_client.py**: Comunicación HTTP con Ollama
+- **patterns.py**: Patrones predefinidos para respuestas rápidas
 
 ## Mejoras
 
--  Separacinnn de responsabilidades
--  MacUIEvents s fcil de testear
--  MacUIEvents s mantenible
--  Cada mdddulo <150 leas
+- ✅ Separación de responsabilidades
+- ✅ Más fácil de testear
+- ✅ Más mantenible
+- ✅ Cada módulo <150 líneas

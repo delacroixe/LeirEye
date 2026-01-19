@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { NetworkMapData, NetworkMapNode } from '../../services/api';
+import { NetworkMapData } from '../../services/api';
 
 // Fix para iconos de Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;

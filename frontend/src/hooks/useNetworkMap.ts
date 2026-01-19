@@ -3,6 +3,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import apiService, { NetworkMapData, NetworkMapNode } from '../services/api';
+import { GEO_IP_API_URL } from '../config';
 
 interface UseNetworkMapOptions {
   autoRefreshInterval?: number;
@@ -36,7 +37,7 @@ export const useNetworkMap = (
   useEffect(() => {
     const fetchUserLocation = async () => {
       try {
-        const response = await fetch('http://ip-api.com/json/');
+        const response = await fetch(GEO_IP_API_URL);
         const data = await response.json();
         if (data.status === 'success' && data.lat && data.lon) {
           setUserLocation([data.lat, data.lon]);

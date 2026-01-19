@@ -1,4 +1,5 @@
 """Aplicación FastAPI principal"""
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,10 +13,8 @@ from .routes import capture, stats, ai, system, auth
 # Configurar logging con más detalle
 logging.basicConfig(
     level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(sys.stdout)
-    ]
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
 )
 logger = logging.getLogger(__name__)
 logger.info("✓ Logging configurado correctamente")
@@ -34,9 +33,9 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning(f"⚠ Base de datos no disponible: {e}")
         logger.info("  Continuando sin persistencia...")
-    
+
     yield
-    
+
     # Shutdown
     logger.info("🛑 Cerrando LeirEye...")
     try:
@@ -50,7 +49,7 @@ app = FastAPI(
     title="LeirEye - Network Traffic Analyzer",
     description="API educativa para capturar y analizar tráfico de red con IA",
     version="2.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -83,8 +82,8 @@ async def root():
             "Análisis con IA local (Ollama)",
             "Mapa de red interactivo",
             "Información del sistema",
-            "Autenticación JWT"
-        ]
+            "Autenticación JWT",
+        ],
     }
 
 
@@ -92,7 +91,7 @@ async def root():
 async def health_check():
     """Health check endpoint"""
     from .core.database import engine
-    
+
     db_status = "unknown"
     try:
         async with engine.connect() as conn:
@@ -100,9 +99,5 @@ async def health_check():
             db_status = "connected"
     except Exception:
         db_status = "disconnected"
-    
-    return {
-        "status": "healthy",
-        "version": "2.0.0",
-        "database": db_status
-    }
+
+    return {"status": "healthy", "version": "2.0.0", "database": db_status}

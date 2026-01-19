@@ -4,22 +4,22 @@
 
 ```
 packet_capture/
- __init__.py          # Exporta PacketCaptureService y capture_service
- capture_service.py   # Lgggica principal de captura
- parser.py            # Parser de paquetes de red
- stats.py             # Gestinnn de estadticas
- README.md           # Esta documentacinnn
+├── __init__.py          # Exporta PacketCaptureService y capture_service
+├── capture_service.py   # Lógica principal de captura
+├── parser.py            # Parser de paquetes de red
+├── stats.py             # Gestión de estadísticas
+└── README.md            # Esta documentación
 ```
 
 ## Responsabilidades
 
-- **capture_service.py**: Coordinacinnn de captura, threading, callbacks
-- **parser.py**: Extraccinnn de datos de paquetes Scapy
-- **stats.py**: Contadores y agregacinnn de estadticas
+- **capture_service.py**: Coordinación de captura, threading, callbacks
+- **parser.py**: Extracción de datos de paquetes Scapy
+- **stats.py**: Contadores y agregación de estadísticas
 
 ## Mejoras
 
--  Separacinnn de responsabilidades
--  Parser independiente y testeable
--  Stats manager reutilizable
--  Cada mdddulo <200 leas
+- ✅ Separación de responsabilidades
+- ✅ Parser independiente y testeable
+- ✅ Stats manager reutilizable
+- ✅ Cada módulo <200 líneas
