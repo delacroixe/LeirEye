@@ -8,6 +8,8 @@ from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
+from sqlalchemy import event, String
+from sqlalchemy.dialects.postgresql import UUID
 
 from app.main import app
 from app.core.database import Base, get_db
@@ -15,6 +17,15 @@ from app.core.database import Base, get_db
 
 # Base de datos en memoria para tests
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
+
+
+# Convertir UUID a String para SQLite
+@event.listens_for(Base.metadata, "before_create")
+def _convert_uuid_to_string(target, connection, **kw):
+    for table in target.tables.values():
+        for column in table.columns:
+            if isinstance(column.type, UUID):
+                column.type = String(36)
 
 
 @pytest.fixture(scope="session")
