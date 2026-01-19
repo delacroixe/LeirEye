@@ -78,6 +78,7 @@ class PacketCaptureService:
                         self.packet_queue.get_nowait()
                         self.packet_queue.put_nowait(packet_info)
                     except queue.Empty:
+                        # La cola ya está vacía; no hay paquetes antiguos que descartar.
                         # La cola ya está vacía; no hay paquetes antiguos que descartar
                         pass
 
