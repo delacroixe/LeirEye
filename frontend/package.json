@@ -42,8 +42,13 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!(react-router|react-router-dom|@remix-run)/)"
-    ]
+      "node_modules/(?!(react-router|react-router-dom|@remix-run|axios|vis-network)/)"
+    ],
+    "moduleNameMapper": {
+      "^axios$": "axios/dist/node/axios.cjs",
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+      "^vis-network/standalone$": "<rootDir>/src/__mocks__/vis-network.js"
+    }
   },
   "browserslist": {
     "production": [
