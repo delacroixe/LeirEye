@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Eye, EyeOff, Loader } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 import './Login.css';
 
 export const Login: React.FC = () => {
@@ -31,7 +32,7 @@ export const Login: React.FC = () => {
 
     try {
       if (isRegisterMode) {
-        const response = await fetch('http://localhost:8000/api/auth/register', {
+        const response = await fetch(`${API_BASE_URL}/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, username, password, full_name: fullName }),

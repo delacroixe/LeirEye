@@ -1,4 +1,6 @@
 // Servicio para WebSocket
+import { WS_CAPTURE_URL, WS_RECONNECT_ATTEMPTS, WS_RECONNECT_DELAY_MS } from '../config';
+
 export interface WebSocketMessage {
   type: 'packet' | 'status' | 'stats';
   data: any;
@@ -6,11 +8,11 @@ export interface WebSocketMessage {
 
 export class WebSocketService {
   private ws: WebSocket | null = null;
-  private url: string = 'ws://localhost:8000/api/capture/ws';
+  private url: string = WS_CAPTURE_URL;
   private listeners: Map<string, Function[]> = new Map();
   private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
-  private reconnectDelay = 3000;
+  private maxReconnectAttempts = WS_RECONNECT_ATTEMPTS;
+  private reconnectDelay = WS_RECONNECT_DELAY_MS;
 
   connect(): Promise<void> {
     return new Promise((resolve, reject) => {

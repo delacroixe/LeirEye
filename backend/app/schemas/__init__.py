@@ -12,8 +12,15 @@ from .auth import (
     AuthResponse,
     MessageResponse
 )
+from .capture import (
+    PacketData,
+    CaptureStats,
+    CaptureRequest,
+    CaptureStatus
+)
 
 __all__ = [
+    # Auth
     "UserRegister",
     "UserLogin", 
     "TokenRefresh",
@@ -22,5 +29,10 @@ __all__ = [
     "UserResponse",
     "UserPublic",
     "AuthResponse",
-    "MessageResponse"
+    "MessageResponse",
+    # Capture
+    "PacketData",
+    "CaptureStats",
+    "CaptureRequest",
+    "CaptureStatus",
 ]

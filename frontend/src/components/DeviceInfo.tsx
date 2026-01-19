@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSync } from '../context/SyncContext';
+import { useSync } from '../contexts/SyncContext';
 import './DeviceInfo.css';
 
 // ==================== INTERFACES ====================

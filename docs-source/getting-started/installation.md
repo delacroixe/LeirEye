@@ -46,7 +46,7 @@ Luego inicia Docker Desktop desde Applications.
 #### 4. Clonar LeirEye
 
 ```bash
-git clone https://github.com/yourusername/leireye.git
+git clone https://github.com/delacroixe/LeirEye.git
 cd leireye
 ```
 
@@ -122,7 +122,7 @@ docker-compose --version
 #### 4. Clonar LeirEye
 
 ```bash
-git clone https://github.com/yourusername/leireye.git
+git clone https://github.com/delacroixe/LeirEye.git
 cd leireye
 ```
 
@@ -207,7 +207,7 @@ En Docker Desktop → Settings → General → marcar "Use WSL 2 based engine"
 ##### 6. Instalar LeirEye
 
 ```bash
-git clone https://github.com/yourusername/leireye.git
+git clone https://github.com/delacroixe/LeirEye.git
 cd leireye
 
 # Backend

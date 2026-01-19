@@ -6,7 +6,7 @@ from collections import defaultdict
 from datetime import datetime
 import logging
 from scapy.all import sniff, IP, TCP, UDP, ICMP, get_if_list
-from ..models import PacketData, CaptureStats
+from ..schemas import PacketData, CaptureStats
 from .system_info import connection_cache
 
 logger = logging.getLogger(__name__)

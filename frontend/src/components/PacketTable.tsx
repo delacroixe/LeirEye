@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { PacketData } from '../services/api';
-import { useSync } from '../context/SyncContext';
+import { useSync } from '../contexts/SyncContext';
 import PacketExplainer from './PacketExplainer';
 import './PacketTable.css';
 

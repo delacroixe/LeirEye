@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Sidebar } from './components/Sidebar';
 import { Login } from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import { SyncProvider } from './context/SyncContext';
+import { SyncProvider } from './contexts/SyncContext';
 import './App.css';
 
 // Componente protegido para rutas que requieren autenticación

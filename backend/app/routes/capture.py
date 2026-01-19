@@ -4,7 +4,7 @@ import json
 import logging
 import asyncio
 
-from ..models import CaptureRequest, CaptureStatus
+from ..schemas import CaptureRequest, CaptureStatus
 from ..services.packet_capture import capture_service
 
 logger = logging.getLogger(__name__)
