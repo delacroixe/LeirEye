@@ -98,17 +98,17 @@ jobs:
       - name: Check Python formatting (black)
         working-directory: ./backend
         run: |
-          black --check app/ || echo "⚠️ Black formatting issues found"
+          black --check app/
 
       - name: Check imports (isort)
         working-directory: ./backend
         run: |
-          isort --check-only app/ || echo "⚠️ Import sorting issues found"
+          isort --check-only app/
 
       - name: Run flake8
         working-directory: ./backend
         run: |
-          flake8 app/ --max-line-length=120 --extend-ignore=E203,W503 || echo "⚠️ Flake8 issues found"
+          flake8 app/ --max-line-length=120 --extend-ignore=E203,W503
 
   docker-build:
     name: Docker Build Test
