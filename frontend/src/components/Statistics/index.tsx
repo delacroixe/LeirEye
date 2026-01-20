@@ -1,19 +1,19 @@
 /**
  * Statistics - Componente principal refactorizado
- * 
+ *
  * Muestra estadísticas en tiempo real del tráfico de red:
  * - Resumen general de protocolos
  * - Top IPs origen
  * - Top puertos destino
  * - Estadísticas de procesos
  */
-import React, { useEffect, useState } from 'react';
-import apiService, { StatsData } from '../../services/api';
-import StatsCards from './StatsCards';
-import TopIPsTable from './TopIPsTable';
-import TopPortsChart from './TopPortsChart';
-import ProcessPacketStats from '../ProcessPacketStats';
-import './Statistics.css';
+import React, { useEffect, useState } from "react";
+import apiService, { StatsData } from "../../services/api";
+import ProcessPacketStats from "../ProcessPacketStats";
+import "./Statistics.css";
+import StatsCards from "./StatsCards";
+import TopIPsTable from "./TopIPsTable";
+import TopPortsChart from "./TopPortsChart";
 
 interface StatisticsProps {
   refreshTrigger?: number;
@@ -21,7 +21,11 @@ interface StatisticsProps {
   processes?: any[];
 }
 
-const Statistics: React.FC<StatisticsProps> = ({ refreshTrigger = 0, packets = [], processes = [] }) => {
+const Statistics: React.FC<StatisticsProps> = ({
+  refreshTrigger = 0,
+  packets = [],
+  processes = [],
+}) => {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [prevStats, setPrevStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -34,7 +38,7 @@ const Statistics: React.FC<StatisticsProps> = ({ refreshTrigger = 0, packets = [
         setPrevStats(stats);
         setStats(data);
       } catch (error) {
-        console.error('Error cargando estadísticas:', error);
+        console.error("Error cargando estadísticas:", error);
       } finally {
         setLoading(false);
       }
@@ -51,7 +55,11 @@ const Statistics: React.FC<StatisticsProps> = ({ refreshTrigger = 0, packets = [
   }
 
   if (!stats) {
-    return <div className="empty-message">No hay datos de estadísticas disponibles</div>;
+    return (
+      <div className="empty-message">
+        No hay datos de estadísticas disponibles
+      </div>
+    );
   }
 
   return (
@@ -66,7 +74,7 @@ const Statistics: React.FC<StatisticsProps> = ({ refreshTrigger = 0, packets = [
         )}
 
         <TopIPsTable stats={stats} />
-        
+
         <TopPortsChart stats={stats} />
       </div>
     </div>

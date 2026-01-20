@@ -2,13 +2,16 @@
 Modelo de Usuario con roles preparados para granularidad futura
 """
 
-from datetime import datetime
-from typing import Optional, List
-from sqlalchemy import String, Boolean, DateTime, Enum as SQLEnum, Text
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.dialects.postgresql import UUID
-import uuid
 import enum
+import uuid
+from datetime import datetime
+from typing import List, Optional
+
+from sqlalchemy import Boolean, DateTime
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy import String, Text
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column
 
 from ..core.database import Base
 
@@ -132,5 +135,7 @@ class User(Base):
                 return permission in custom.get("permissions", [])
             except json.JSONDecodeError:
                 pass
+
+        return False
 
         return False

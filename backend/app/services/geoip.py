@@ -3,9 +3,10 @@ Servicio de Geolocalización de IPs
 Usa ip-api.com (gratis, 45 req/min)
 """
 
-import httpx
-from typing import Optional, Dict
 import ipaddress
+from typing import Dict, Optional
+
+import httpx
 
 # Cache de geolocalización
 geo_cache: Dict[str, dict] = {}
@@ -137,4 +138,5 @@ def get_network_label(ip: str) -> str:
         elif ip.startswith("127."):
             return "Localhost"
         return "Local"
+    return "Internet"
     return "Internet"

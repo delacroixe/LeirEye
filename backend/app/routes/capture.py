@@ -1,9 +1,10 @@
 """Rutas para captura de paquetes"""
 
-from fastapi import APIRouter, WebSocket, HTTPException
+import asyncio
 import json
 import logging
-import asyncio
+
+from fastapi import APIRouter, HTTPException, WebSocket
 
 from ..schemas import CaptureRequest, CaptureStatus
 from ..services.packet_capture import capture_service
@@ -153,4 +154,5 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.close()
         except Exception:
             pass
+        logger.info("WebSocket: Cliente desconectado")
         logger.info("WebSocket: Cliente desconectado")

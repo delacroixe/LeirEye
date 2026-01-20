@@ -1,8 +1,9 @@
 """Rutas para estadísticas"""
 
 from fastapi import APIRouter
+
+from ..services.geoip import get_batch_locations, get_network_label, is_private_ip
 from ..services.packet_capture import capture_service
-from ..services.geoip import is_private_ip, get_batch_locations, get_network_label
 
 router = APIRouter(prefix="/api/stats", tags=["stats"])
 

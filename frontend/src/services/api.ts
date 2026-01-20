@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 const API_BASE = API_BASE_URL;
 
@@ -71,14 +71,16 @@ export interface NetworkMapData {
 
 class ApiService {
   async getInterfaces(): Promise<string[]> {
-    const response = await axios.get<{ interfaces: string[] }>(`${API_BASE}/capture/interfaces`);
+    const response = await axios.get<{ interfaces: string[] }>(
+      `${API_BASE}/capture/interfaces`,
+    );
     return response.data.interfaces;
   }
 
   async startCapture(
     networkInterface?: string,
     filter?: string,
-    maxPackets: number = 1000
+    maxPackets: number = 1000,
   ) {
     return axios.post(`${API_BASE}/capture/start`, {
       interface: networkInterface,
@@ -92,7 +94,9 @@ class ApiService {
   }
 
   async getStatus(): Promise<CaptureStatus> {
-    const response = await axios.get<CaptureStatus>(`${API_BASE}/capture/status`);
+    const response = await axios.get<CaptureStatus>(
+      `${API_BASE}/capture/status`,
+    );
     return response.data;
   }
 
@@ -168,7 +172,9 @@ class ApiService {
   // ============ Network Map ============
 
   async getNetworkMap(): Promise<NetworkMapData> {
-    const response = await axios.get<NetworkMapData>(`${API_BASE}/stats/network-map`);
+    const response = await axios.get<NetworkMapData>(
+      `${API_BASE}/stats/network-map`,
+    );
     return response.data;
   }
 }

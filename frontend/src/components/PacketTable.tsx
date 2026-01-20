@@ -1,28 +1,37 @@
-import React, { useState, useCallback } from 'react';
-import { PacketData } from '../services/api';
-import { useSync } from '../contexts/SyncContext';
-import PacketExplainer from './PacketExplainer';
-import './PacketTable.css';
+import React, { useCallback, useState } from "react";
+import { useSync } from "../contexts/SyncContext";
+import { PacketData } from "../services/api";
+import PacketExplainer from "./PacketExplainer";
+import "./PacketTable.css";
 
 interface PacketTableProps {
   packets: PacketData[];
   loading?: boolean;
 }
 
-const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) => {
+const PacketTable: React.FC<PacketTableProps> = ({
+  packets,
+  loading = false,
+}) => {
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedPacket, setSelectedPacket] = useState<PacketData | null>(null);
   const { activeProcessPid } = useSync();
 
-  const toggleExpand = useCallback((index: number) => {
-    setExpandedRow(expandedRow === index ? null : index);
-  }, [expandedRow]);
+  const toggleExpand = useCallback(
+    (index: number) => {
+      setExpandedRow(expandedRow === index ? null : index);
+    },
+    [expandedRow],
+  );
 
-  const handleExplain = useCallback((packet: PacketData, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedPacket(packet);
-  }, []);
+  const handleExplain = useCallback(
+    (packet: PacketData, e: React.MouseEvent) => {
+      e.stopPropagation();
+      setSelectedPacket(packet);
+    },
+    [],
+  );
 
   // Filtrar paquetes por búsqueda
   const filteredPackets = packets.filter((packet) => {
@@ -31,9 +40,9 @@ const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) =
       packet.src_ip.toLowerCase().includes(searchLower) ||
       packet.dst_ip.toLowerCase().includes(searchLower) ||
       packet.protocol.toLowerCase().includes(searchLower) ||
-      (packet.src_port?.toString().includes(searchLower)) ||
-      (packet.dst_port?.toString().includes(searchLower)) ||
-      (packet.process_name?.toLowerCase().includes(searchLower))
+      packet.src_port?.toString().includes(searchLower) ||
+      packet.dst_port?.toString().includes(searchLower) ||
+      packet.process_name?.toLowerCase().includes(searchLower)
     );
   });
 
@@ -44,56 +53,68 @@ const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) =
 
   const exportToCSV = () => {
     if (filteredPackets.length === 0) {
-      alert('No hay paquetes para exportar');
+      alert("No hay paquetes para exportar");
       return;
     }
 
     // Headers CSV
-    const headers = ['Hora', 'IP Origen', 'IP Destino', 'Protocolo', 'Puerto Src', 'Puerto Dst', 'Proceso', 'Tamaño (bytes)', 'Payload'];
-    
+    const headers = [
+      "Hora",
+      "IP Origen",
+      "IP Destino",
+      "Protocolo",
+      "Puerto Src",
+      "Puerto Dst",
+      "Proceso",
+      "Tamaño (bytes)",
+      "Payload",
+    ];
+
     // Convertir datos a CSV
-    const rows = filteredPackets.map(packet => [
+    const rows = filteredPackets.map((packet) => [
       new Date(packet.timestamp).toLocaleString(),
       packet.src_ip,
       packet.dst_ip,
       packet.protocol,
-      packet.src_port || '-',
-      packet.dst_port || '-',
-      packet.process_name || '-',
+      packet.src_port || "-",
+      packet.dst_port || "-",
+      packet.process_name || "-",
       packet.length,
-      packet.payload_preview || '-'
+      packet.payload_preview || "-",
     ]);
 
     // Crear contenido CSV
     const csvContent = [
-      headers.join(','),
-      ...rows.map(row => 
-        row.map(cell => {
-          // Escapar comas y comillas
-          const str = String(cell).replace(/"/g, '""');
-          return str.includes(',') ? `"${str}"` : str;
-        }).join(',')
-      )
-    ].join('\n');
+      headers.join(","),
+      ...rows.map((row) =>
+        row
+          .map((cell) => {
+            // Escapar comas y comillas
+            const str = String(cell).replace(/"/g, '""');
+            return str.includes(",") ? `"${str}"` : str;
+          })
+          .join(","),
+      ),
+    ].join("\n");
 
     // Descargar archivo
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `packets_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.csv`;
+    link.download = `packets_${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.csv`;
     link.click();
   };
 
   const getProtocolColor = (protocol: string) => {
     switch (protocol) {
-      case 'TCP':
-        return '#10b981';
-      case 'UDP':
-        return '#f59e0b';
-      case 'ICMP':
-        return '#ef4444';
+      case "TCP":
+        return "#10b981";
+      case "UDP":
+        return "#f59e0b";
+      case "ICMP":
+        return "#ef4444";
       default:
-        return '#0ea5e9';
+        return "#0ea5e9";
     }
   };
 
@@ -109,7 +130,7 @@ const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) =
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
-          <button 
+          <button
             onClick={exportToCSV}
             disabled={filteredPackets.length === 0}
             className="export-btn"
@@ -119,7 +140,7 @@ const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) =
           </button>
         </div>
       </div>
-      
+
       {loading && <div className="loading">Cargando paquetes...</div>}
 
       <div className="table-wrapper">
@@ -141,14 +162,16 @@ const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) =
             {filteredPackets.length === 0 ? (
               <tr>
                 <td colSpan={9} className="empty-message">
-                  {searchTerm ? 'No hay paquetes que coincidan con la búsqueda.' : 'No hay paquetes capturados. Inicia una captura para comenzar.'}
+                  {searchTerm
+                    ? "No hay paquetes que coincidan con la búsqueda."
+                    : "No hay paquetes capturados. Inicia una captura para comenzar."}
                 </td>
               </tr>
             ) : (
               filteredPackets.map((packet, index) => (
                 <React.Fragment key={index}>
                   <tr
-                    className={`packet-row ${activeProcessPid && packet.pid === activeProcessPid ? 'highlighted' : ''}`}
+                    className={`packet-row ${activeProcessPid && packet.pid === activeProcessPid ? "highlighted" : ""}`}
                     onClick={() => toggleExpand(index)}
                     style={{
                       borderLeft: `4px solid ${getProtocolColor(packet.protocol)}`,
@@ -158,24 +181,31 @@ const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) =
                     <td className="ip-addr">{packet.src_ip}</td>
                     <td className="ip-addr">{packet.dst_ip}</td>
                     <td>
-                      <span className="protocol-badge" style={{
-                        backgroundColor: getProtocolColor(packet.protocol)
-                      }}>
+                      <span
+                        className="protocol-badge"
+                        style={{
+                          backgroundColor: getProtocolColor(packet.protocol),
+                        }}
+                      >
                         {packet.protocol}
                       </span>
                     </td>
-                    <td>{packet.src_port || '-'}</td>
-                    <td>{packet.dst_port || '-'}</td>
+                    <td>{packet.src_port || "-"}</td>
+                    <td>{packet.dst_port || "-"}</td>
                     <td>
                       {packet.process_name ? (
-                        <span className="process-badge">{packet.process_name}</span>
+                        <span className="process-badge">
+                          {packet.process_name}
+                        </span>
                       ) : (
-                        <span className="process-badge unknown">Desconocido</span>
+                        <span className="process-badge unknown">
+                          Desconocido
+                        </span>
                       )}
                     </td>
                     <td>{packet.length}b</td>
                     <td>
-                      <button 
+                      <button
                         className="explain-btn"
                         onClick={(e) => handleExplain(packet, e)}
                         title="¿Qué es esto?"
@@ -209,7 +239,8 @@ const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) =
                           )}
                           {packet.process_name && (
                             <div className="detail-item">
-                              <strong>Proceso:</strong> {packet.process_name} (PID: {packet.pid})
+                              <strong>Proceso:</strong> {packet.process_name}{" "}
+                              (PID: {packet.pid})
                             </div>
                           )}
                           {packet.flags && (
@@ -223,7 +254,9 @@ const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) =
                           {packet.payload_preview && (
                             <div className="detail-item">
                               <strong>Payload (hex):</strong>
-                              <div className="payload-hex">{packet.payload_preview}</div>
+                              <div className="payload-hex">
+                                {packet.payload_preview}
+                              </div>
                             </div>
                           )}
                           <div className="detail-item">
@@ -242,9 +275,9 @@ const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) =
 
       {/* Modal de explicación */}
       {selectedPacket && (
-        <PacketExplainer 
-          packet={selectedPacket} 
-          onClose={() => setSelectedPacket(null)} 
+        <PacketExplainer
+          packet={selectedPacket}
+          onClose={() => setSelectedPacket(null)}
         />
       )}
     </div>
