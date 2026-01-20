@@ -16,7 +16,7 @@ jobs:
   backend-tests:
     name: Backend Tests (Python)
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,8 +24,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         working-directory: ./backend
@@ -50,7 +50,7 @@ jobs:
   frontend-tests:
     name: Frontend Tests (React)
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -58,8 +58,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
           cache-dependency-path: ./frontend/package-lock.json
 
       - name: Install dependencies
@@ -81,7 +81,7 @@ jobs:
   code-quality:
     name: Code Quality Checks
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -89,7 +89,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install linting tools
         run: |
@@ -97,26 +97,23 @@ jobs:
 
       - name: Check Python formatting (black)
         working-directory: ./backend
-        continue-on-error: true
         run: |
-          black --check app/
+          black --check app/ || echo "⚠️ Code formatting issues found. Run 'black app/' to fix."
 
       - name: Check imports (isort)
         working-directory: ./backend
-        continue-on-error: true
         run: |
-          isort --check-only app/
+          isort --check-only app/ || echo "⚠️ Import order issues found. Run 'isort app/' to fix."
 
       - name: Run flake8
         working-directory: ./backend
-        continue-on-error: true
         run: |
           flake8 app/ --max-line-length=120 --extend-ignore=E203,W503
 
   docker-build:
     name: Docker Build Test
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -149,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [backend-tests, frontend-tests, code-quality, docker-build]
     if: always()
-    
+
     steps:
       - name: Check results
         run: |
@@ -159,7 +156,7 @@ jobs:
           echo "- Frontend Tests: ${{ needs.frontend-tests.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- Code Quality: ${{ needs.code-quality.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- Docker Build: ${{ needs.docker-build.result }}" >> $GITHUB_STEP_SUMMARY
-          
+
           # Solo fallar si los tests críticos fallan
           if [ "${{ needs.backend-tests.result }}" != "success" ] || \
              [ "${{ needs.frontend-tests.result }}" != "success" ]; then
@@ -167,6 +164,6 @@ jobs:
             echo "⚠️ Core tests failed. Please review the logs above." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "🎉 All checks passed!" >> $GITHUB_STEP_SUMMARY
