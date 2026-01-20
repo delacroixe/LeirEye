@@ -156,6 +156,7 @@ nav:
     - api/index.md
     - Autenticación: api/authentication.md
     - Endpoints: api/endpoints.md
+    - Ejemplos de Uso: api/examples.md
     - WebSocket: api/websocket.md
   
   - Referencia:
