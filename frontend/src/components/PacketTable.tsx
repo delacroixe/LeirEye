@@ -42,11 +42,6 @@ const PacketTable: React.FC<PacketTableProps> = ({ packets, loading = false }) =
     return date.toLocaleTimeString();
   };
 
-  const formatPayload = (payload: string | null) => {
-    if (!payload) return 'N/A';
-    return payload.substring(0, 20) + (payload.length > 20 ? '...' : '');
-  };
-
   const exportToCSV = () => {
     if (filteredPackets.length === 0) {
       alert('No hay paquetes para exportar');

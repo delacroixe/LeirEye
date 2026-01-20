@@ -44,7 +44,7 @@ const Statistics: React.FC<StatisticsProps> = ({ refreshTrigger = 0, packets = [
     const interval = setInterval(fetchStats, 5000);
 
     return () => clearInterval(interval);
-  }, [refreshTrigger]);
+  }, [refreshTrigger, stats]);
 
   if (loading && !stats) {
     return <div className="loading">Cargando estadísticas...</div>;
