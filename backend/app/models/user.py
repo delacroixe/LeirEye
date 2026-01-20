@@ -5,7 +5,7 @@ Modelo de Usuario con roles preparados para granularidad futura
 from datetime import datetime
 from typing import Optional, List
 from sqlalchemy import String, Boolean, DateTime, Enum as SQLEnum, Text
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import enum

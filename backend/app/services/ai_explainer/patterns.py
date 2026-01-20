@@ -131,7 +131,11 @@ KNOWN_SERVICES = {
 ALERT_EXPLANATIONS = {
     "http_unencrypted": {
         "title": "Conexión sin encriptar detectada",
-        "explanation": "Este sitio web no usa HTTPS. Es como enviar una postal en lugar de una carta sellada - cualquiera en el camino podría leerla.",
+        "explanation": (
+            "Este sitio web no usa HTTPS. Es como enviar una postal "
+            "en lugar de una carta sellada - cualquiera en el camino "
+            "podría leerla."
+        ),
         "risk": "medio",
         "action": "Evita introducir contraseñas o datos personales en sitios HTTP.",
         "learn": "HTTPS usa certificados digitales para crear un 'túnel' seguro entre tu navegador y el servidor.",
@@ -145,14 +149,20 @@ ALERT_EXPLANATIONS = {
     },
     "late_night_traffic": {
         "title": "Actividad nocturna",
-        "explanation": "Se detectó tráfico de red a una hora inusual. Podría ser una actualización automática o algo más.",
+        "explanation": (
+            "Se detectó tráfico de red a una hora inusual. Podría "
+            "ser una actualización automática o algo más."
+        ),
         "risk": "bajo",
         "action": "Revisa qué aplicaciones tienen permiso para ejecutarse en segundo plano.",
         "learn": "Muchas apps actualizan sus datos por la noche cuando no usas el dispositivo.",
     },
     "dns_unusual": {
         "title": "Consulta DNS sospechosa",
-        "explanation": "Tu dispositivo buscó un dominio que parece generado aleatoriamente. Esto puede indicar malware.",
+        "explanation": (
+            "Tu dispositivo buscó un dominio que parece generado "
+            "aleatoriamente. Esto puede indicar malware."
+        ),
         "risk": "alto",
         "action": "Ejecuta un escaneo antivirus en tu dispositivo.",
         "learn": "El malware a menudo usa dominios aleatorios para comunicarse con servidores de control.",

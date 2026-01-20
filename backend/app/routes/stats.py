@@ -10,8 +10,6 @@ router = APIRouter(prefix="/api/stats", tags=["stats"])
 @router.get("/summary")
 async def get_summary():
     """Obtiene resumen de estadísticas"""
-    status = capture_service.get_status()
-    packets = capture_service.packets
     stats = capture_service.stats
 
     return {

@@ -4,9 +4,7 @@ Usa ip-api.com (gratis, 45 req/min)
 """
 
 import httpx
-import asyncio
 from typing import Optional, Dict
-from functools import lru_cache
 import ipaddress
 
 # Cache de geolocalización

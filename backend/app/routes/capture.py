@@ -151,6 +151,6 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         try:
             await websocket.close()
-        except:
+        except Exception:
             pass
         logger.info("WebSocket: Cliente desconectado")
