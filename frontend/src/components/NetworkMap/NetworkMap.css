@@ -125,7 +125,11 @@
 }
 
 .view-btn.active {
-  background: linear-gradient(135deg, rgba(100, 200, 255, 0.2), rgba(59, 130, 246, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(100, 200, 255, 0.2),
+    rgba(59, 130, 246, 0.2)
+  );
   color: #64c8ff;
   box-shadow: 0 0 20px rgba(100, 200, 255, 0.15);
 }
@@ -144,7 +148,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
   user-select: none;
   padding: 6px 10px;
   background: rgba(0, 0, 0, 0.2);
@@ -156,34 +159,39 @@
   display: none;
 }
 
-.toggle-slider {
-  width: 32px;
-  height: 18px;
-  background: rgba(100, 116, 139, 0.4);
-  border-radius: 9px;
+.auto-refresh-toggle .toggle-slider {
   position: relative;
-  transition: all 0.2s ease;
+  width: 40px;
+  height: 22px;
+  background: rgba(100, 116, 139, 0.4);
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
 }
 
-.toggle-slider::after {
-  content: '';
+.auto-refresh-toggle .toggle-slider::after {
+  content: "";
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   background: #ffffff;
   border-radius: 50%;
-  top: 2px;
-  left: 2px;
-  transition: all 0.2s ease;
+  top: 50%;
+  left: 3px;
+  transform: translateY(-50%);
+  transition: left 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .auto-refresh-toggle input:checked + .toggle-slider {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: #22c55e;
+  border-color: #16a34a;
 }
 
 .auto-refresh-toggle input:checked + .toggle-slider::after {
-  transform: translateX(14px);
+  left: 21px;
 }
 
 .toggle-label {
@@ -222,10 +230,16 @@
   flex: 1;
   position: relative;
   overflow: hidden;
-  background: radial-gradient(ellipse at center, rgba(100, 200, 255, 0.03) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(100, 200, 255, 0.03) 0%,
+    transparent 70%
+  );
   width: 100%;
   min-height: calc(100vh - 280px);
   height: calc(100vh - 280px);
+  padding-bottom: 80px;
+  box-sizing: border-box;
 }
 
 .graph-container > div {
@@ -242,14 +256,6 @@
 .graph-container canvas {
   outline: none;
   display: block;
-}
-
-/* Navigation buttons styling */
-.vis-navigation {
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-  z-index: 999;
 }
 
 .vis-button {
@@ -316,7 +322,7 @@
 
 /* Geo popup styling */
 .geo-popup {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
   min-width: 180px;
 }
 
@@ -417,7 +423,11 @@
   align-items: center;
   gap: 10px;
   padding: 16px 18px;
-  background: linear-gradient(135deg, rgba(100, 200, 255, 0.1), rgba(59, 130, 246, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(100, 200, 255, 0.1),
+    rgba(59, 130, 246, 0.1)
+  );
   border-bottom: 1px solid rgba(100, 200, 255, 0.1);
 }
 
@@ -430,7 +440,7 @@
   font-size: 14px;
   font-weight: 600;
   color: #ffffff;
-  font-family: 'SF Mono', 'Menlo', monospace;
+  font-family: "SF Mono", "Menlo", monospace;
 }
 
 .panel-close {
@@ -508,7 +518,7 @@
 }
 
 .row-value.mono {
-  font-family: 'SF Mono', 'Menlo', monospace;
+  font-family: "SF Mono", "Menlo", monospace;
   font-size: 11px;
   color: #8892a6;
 }
@@ -609,7 +619,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-state p {
@@ -668,7 +680,8 @@
   border: 1px solid rgba(100, 200, 255, 0.3) !important;
   border-radius: 10px !important;
   padding: 0 !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif !important;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
   max-width: 280px !important;
 }
@@ -679,7 +692,11 @@
 
 .vis-tooltip-custom .tooltip-header {
   padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(100, 200, 255, 0.1), rgba(59, 130, 246, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(100, 200, 255, 0.1),
+    rgba(59, 130, 246, 0.1)
+  );
   border-bottom: 1px solid rgba(100, 200, 255, 0.1);
   font-size: 13px;
   font-weight: 600;

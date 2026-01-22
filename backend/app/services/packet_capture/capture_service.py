@@ -1,12 +1,14 @@
 """Servicio principal de captura de paquetes"""
 
-import threading
-import queue
 import logging
-from typing import Optional, Callable, Dict, List
+import queue
+import threading
 from datetime import datetime
-from scapy.all import sniff, get_if_list
-from ...schemas import PacketData, CaptureStats
+from typing import Callable, Dict, List, Optional
+
+from scapy.all import sniff
+
+from ...schemas import CaptureStats, PacketData
 from .parser import PacketParser
 from .stats import StatsManager
 
@@ -34,13 +36,20 @@ class PacketCaptureService:
         self.on_packet_callback = callback
 
     def get_available_interfaces(self) -> List[str]:
-        """Obtiene las interfaces de red disponibles"""
+        """Obtiene las interfaces de red disponibles (solo reales con IP)"""
         try:
-            interfaces = get_if_list()
-            valid_interfaces = [
-                iface for iface in interfaces if iface and iface != "lo"
+            from ...services.system_info import get_network_interfaces
+
+            # Obtener interfaces que ya están filtradas (solo reales)
+            network_interfaces = get_network_interfaces()
+            
+            # Filtrar solo las que tienen IP asignada (IPv4 o IPv6)
+            interfaces_with_ip = [
+                iface.name for iface in network_interfaces
+                if iface.ipv4 or iface.ipv6
             ]
-            return sorted(valid_interfaces)
+            
+            return sorted(interfaces_with_ip)
         except Exception as e:
             logger.error(f"Error obteniendo interfaces: {e}")
             return []
@@ -213,5 +222,7 @@ class PacketCaptureService:
         logger.info("✓ Estado de captura reseteado")
 
 
+# Instancia global
+capture_service = PacketCaptureService()
 # Instancia global
 capture_service = PacketCaptureService()

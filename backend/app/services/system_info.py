@@ -2,12 +2,13 @@
 Servicio de información del sistema y procesos de red
 """
 
-import socket
-import platform
-import time
-import subprocess
 import logging
+import platform
+import socket
+import subprocess
+import time
 from typing import Dict, List, Optional
+
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -135,8 +136,44 @@ def get_system_info() -> SystemInfo:
     )
 
 
+def _is_real_interface(iface_name: str) -> bool:
+    """Verifica si una interfaz es real y no virtual/loopback"""
+    # Interfaces a ignorar: loopback, virtuales de VM, docker, bridge, tap
+    excluded_patterns = [
+        'lo',           # loopback
+        'veth',         # docker virtual ethernet
+        'br',           # bridge
+        'docker',       # docker
+        'virbr',        # libvirt bridge
+        'vnet',         # KVM virtual network
+        'vmnet',        # VMware
+        'vbox',         # VirtualBox
+        'utun',         # macOS Tunneling
+        'awdl',         # macOS auto wireless
+        'llw',          # macOS link-local WiFi
+        'ppp',          # Point-to-point
+        'sl',           # Serial line
+        'tun',          # VPN tunnel
+        'tap',          # TAP tunnel
+        'sit',          # 6to4 tunnel
+    ]
+    
+    iface_lower = iface_name.lower()
+    
+    # Si comienza con algún patrón excluido, es virtual
+    for pattern in excluded_patterns:
+        if iface_lower.startswith(pattern):
+            return False
+    
+    # Si contiene "virtual" o números muy altos (típico de virtuales), excluir
+    if 'virtual' in iface_lower:
+        return False
+    
+    return True
+
+
 def get_network_interfaces() -> List[NetworkInterface]:
-    """Obtiene las interfaces de red"""
+    """Obtiene las interfaces de red (solo reales, no virtuales)"""
     ps = _load_psutil()
 
     interfaces = []
@@ -144,6 +181,10 @@ def get_network_interfaces() -> List[NetworkInterface]:
     stats = ps.net_if_stats()
 
     for iface_name, iface_addrs in addrs.items():
+        # Filtrar interfaces virtuales
+        if not _is_real_interface(iface_name):
+            continue
+            
         iface = NetworkInterface(name=iface_name)
 
         for addr in iface_addrs:

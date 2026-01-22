@@ -7,28 +7,28 @@
   border: 1px solid rgba(100, 200, 255, 0.1);
 }
 
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
+.packet-table-header {
+  display: block;
   margin-bottom: 15px;
-  flex-wrap: wrap;
 }
 
-.table-header h2 {
+.packet-table-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.packet-table-header h2 {
   margin: 0;
   color: #64c8ff;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  flex-shrink: 0;
 }
 
-.header-controls {
+.packet-header-controls {
   display: flex;
   gap: 10px;
-  flex: 1;
-  min-width: 300px;
   align-items: center;
 }
 
@@ -39,8 +39,7 @@
   background-color: rgba(0, 0, 0, 0.2);
   color: #e0e0e0;
   font-size: 14px;
-  flex: 1;
-  min-width: 250px;
+  width: 300px;
   transition: all 0.3s ease;
 }
 
@@ -105,7 +104,11 @@
 }
 
 .packet-table thead {
-  background: linear-gradient(135deg, rgba(100, 200, 255, 0.1) 0%, rgba(14, 165, 233, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(100, 200, 255, 0.1) 0%,
+    rgba(14, 165, 233, 0.1) 100%
+  );
   border-bottom: 2px solid rgba(100, 200, 255, 0.2);
   position: sticky;
   top: 0;
@@ -117,6 +120,16 @@
   font-weight: 600;
   color: #64c8ff;
   white-space: nowrap;
+}
+
+.packet-table thead th {
+  display: table-cell;
+}
+
+.packet-table thead th .info-tooltip {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: 4px;
 }
 
 .packet-table tbody tr {
@@ -154,7 +167,7 @@
 }
 
 .ip-addr {
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   color: #64c8ff;
   font-weight: 500;
 }
@@ -233,7 +246,7 @@
   padding: 12px;
   border-radius: 6px;
   margin-top: 10px;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   word-break: break-all;
   font-size: 12px;
   color: #90ee90;
@@ -242,7 +255,11 @@
 
 /* Botón Explicar */
 .explain-btn {
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(14, 165, 233, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(14, 165, 233, 0.2) 0%,
+    rgba(14, 165, 233, 0.1) 100%
+  );
   border: 1px solid rgba(14, 165, 233, 0.3);
   border-radius: 6px;
   padding: 4px 8px;
@@ -252,11 +269,65 @@
 }
 
 .explain-btn:hover {
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.4) 0%, rgba(14, 165, 233, 0.2) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(14, 165, 233, 0.4) 0%,
+    rgba(14, 165, 233, 0.2) 100%
+  );
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
 }
 
 .explain-btn:active {
   transform: scale(0.95);
+}
+
+/* DNS Indicator */
+.dns-indicator {
+  color: #3b82f6;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* DNS Info in expanded details */
+.detail-item.dns-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.detail-item.dns-info svg {
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.detail-item.dns-info strong {
+  width: auto;
+  margin-right: 4px;
+}
+
+.dns-domain {
+  color: #60a5fa;
+  font-family: "SF Mono", Monaco, "Courier New", monospace;
+  font-weight: 500;
+}
+
+.dns-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 0.8rem;
+  margin-left: auto;
+  padding: 4px 8px;
+  background: rgba(59, 130, 246, 0.2);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.dns-link:hover {
+  background: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
 }

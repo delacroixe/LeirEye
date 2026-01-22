@@ -2,8 +2,9 @@
 Tests para las rutas de estadísticas
 """
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
 from httpx import AsyncClient
 
 
@@ -186,4 +187,5 @@ class TestNetworkMapRoute:
             data = response.json()
             assert len(data["nodes"]) == 3
             assert len(data["links"]) == 2
+            assert data["summary"]["total_nodes"] == 3
             assert data["summary"]["total_nodes"] == 3

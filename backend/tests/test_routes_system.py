@@ -2,8 +2,9 @@
 Tests para las rutas de sistema
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
 from httpx import AsyncClient
 
 
@@ -129,4 +130,5 @@ class TestSystemRoutes:
         """Test GET /api/system/connection-lookup sin parámetros"""
         response = await client.get("/api/system/connection-lookup")
 
+        assert response.status_code == 422  # Validation error
         assert response.status_code == 422  # Validation error

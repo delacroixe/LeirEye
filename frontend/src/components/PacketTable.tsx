@@ -1,6 +1,8 @@
+import { Globe } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { useSync } from "../contexts/SyncContext";
 import { PacketData } from "../services/api";
+import InfoTooltip, { TOOLTIP_CONTENT } from "./InfoTooltip";
 import PacketExplainer from "./PacketExplainer";
 import "./PacketTable.css";
 
@@ -111,6 +113,8 @@ const PacketTable: React.FC<PacketTableProps> = ({
         return "#10b981";
       case "UDP":
         return "#f59e0b";
+      case "DNS":
+        return "#3b82f6";
       case "ICMP":
         return "#ef4444";
       default:
@@ -120,9 +124,12 @@ const PacketTable: React.FC<PacketTableProps> = ({
 
   return (
     <div className="packet-table-container">
-      <div className="table-header">
-        <h2>Paquetes Capturados ({filteredPackets.length})</h2>
-        <div className="header-controls">
+      <div className="packet-table-header">
+        <div className="packet-table-title-row">
+          <h2>Paquetes Capturados ({filteredPackets.length})</h2>
+          <InfoTooltip content={TOOLTIP_CONTENT.packetTable} size="sm" />
+        </div>
+        <div className="packet-header-controls">
           <input
             type="text"
             placeholder="🔍 Buscar por IP, protocolo o puerto..."
@@ -148,12 +155,54 @@ const PacketTable: React.FC<PacketTableProps> = ({
           <thead>
             <tr>
               <th>Hora</th>
-              <th>IP Origen</th>
-              <th>IP Destino</th>
-              <th>Protocolo</th>
-              <th>Puerto Src</th>
-              <th>Puerto Dst</th>
-              <th>Proceso</th>
+              <th>
+                IP Origen
+                <InfoTooltip
+                  content={TOOLTIP_CONTENT.ipAddress}
+                  size="sm"
+                  position="bottom"
+                />
+              </th>
+              <th>
+                IP Destino
+                <InfoTooltip
+                  content={TOOLTIP_CONTENT.ipAddress}
+                  size="sm"
+                  position="bottom"
+                />
+              </th>
+              <th>
+                Protocolo
+                <InfoTooltip
+                  content={TOOLTIP_CONTENT.protocol}
+                  size="sm"
+                  position="bottom"
+                />
+              </th>
+              <th>
+                Puerto Src
+                <InfoTooltip
+                  content={TOOLTIP_CONTENT.ports}
+                  size="sm"
+                  position="bottom"
+                />
+              </th>
+              <th>
+                Puerto Dst
+                <InfoTooltip
+                  content={TOOLTIP_CONTENT.ports}
+                  size="sm"
+                  position="bottom"
+                />
+              </th>
+              <th>
+                Proceso
+                <InfoTooltip
+                  content={TOOLTIP_CONTENT.processTraffic}
+                  size="sm"
+                  position="bottom"
+                />
+              </th>
               <th>Tamaño</th>
               <th></th>
             </tr>
@@ -189,6 +238,11 @@ const PacketTable: React.FC<PacketTableProps> = ({
                       >
                         {packet.protocol}
                       </span>
+                      {packet.dns_domain && (
+                        <span title={`DNS: ${packet.dns_domain}`}>
+                          <Globe size={12} className="dns-indicator" />
+                        </span>
+                      )}
                     </td>
                     <td>{packet.src_port || "-"}</td>
                     <td>{packet.dst_port || "-"}</td>
@@ -227,6 +281,24 @@ const PacketTable: React.FC<PacketTableProps> = ({
                           <div className="detail-item">
                             <strong>Protocolo:</strong> {packet.protocol}
                           </div>
+                          {packet.dns_domain && (
+                            <div className="detail-item dns-info">
+                              <Globe size={14} />
+                              <strong>Dominio DNS:</strong>
+                              <span className="dns-domain">
+                                {packet.dns_domain}
+                              </span>
+                              {packet.dns_query_id && (
+                                <a
+                                  href={`/dns?query_id=${packet.dns_query_id}`}
+                                  className="dns-link"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  Ver en DNS Tracker →
+                                </a>
+                              )}
+                            </div>
+                          )}
                           {packet.src_port && (
                             <div className="detail-item">
                               <strong>Puerto Origen:</strong> {packet.src_port}

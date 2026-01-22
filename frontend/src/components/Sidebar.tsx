@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import {
-  Menu,
-  X,
   BarChart3,
-  Wifi,
-  Network,
-  Settings,
-  LogOut,
-  User,
-  Home,
+  Bell,
   ChevronDown,
-} from 'lucide-react';
-import './Sidebar.css';
+  Globe,
+  LogOut,
+  Menu,
+  Network,
+  Send,
+  Settings,
+  User,
+  Wifi,
+  X,
+} from "lucide-react";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAlerts } from "../contexts/AlertsContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useCaptureContext } from "../contexts/CaptureContext";
+import "./Sidebar.css";
 
 interface MenuItem {
   label: string;
@@ -26,38 +30,53 @@ export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout, hasPermission } = useAuth();
+  const { isCapturing } = useCaptureContext();
+  const { unreadCount } = useAlerts();
   const [isOpen, setIsOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const menuItems: MenuItem[] = [
     {
-      label: 'Dashboard',
-      path: '/dashboard',
-      icon: <Home size={20} />,
-    },
-    {
-      label: 'Captura',
-      path: '/capture',
+      label: "Captura",
+      path: "/capture",
       icon: <Wifi size={20} />,
-      requiredPermission: 'capture:start',
+      requiredPermission: "capture:start",
     },
     {
-      label: 'Estadísticas',
-      path: '/statistics',
+      label: "Estadísticas",
+      path: "/statistics",
       icon: <BarChart3 size={20} />,
-      requiredPermission: 'sessions:read',
+      requiredPermission: "sessions:read",
     },
     {
-      label: 'Mapa de Red',
-      path: '/network-map',
+      label: "Mapa de Red",
+      path: "/network-map",
       icon: <Network size={20} />,
-      requiredPermission: 'sessions:read',
+      requiredPermission: "sessions:read",
     },
     {
-      label: 'Sistema',
-      path: '/system',
+      label: "Alertas",
+      path: "/alerts",
+      icon: <Bell size={20} />,
+      requiredPermission: "sessions:read",
+    },
+    {
+      label: "DNS Tracker",
+      path: "/dns",
+      icon: <Globe size={20} />,
+      requiredPermission: "sessions:read",
+    },
+    {
+      label: "Packet Builder",
+      path: "/packet-builder",
+      icon: <Send size={20} />,
+      requiredPermission: "capture:start",
+    },
+    {
+      label: "Sistema",
+      path: "/system",
       icon: <Settings size={20} />,
-      requiredPermission: 'sessions:read',
+      requiredPermission: "sessions:read",
     },
   ];
 
@@ -76,7 +95,7 @@ export const Sidebar: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
     setIsOpen(false);
   };
 
@@ -92,17 +111,21 @@ export const Sidebar: React.FC = () => {
       </button>
 
       {/* Overlay (Mobile) */}
-      {isOpen && <div className="sidebar-overlay" onClick={() => setIsOpen(false)} />}
+      {isOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsOpen(false)} />
+      )}
 
       {/* Sidebar */}
-      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+      <aside className={`sidebar ${isOpen ? "open" : ""}`}>
         {/* Logo Section */}
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <div className="logo-icon">N</div>
+            <div className={`logo-icon ${isCapturing ? "capturing" : ""}`}>
+              N
+            </div>
             <div className="logo-text">
-              <h1>NetMentor</h1>
-              <p>Network Analyzer</p>
+              <h1>LeriEye</h1>
+              <p>{isCapturing ? "● Capturando..." : "Network Analyzer"}</p>
             </div>
           </div>
         </div>
@@ -115,11 +138,16 @@ export const Sidebar: React.FC = () => {
               {visibleItems.map((item) => (
                 <li key={item.path}>
                   <button
-                    className={`nav-item ${isActive(item.path) ? 'active' : ''}`}
+                    className={`nav-item ${isActive(item.path) ? "active" : ""}`}
                     onClick={() => handleNavigation(item.path)}
                   >
                     <span className="nav-icon">{item.icon}</span>
                     <span className="nav-label">{item.label}</span>
+                    {item.path === "/alerts" && unreadCount > 0 && (
+                      <span className="nav-badge">
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </span>
+                    )}
                   </button>
                 </li>
               ))}
@@ -149,7 +177,7 @@ export const Sidebar: React.FC = () => {
               </div>
               <ChevronDown
                 size={16}
-                className={`chevron ${isUserMenuOpen ? 'open' : ''}`}
+                className={`chevron ${isUserMenuOpen ? "open" : ""}`}
               />
             </button>
 
@@ -158,7 +186,7 @@ export const Sidebar: React.FC = () => {
                 <button
                   className="user-menu-item"
                   onClick={() => {
-                    navigate('/profile');
+                    navigate("/profile");
                     setIsUserMenuOpen(false);
                     setIsOpen(false);
                   }}
@@ -169,7 +197,7 @@ export const Sidebar: React.FC = () => {
                 <button
                   className="user-menu-item"
                   onClick={() => {
-                    navigate('/settings');
+                    navigate("/settings");
                     setIsUserMenuOpen(false);
                     setIsOpen(false);
                   }}

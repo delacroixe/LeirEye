@@ -76,7 +76,7 @@ export API_URL="https://tu-servidor.com"
       | jq -r '.access_token')
 
     echo "Token: $TOKEN"
-    
+
     # Usar token en siguientes peticiones
     curl -H "Authorization: Bearer $TOKEN" "$API_URL/api/auth/me"
     ```
@@ -168,7 +168,7 @@ export API_URL="https://tu-servidor.com"
 
     # 1. Listar interfaces
     interfaces = httpx.get(
-        f"{API_URL}/api/capture/interfaces", 
+        f"{API_URL}/api/capture/interfaces",
         headers=headers
     ).json()
     print("Interfaces:", [i["name"] for i in interfaces["interfaces"]])
@@ -427,14 +427,14 @@ export API_URL="https://tu-servidor.com"
 
     async def listen_packets():
         uri = f"ws://localhost:8000/ws/packets?token={access_token}"
-        
+
         async with websockets.connect(uri) as ws:
             print("Conectado al WebSocket...")
-            
+
             while True:
                 message = await ws.recv()
                 packet = json.loads(message)
-                
+
                 print(f"[{packet['timestamp']}] "
                       f"{packet['src_ip']}:{packet['src_port']} -> "
                       f"{packet['dst_ip']}:{packet['dst_port']} "
@@ -500,35 +500,35 @@ def login(email: str, password: str) -> str:
 def capture_and_analyze(token: str, interface: str, duration: int = 30):
     """Capturar tráfico y mostrar análisis"""
     headers = {"Authorization": f"Bearer {token}"}
-    
+
     print(f"🚀 Iniciando captura en {interface}...")
-    
+
     # Iniciar captura
     httpx.post(
         f"{API_URL}/api/capture/start",
         headers=headers,
         json={"interface": interface}
     )
-    
+
     # Esperar
     print(f"⏳ Capturando durante {duration} segundos...")
     time.sleep(duration)
-    
+
     # Detener
     result = httpx.post(f"{API_URL}/api/capture/stop", headers=headers).json()
     print(f"✅ Capturados: {result.get('packets_captured', 'N/A')} paquetes")
-    
+
     # Obtener estadísticas
     stats = httpx.get(f"{API_URL}/api/stats/summary", headers=headers).json()
-    
+
     print("\n📊 Resumen:")
     print(f"  Total paquetes: {stats['total_packets']}")
     print(f"  TCP: {stats['tcp']} | UDP: {stats['udp']} | ICMP: {stats['icmp']}")
-    
+
     print("\n🔝 Top IPs origen:")
     for ip, count in list(stats.get('top_src_ips', {}).items())[:5]:
         print(f"  {ip}: {count}")
-    
+
     print("\n🔝 Top puertos:")
     for port, count in list(stats.get('top_ports', {}).items())[:5]:
         print(f"  {port}: {count}")
@@ -537,9 +537,9 @@ if __name__ == "__main__":
     if len(sys.argv) < 4:
         print("Uso: python monitor.py <email> <password> <interface>")
         sys.exit(1)
-    
+
     email, password, interface = sys.argv[1:4]
-    
+
     try:
         token = login(email, password)
         print("🔐 Autenticado correctamente")
@@ -550,6 +550,7 @@ if __name__ == "__main__":
 ```
 
 **Uso:**
+
 ```bash
 python monitor.py usuario@ejemplo.com MiPassword123! en0
 ```
@@ -559,13 +560,13 @@ python monitor.py usuario@ejemplo.com MiPassword123! en0
 ## 📝 Notas Importantes
 
 !!! warning "Permisos de Captura"
-    Para capturar tráfico de red, el backend debe ejecutarse con privilegios elevados:
-    ```bash
+Para capturar tráfico de red, el backend debe ejecutarse con privilegios elevados:
+`bash
     sudo python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
-    ```
+    `
 
 !!! tip "Rate Limiting"
-    La API tiene límites de peticiones. Si recibes error 429, espera unos segundos antes de reintentar.
+La API tiene límites de peticiones. Si recibes error 429, espera unos segundos antes de reintentar.
 
 !!! info "Tokens JWT"
-    Los tokens de acceso expiran en 30 minutos. Usa el endpoint `/api/auth/refresh` para renovarlos.
+Los tokens de acceso expiran en 30 minutos. Usa el endpoint `/api/auth/refresh` para renovarlos.

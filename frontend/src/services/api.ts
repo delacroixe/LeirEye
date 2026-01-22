@@ -15,6 +15,8 @@ export interface PacketData {
   flags: string | null;
   process_name?: string | null;
   pid?: number | null;
+  dns_query_id?: string | null;
+  dns_domain?: string | null;
 }
 
 export interface CaptureStatus {
@@ -176,6 +178,93 @@ class ApiService {
       `${API_BASE}/stats/network-map`,
     );
     return response.data;
+  }
+
+  // ============ Packet Builder ============
+
+  async getAIPacketSuggestion(params: {
+    protocol: string;
+    srcIp: string;
+    dstIp: string;
+    srcPort: number;
+    dstPort: number;
+    query: string;
+  }): Promise<{
+    suggestion: string;
+    explanation: string;
+    securityTip?: string;
+  }> {
+    const response = await axios.post(
+      `${API_BASE}/ai/packet-suggestion`,
+      params,
+    );
+    return response.data;
+  }
+
+  async generatePacketWithAI(params: {
+    intent: string;
+    protocol: string;
+  }): Promise<{
+    suggestion: string;
+    explanation: string;
+    securityTip?: string;
+    config?: {
+      dstIp?: string;
+      dstPort?: number;
+      payload?: string;
+      ttl?: number;
+    };
+  }> {
+    const response = await axios.post(`${API_BASE}/ai/generate-packet`, params);
+    return response.data;
+  }
+
+  async sendCraftedPacket(packetConfig: {
+    protocol: string;
+    src_ip: string;
+    dst_ip: string;
+    src_port?: number;
+    dst_port?: number;
+    payload?: string;
+    ttl?: number;
+    tcp_flags?: {
+      syn?: boolean;
+      ack?: boolean;
+      fin?: boolean;
+      rst?: boolean;
+      psh?: boolean;
+      urg?: boolean;
+    };
+    icmp_type?: number;
+  }): Promise<{ success: boolean; message: string }> {
+    const response = await axios.post(
+      `${API_BASE}/capture/send-packet`,
+      packetConfig,
+    );
+    return response.data;
+  }
+}
+
+// Función auxiliar para explicar alertas con IA
+export async function explainAlert(params: {
+  alert_type: string;
+  severity: string;
+  title: string;
+  description: string;
+  source_ip?: string;
+  dest_ip?: string;
+  domain?: string;
+  process_name?: string;
+}): Promise<string> {
+  try {
+    const response = await axios.post<{ explanation: string }>(
+      `${API_BASE}/ai/explain-alert`,
+      params,
+    );
+    return response.data.explanation;
+  } catch (error) {
+    console.error("Error getting AI explanation:", error);
+    throw new Error("No se pudo obtener la explicación de IA");
   }
 }
 

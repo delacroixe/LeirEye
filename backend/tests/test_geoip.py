@@ -2,17 +2,18 @@
 Tests para el servicio de GeoIP
 """
 
-import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import httpx
+import pytest
 
 from app.services.geoip import (
-    is_private_ip,
-    is_local_ip,
-    get_ip_location,
-    get_batch_locations,
-    get_network_label,
     geo_cache,
+    get_batch_locations,
+    get_ip_location,
+    get_network_label,
+    is_local_ip,
+    is_private_ip,
 )
 
 

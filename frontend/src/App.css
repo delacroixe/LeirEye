@@ -17,9 +17,7 @@ body {
   color: #e0e0e0;
 }
 
-:root {
-  --sidebar-width: 280px;
-}
+/* App Layout - Usa variables de styles/variables.css */
 
 #root {
   display: flex;
@@ -31,15 +29,34 @@ body {
 .app-layout {
   display: flex;
   height: 100vh;
-  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  background: var(--gradient-primary);
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: var(--sidebar-width);
+  overflow: hidden;
 }
 
 .app-main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: var(--sidebar-width);
   overflow: hidden;
+}
+
+/* Global Filter Container */
+.global-filter-container {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  min-height: 0;
+}
+
+.global-filter-container:empty {
+  display: none;
 }
 
 /* Loading Container */
@@ -75,7 +92,7 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .app-main {
+  .app-content {
     margin-left: 0;
   }
 }

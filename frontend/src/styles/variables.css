@@ -1,0 +1,199 @@
+/* ============================================
+   LeirEye - Variables CSS Centralizadas
+   ============================================
+   
+   Este archivo contiene todas las variables de diseño
+   del sistema. Modificar aquí para cambiar el tema
+   de toda la aplicación.
+   
+   ============================================ */
+
+:root {
+  /* ========== Colores de Fondo ========== */
+  --bg-primary: #0a0e27;
+  --bg-secondary: #1a1f3a;
+  --bg-tertiary: #25304f;
+
+  /* ========== Colores de Texto ========== */
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+
+  /* ========== Colores de Acento ========== */
+  --accent: #64c8ff;
+  --accent-hover: #3bb3ff;
+  --accent-light: rgba(100, 200, 255, 0.1);
+  --accent-transparent: rgba(100, 200, 255, 0.05);
+
+  /* ========== Colores de Estado ========== */
+  --success: #51cf66;
+  --success-bg: rgba(81, 207, 102, 0.1);
+  --warning: #ffc107;
+  --warning-bg: rgba(255, 193, 7, 0.1);
+  --error: #ff6b6b;
+  --error-bg: rgba(255, 107, 107, 0.1);
+  --danger: #ff6b6b;
+  --info: #64c8ff;
+  --info-bg: rgba(100, 200, 255, 0.1);
+
+  /* ========== Colores de Protocolo ========== */
+  --protocol-tcp: #64c8ff;
+  --protocol-udp: #a78bfa;
+  --protocol-icmp: #fbbf24;
+  --protocol-dns: #34d399;
+  --protocol-http: #f472b6;
+  --protocol-https: #22d3ee;
+  --protocol-other: #9ca3af;
+
+  /* ========== Sidebar ========== */
+  --sidebar-width: 280px;
+  --sidebar-width-collapsed: 70px;
+
+  /* ========== Bordes ========== */
+  --border-color: rgba(100, 200, 255, 0.1);
+  --border-color-light: rgba(255, 255, 255, 0.05);
+  --border-color-strong: rgba(100, 200, 255, 0.2);
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+
+  /* ========== Sombras ========== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 20px rgba(100, 200, 255, 0.3);
+
+  /* ========== Espaciado ========== */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* ========== Tipografía ========== */
+  --font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-family-mono:
+    "SF Mono", "Monaco", "Inconsolata", "Fira Code", "Fira Mono",
+    "Droid Sans Mono", "Source Code Pro", monospace;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+
+  /* ========== Transiciones ========== */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* ========== Z-Index ========== */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+
+  /* ========== Gradientes ========== */
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--bg-primary) 0%,
+    var(--bg-secondary) 100%
+  );
+  --gradient-header: linear-gradient(
+    90deg,
+    var(--bg-secondary) 0%,
+    var(--bg-tertiary) 100%
+  );
+  --gradient-card: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+}
+
+/* ========== Animaciones Globales ========== */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+/* ========== Scrollbar Global ========== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}

@@ -1,0 +1,266 @@
+/* ============================================
+   Page Help Component
+   Panel educativo para cada página
+   ============================================ */
+
+.page-help {
+  background: linear-gradient(135deg, #1e2235 0%, #252a3d 100%);
+  border: 1px solid rgba(100, 200, 255, 0.15);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.page-help.expanded {
+  border-color: rgba(100, 200, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.page-help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.page-help-header:hover {
+  background: rgba(100, 200, 255, 0.05);
+}
+
+.page-help-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-help-title .help-icon {
+  color: #64c8ff;
+  flex-shrink: 0;
+}
+
+.page-help-title h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e8eaed;
+}
+
+.page-help-title .help-subtitle {
+  margin: 2px 0 0 0;
+  font-size: 0.8rem;
+  color: #8b8fa3;
+}
+
+.page-help-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-help-actions button {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.page-help-actions button:hover {
+  background: rgba(100, 200, 255, 0.1);
+  color: #64c8ff;
+}
+
+.help-dismiss:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+}
+
+/* Content */
+.page-help-content {
+  padding: 0 18px 18px 18px;
+  display: grid;
+  gap: 16px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.help-section {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.help-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.help-section-header h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e8eaed;
+}
+
+.help-section-icon {
+  color: #64c8ff;
+  font-size: 1rem;
+}
+
+.help-section p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #b8bcc8;
+  line-height: 1.6;
+}
+
+.help-steps {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: decimal;
+}
+
+.help-steps li {
+  font-size: 0.85rem;
+  color: #b8bcc8;
+  line-height: 1.6;
+  padding: 3px 0;
+}
+
+.help-steps li::marker {
+  color: #64c8ff;
+  font-weight: 600;
+}
+
+/* Tips section */
+.tips-section {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(255, 170, 0, 0.05) 100%);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+}
+
+.tips-section .help-section-icon {
+  color: #ffd700;
+}
+
+.tips-section h4 {
+  color: #ffd700;
+}
+
+.help-tips {
+  margin: 0;
+  padding-left: 18px;
+  list-style-type: disc;
+}
+
+.help-tips li {
+  font-size: 0.85rem;
+  color: #b8bcc8;
+  line-height: 1.5;
+  padding: 2px 0;
+}
+
+.help-tips li::marker {
+  color: #ffd700;
+}
+
+/* Related pages */
+.help-related {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.related-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.related-link {
+  font-size: 0.8rem;
+  color: #64c8ff;
+  text-decoration: none;
+  padding: 4px 10px;
+  background: rgba(100, 200, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.related-link:hover {
+  background: rgba(100, 200, 255, 0.2);
+  color: #8ed8ff;
+}
+
+/* Show button (when dismissed) */
+.page-help-show-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(100, 200, 255, 0.08);
+  border: 1px solid rgba(100, 200, 255, 0.2);
+  border-radius: 8px;
+  color: #64c8ff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 16px;
+}
+
+.page-help-show-btn:hover {
+  background: rgba(100, 200, 255, 0.15);
+  border-color: rgba(100, 200, 255, 0.4);
+}
+
+/* Collapsed state - mini banner */
+.page-help.collapsed .page-help-header {
+  padding: 10px 14px;
+}
+
+.page-help.collapsed .help-subtitle {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-help-content {
+    gap: 12px;
+  }
+
+  .help-section {
+    padding: 12px;
+  }
+
+  .page-help-title h3 {
+    font-size: 0.9rem;
+  }
+
+  .help-related {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,17 +1,5 @@
 /* Sidebar Styles - Profesional y responsivo */
-
-:root {
-  --sidebar-width: 280px;
-  --sidebar-width-collapsed: 70px;
-  --bg-primary: #0a0e27;
-  --bg-secondary: #1a1f3a;
-  --bg-tertiary: #25304f;
-  --text-primary: #e5e7eb;
-  --text-secondary: #9ca3af;
-  --accent: #64c8ff;
-  --accent-hover: #3bb3ff;
-  --danger: #ff6b6b;
-}
+/* Usa variables de styles/variables.css */
 
 /* Toggle Button */
 .sidebar-toggle {
@@ -53,7 +41,11 @@
   top: 0;
   width: var(--sidebar-width);
   height: 100vh;
-  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--bg-primary) 0%,
+    var(--bg-secondary) 100%
+  );
   border-right: 1px solid var(--bg-tertiary);
   display: flex;
   flex-direction: column;
@@ -102,7 +94,11 @@
 .logo-icon {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-hover) 100%
+  );
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -111,6 +107,22 @@
   font-size: 20px;
   color: var(--bg-primary);
   flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.logo-icon.capturing {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  animation: capture-pulse 1.5s infinite;
+}
+
+@keyframes capture-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
 }
 
 .logo-text {
@@ -191,7 +203,7 @@
 }
 
 .nav-item.active::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -213,6 +225,33 @@
 .nav-label {
   flex: 1;
   text-align: left;
+}
+
+/* Alert Badge */
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: linear-gradient(135deg, #dc2626, #ea580c);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 /* User Section */
@@ -264,7 +303,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-hover) 100%
+  );
   color: var(--bg-primary);
   font-weight: 600;
   font-size: 16px;

@@ -11,7 +11,7 @@ router = APIRouter(prefix="/api/stats", tags=["stats"])
 @router.get("/summary")
 async def get_summary():
     """Obtiene resumen de estadísticas"""
-    stats = capture_service.stats
+    stats = capture_service.stats_manager.stats
 
     return {
         "total_packets": stats["total"],
@@ -34,7 +34,7 @@ async def get_summary():
 @router.get("/protocols")
 async def get_protocol_distribution():
     """Distribución de protocolos"""
-    stats = capture_service.stats
+    stats = capture_service.stats_manager.stats
     total = stats["total"] or 1
 
     return {
@@ -51,7 +51,7 @@ async def get_protocol_distribution():
 @router.get("/top-ips")
 async def get_top_ips(limit: int = 10):
     """Top IPs origen y destino"""
-    stats = capture_service.stats
+    stats = capture_service.stats_manager.stats
 
     return {
         "top_src": dict(
@@ -66,7 +66,7 @@ async def get_top_ips(limit: int = 10):
 @router.get("/top-ports")
 async def get_top_ports(limit: int = 15):
     """Top puertos"""
-    stats = capture_service.stats
+    stats = capture_service.stats_manager.stats
 
     return {
         "ports": dict(
@@ -80,7 +80,7 @@ async def get_network_map():
     """
     Datos para el mapa de red: nodos (IPs) y enlaces (conexiones)
     """
-    stats = capture_service.stats
+    stats = capture_service.stats_manager.stats
     connections = stats.get("connections", {})
 
     if not connections:
