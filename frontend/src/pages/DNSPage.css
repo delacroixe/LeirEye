@@ -430,12 +430,14 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: #9ca3af;
-  text-transform: uppercase;  flex-shrink: 0;
+  text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .dns-page .table-body {
   flex: 1;
-  overflow-y: auto;}
+  overflow-y: auto;
+}
 
 .table-row {
   display: grid;
