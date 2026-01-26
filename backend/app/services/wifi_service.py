@@ -69,84 +69,123 @@ def _get_vendor_from_bssid(bssid: str) -> Optional[str]:
     return COMMON_VENDORS.get(oui, "Generic/Unknown")
 
 def scan_wifi_macos() -> List[WiFiNetwork]:
-    """Escanea redes WiFi en macOS usando system_profiler con un parseo ultra-robusto"""
+    """Escanea redes WiFi en macOS (Engine V6 - Multi-Section Support)"""
     networks = []
     try:
-        logger.info("Iniciando escaneo WiFi a bajo nivel...")
+        logger.info("📡 Iniciando rastreo espectral WiFi...")
         result = subprocess.run(
             ["system_profiler", "SPAirPortDataType"],
             capture_output=True,
             text=True,
-            timeout=25
+            timeout=30
         )
         
         output = result.stdout
         if not output:
+            logger.warning("❌ system_profiler vacío")
             return []
 
-        # Usamos una estrategia basada en bloques de SSID
-        # Las redes en system_profiler están bajo "Visible Networks:"
-        if "Visible Networks:" not in output:
-            return []
-            
-        visible_networks_text = output.split("Visible Networks:")[1]
-        # Cortamos si empieza otra sección (como awdl0:)
-        visible_networks_text = re.split(r"\n\s{0,8}\w+:", visible_networks_text)[0]
-
-        # Cada bloque de red empieza con el SSID a 12 espacios:
-        #             SSID_NAME:
-        #               PHY Mode: ...
+        # Intentar localizar el inicio de la sección de redes
+        # macOS usa diferentes nombres según versión/idioma
+        section_headers = ["Visible Networks:", "Other Local Wi-Fi Networks:", "Redes Wi-Fi locales:"]
+        raw_section = ""
         
-        # Encontramos todos los posibles SSIDs (Indentación de 12 espacios seguida de nombre y colon)
-        # Regex: buscamos líneas con exactamente 12 espacios, luego texto (incluyendo < >), luego ':'
-        parts = re.split(r"^\s{12}([\w\s\-\._<>\(\)]+):\s*$", visible_networks_text, flags=re.MULTILINE)
+        for header in section_headers:
+            if header in output:
+                logger.info(f"📍 Sección detectada: '{header}'")
+                raw_section = output.split(header)[1]
+                # Cortar si empieza otra sección de hardware
+                raw_section = re.split(r"\n\s{0,8}\w+:", raw_section)[0]
+                break
         
-        # parts[0] es basura antes de la primera red
-        for i in range(1, len(parts), 2):
-            ssid = parts[i].strip()
-            details = parts[i+1]
-            
-            # Extraer con regex directos de cada bloque
-            # A veces BSSID no está presente en system_profiler si no es la red actual
-            bssid_m = re.search(r"BSSID:\s*([0-9a-fA-F:]+)", details)
-            chan_m = re.search(r"Channel:\s*(\d+)", details)
-            sec_m = re.search(r"Security:\s*(.*)", details)
-            phy_m = re.search(r"PHY Mode:\s*(.*)", details)
-            snr_m = re.search(r"Signal\s*/\s*Noise:\s*(.*?)\s*dBm\s*/\s*(.*?)\s*dBm", details)
-            
-            # Generar un BSSID falso si falta pero tenemos la red
-            bssid = bssid_m.group(1).upper() if bssid_m else f"00:00:00:{i:02X}:00:00"
-            rssi = -100
-            noise = int(snr_m.group(2)) if snr_m else -100
-            
-            # Calidad de señal heurística
-            quality = max(0, min(100, int((rssi + 100) * 1.43)))
-            
-            # Banda
-            band = "2GHz"
-            if chan_m:
-                c = int(chan_m.group(1))
-                if c > 14: band = "5GHz"
-                if c > 165: band = "6GHz"
-            
-            networks.append(WiFiNetwork(
-                ssid=ssid,
-                bssid=bssid,
-                rssi=rssi,
-                noise=noise,
-                channel=int(chan_m.group(1)) if chan_m else 0,
-                band=band,
-                width="20MHz", # Fallback
-                security=sec_m.group(1).strip() if sec_m else "Open",
-                protocol=phy_m.group(1).strip() if phy_m else "802.11",
-                vendor=_get_vendor_from_bssid(bssid),
-                signal_quality=quality
-            ))
+        if not raw_section:
+            logger.warning("⚠️ No se encontró una sección de redes estándar. Usando modo 'Deep Parse'...")
+            raw_section = output # Fallback al output completo
 
-        logger.info(f"Escaneo completado. {len(networks)} redes identificadas.")
+        lines = raw_section.split("\n")
+        current_net = None
+        
+        for line in lines:
+            if not line.strip(): continue
+            
+            # Detectar Cabecera (Indentación de 8-16 espacios + Nombre + :)
+            header_match = re.match(r"^\s{8,16}(.+):\s*$", line)
+            
+            if header_match:
+                ssid = header_match.group(1).strip()
+                if ssid in ["Current Network Information", "Other Families", "Visible Networks", "Wi-Fi"]:
+                    continue
+                    
+                if current_net:
+                    networks.append(WiFiNetwork(**current_net))
+                
+                current_net = {
+                    "ssid": ssid,
+                    "bssid": "UNKNOWN", # Inicialmente desconocido
+                    "rssi": -100, "noise": -100, "channel": 0,
+                    "band": "2GHz", "width": "20MHz",
+                    "security": "WPA/WPA2", "protocol": "802.11",
+                    "vendor": "Generic", "signal_quality": 0
+                }
+                continue
+
+            if not current_net: continue
+            clean_line = line.strip()
+            
+            if "BSSID:" in clean_line:
+                m = re.search(r"BSSID:\s*([0-9a-fA-F:]+)", clean_line)
+                if m: 
+                    current_net["bssid"] = m.group(1).upper()
+                    current_net["vendor"] = _get_vendor_from_bssid(current_net["bssid"])
+
+            elif "Channel:" in clean_line:
+                m = re.search(r"Channel:\s*(\d+)", clean_line)
+                if m:
+                    chan = int(m.group(1))
+                    current_net["channel"] = chan
+                    current_net["band"] = "5GHz" if chan > 14 else "2GHz"
+                bw_match = re.search(r"(\d+)\s*MHz", clean_line)
+                if bw_match: current_net["width"] = f"{bw_match.group(1)}MHz"
+
+            elif "Signal / Noise:" in clean_line:
+                m = re.search(r"([-\d]+)\s*dBm\s*/\s*([-\d]+)\s*dBm", clean_line)
+                if m:
+                    rssi = int(m.group(1))
+                    current_net["rssi"] = rssi
+                    current_net["noise"] = int(m.group(2))
+                    current_net["signal_quality"] = max(0, min(100, int((rssi + 100) * 1.42)))
+
+            elif "Security:" in clean_line:
+                current_net["security"] = clean_line.split("Security:")[1].strip()
+
+            elif "PHY Mode:" in clean_line:
+                current_net["protocol"] = clean_line.split("PHY Mode:")[1].strip()
+
+        if current_net:
+            networks.append(WiFiNetwork(**current_net))
+
+        # --- DEDUPLICACIÓN Y LIMPIEZA INTELIGENTE ---
+        final_list = []
+        seen_keys = set()
+        
+        for i, net in enumerate(networks):
+            # Si el BSSID es desconocido (común en 'Other Local Networks'), usamos el SSID + Canal como key
+            # o simplemente el índice para no perder ninguna señal real
+            key = f"{net.bssid}-{net.ssid}-{net.channel}" if net.bssid != "UNKNOWN" else f"VIRT-{i}"
+            
+            if key not in seen_keys:
+                if net.bssid == "UNKNOWN":
+                    # Asignar un BSSID virtual descriptivo si es anónimo
+                    net.bssid = f"ANON:{i:02X}:VIRT:00"
+                
+                final_list.append(net)
+                seen_keys.add(key)
+
+        logger.info(f"✅ Escaneo completado. {len(final_list)} estaciones base identificadas.")
+        return final_list
         
     except Exception as e:
-        logger.error(f"Falla crítica en motor WiFi: {e}", exc_info=True)
+        logger.error(f"❌ Error crítico en Motor WiFi V6: {e}", exc_info=True)
         
     return networks
 
