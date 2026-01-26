@@ -1,10 +1,8 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { Loader } from "lucide-react";
 import React from "react";
 import { useCaptureContext } from "../contexts/CaptureContext";
+import "./CaptureBar.css";
 
 export const CaptureBar: React.FC = () => {
   const {
@@ -33,136 +31,131 @@ export const CaptureBar: React.FC = () => {
   ];
 
   return (
-    <div className="bg-bg-secondary border border-bg-tertiary rounded-xl p-4 space-y-4">
-      <div className="flex flex-wrap items-center gap-4">
-        {/* Status Indicators */}
-        <div className="flex items-center gap-2">
-          <span
-            className={cn(
-              "w-2 h-2 rounded-full",
-              wsConnected ? "bg-success animate-pulse" : "bg-error",
+    <div className="capture-bar-wrapper">
+      <div className="capture-bar glass-card">
+        {/* Main Control Strip */}
+        <div className="bar-primary">
+          {/* Status Diagnostic */}
+          <div className="status-diagnostic">
+            <div className={`connection-orb ${wsConnected ? "online" : "offline"}`} />
+            <div className="status-meta">
+              <span className="status-label">ESTADO DEL MOTOR</span>
+              <span className={`status-val ${isCapturing ? "active" : ""}`}>
+                {isCapturing ? "SISTEMA ARMADO - MONITORIZANDO" : "SISTEMA EN STANDBY"}
+              </span>
+            </div>
+          </div>
+
+          <div className="divider" />
+
+          {/* Engine Parameters */}
+          <div className="engine-parameters">
+            <div className="param-group">
+              <label className="param-label">INTERFACE</label>
+              <select
+                value={networkInterface}
+                onChange={(e) => setNetworkInterface(e.target.value)}
+                disabled={isCapturing}
+                className="param-select"
+              >
+                <option value="">AUTO-SELECT</option>
+                {interfaces.map((iface) => (
+                  <option key={iface} value={iface}>
+                    {iface}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="param-group stretch">
+              <label className="param-label">FILTRO BPF (KERNEL-LEVEL)</label>
+              <Input
+                type="text"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                placeholder="ej: tcp port 80 or udp"
+                disabled={isCapturing}
+                className="param-input"
+              />
+            </div>
+
+            <div className="param-group small">
+              <label className="param-label">BUFFER</label>
+              <Input
+                type="number"
+                value={maxPackets}
+                onChange={(e) => setMaxPackets(Number(e.target.value))}
+                min="1"
+                max="10000"
+                disabled={isCapturing}
+                className="param-input text-center"
+              />
+            </div>
+          </div>
+
+          <div className="divider" />
+
+          {/* System Actions */}
+          <div className="system-actions">
+            {!isCapturing ? (
+              <button
+                onClick={startCapture}
+                disabled={loading}
+                className="action-btn primary-action"
+              >
+                {loading ? <Loader size={16} className="spinning" /> : "DESPLEGAR MOTOR"}
+              </button>
+            ) : (
+              <button
+                onClick={stopCapture}
+                className="action-btn danger-action"
+              >
+                DETENER CAPTURA
+              </button>
             )}
-          />
-          <Badge
-            variant={isCapturing ? "default" : "secondary"}
-            className={cn(
-              "font-medium",
-              isCapturing
-                ? "bg-success/20 text-success border-success/30"
-                : "bg-bg-tertiary text-text-secondary border-bg-tertiary",
-            )}
-          >
-            {isCapturing ? "● Capturando" : "○ Inactivo"}
-          </Badge>
-        </div>
 
-        {/* Controls Row */}
-        <div className="flex flex-1 flex-wrap items-center gap-2">
-          <select
-            value={networkInterface}
-            onChange={(e) => setNetworkInterface(e.target.value)}
-            disabled={isCapturing}
-            className="h-9 px-3 bg-bg-tertiary border border-accent/20 rounded-md text-sm text-text-primary focus:outline-none focus:border-accent disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Interfaz de red"
-          >
-            <option value="">Todas las interfaces</option>
-            {interfaces.map((iface) => (
-              <option key={iface} value={iface}>
-                {iface}
-              </option>
-            ))}
-          </select>
-
-          <Input
-            type="text"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            placeholder="Filtro BPF (ej: tcp port 80)"
-            disabled={isCapturing}
-            className="flex-1 min-w-[200px] bg-bg-tertiary border-accent/20 text-text-primary placeholder:text-text-secondary"
-          />
-
-          <Input
-            type="number"
-            value={maxPackets}
-            onChange={(e) => setMaxPackets(Number(e.target.value))}
-            min="1"
-            max="10000"
-            disabled={isCapturing}
-            className="w-20 bg-bg-tertiary border-accent/20 text-text-primary"
-            title="Máx. paquetes"
-          />
-
-          <div className="flex items-center gap-1">
-            <Button
-              onClick={startCapture}
-              disabled={isCapturing || loading}
-              size="icon"
-              className="bg-success hover:bg-success/80 text-white"
-              title="Iniciar captura"
-            >
-              {loading && !isCapturing ? "..." : "▶"}
-            </Button>
-            <Button
-              onClick={stopCapture}
-              disabled={!isCapturing && !loading}
-              size="icon"
-              variant="destructive"
-              className="bg-error hover:bg-error/80"
-              title="Detener captura"
-            >
-              ■
-            </Button>
-            <Button
+            <button
               onClick={resetCapture}
               disabled={loading}
-              size="icon"
-              variant="outline"
-              className="border-accent/20 text-text-secondary hover:text-accent hover:border-accent"
-              title="Resetear"
+              className="action-btn secondary-action"
+              title="Borrar buffer local"
             >
-              ↺
-            </Button>
+              PURGAR
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* Quick Filters */}
-      <div className="flex flex-wrap items-center gap-2">
-        {filterChips.map((chip) => (
-          <Button
-            key={chip.label}
-            onClick={() => setFilter(chip.value)}
-            disabled={isCapturing}
-            variant="outline"
-            size="sm"
-            className={cn(
-              "text-xs border-accent/20 text-text-secondary hover:text-accent hover:border-accent",
-              filter === chip.value && "bg-accent/10 text-accent border-accent",
-            )}
-          >
-            {chip.label}
-          </Button>
-        ))}
-        <Button
-          onClick={() => setFilter("")}
-          disabled={isCapturing}
-          variant="ghost"
-          size="sm"
-          className="text-xs text-error hover:bg-error/10 hover:text-error"
-        >
-          ✕ Limpiar
-        </Button>
-      </div>
+        {/* Quick Filter Matrix */}
+        <div className="bar-secondary">
+          <div className="matrix-label">MACROS DE FILTRADO:</div>
+          <div className="matrix-chips">
+            {filterChips.map((chip) => (
+              <button
+                key={chip.label}
+                onClick={() => setFilter(chip.value)}
+                disabled={isCapturing}
+                className={`matrix-chip ${filter === chip.value ? "active" : ""}`}
+              >
+                {chip.label}
+              </button>
+            ))}
+            <button
+              onClick={() => setFilter("")}
+              disabled={isCapturing}
+              className="matrix-chip clear"
+            >
+              ✕ RESET FILTRO
+            </button>
+          </div>
+        </div>
 
-      {error && (
-        <Alert
-          variant="destructive"
-          className="bg-error/10 border-error/30 text-error"
-        >
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+        {error && (
+          <div className="capture-error-overlay">
+            <span className="error-icon">⚠️</span>
+            <p className="error-text">{error}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

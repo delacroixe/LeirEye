@@ -1,14 +1,13 @@
 import {
   AlertOctagon,
   AlertTriangle,
-  Bell,
   Check,
   CheckCircle,
   Filter,
   Info,
   RefreshCw,
   Trash2,
-  X,
+  X
 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import PageHelp, { PAGE_HELP } from "../components/PageHelp";
@@ -207,36 +206,37 @@ export const AlertsPage: React.FC = () => {
   };
 
   return (
-    <div className="alerts-page">
-      <header className="alerts-header">
-        <div className="header-title">
-          <Bell size={24} />
-          <h1>Centro de Alertas</h1>
-          {stats && stats.unacknowledged > 0 && (
-            <span className="unread-badge">{stats.unacknowledged}</span>
-          )}
+    <div className="view-container alerts-view">
+      <header className="view-header">
+        <div className="header-text">
+          <h1 className="view-title">
+            <span className="title-icon">🔔</span> Centro de Control de Alertas
+          </h1>
+          <p className="view-subtitle">
+            Gestión y análisis de incidentes de seguridad detectados por el motor de inteligencia.
+          </p>
         </div>
         <div className="header-actions">
           <button
-            className="btn-icon"
+            className={`action-icon-btn ${showFilters ? "active" : ""}`}
             onClick={() => setShowFilters(!showFilters)}
-            title="Filtros"
+            title="Sistemas de Filtrado"
           >
             <Filter size={18} />
           </button>
-          <button className="btn-icon" onClick={loadData} title="Actualizar">
+          <button className="action-icon-btn" onClick={loadData} title="Refrescar Datos">
             <RefreshCw size={18} className={loading ? "spinning" : ""} />
           </button>
           {stats && stats.unacknowledged > 0 && (
-            <button className="btn-secondary" onClick={acknowledgeAll}>
+            <button className="premium-btn secondary" onClick={acknowledgeAll}>
               <Check size={16} />
-              Marcar todas leídas
+              Reconocer Todo
             </button>
           )}
           {alerts.length > 0 && (
-            <button className="btn-danger" onClick={clearAllAlerts}>
+            <button className="premium-btn danger" onClick={clearAllAlerts}>
               <Trash2 size={16} />
-              Limpiar
+              Purgar Registros
             </button>
           )}
         </div>
@@ -244,156 +244,162 @@ export const AlertsPage: React.FC = () => {
 
       <PageHelp content={PAGE_HELP.alerts} />
 
-      {stats && (
-        <div className="stats-grid">
-          <div className="stat-card">
-            <span className="stat-value">{stats.total}</span>
-            <span className="stat-label">Total</span>
-          </div>
-          <div className="stat-card critical">
-            <span className="stat-value">
-              {stats.by_severity?.critical || 0}
-            </span>
-            <span className="stat-label">Críticas</span>
-          </div>
-          <div className="stat-card high">
-            <span className="stat-value">{stats.by_severity?.high || 0}</span>
-            <span className="stat-label">Altas</span>
-          </div>
-          <div className="stat-card">
-            <span className="stat-value">{stats.recent_24h}</span>
-            <span className="stat-label">Últimas 24h</span>
-          </div>
-        </div>
-      )}
-
-      {showFilters && (
-        <div className="filters-panel">
-          <div className="filter-group">
-            <label>Severidad</label>
-            <select
-              value={filter.severity || ""}
-              onChange={(e) =>
-                setFilter({ ...filter, severity: e.target.value || undefined })
-              }
-            >
-              <option value="">Todas</option>
-              <option value="critical">Crítica</option>
-              <option value="high">Alta</option>
-              <option value="medium">Media</option>
-              <option value="low">Baja</option>
-              <option value="info">Info</option>
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Estado</label>
-            <select
-              value={
-                filter.acknowledged === undefined
-                  ? ""
-                  : String(filter.acknowledged)
-              }
-              onChange={(e) =>
-                setFilter({
-                  ...filter,
-                  acknowledged:
-                    e.target.value === ""
-                      ? undefined
-                      : e.target.value === "true",
-                })
-              }
-            >
-              <option value="">Todas</option>
-              <option value="false">No leídas</option>
-              <option value="true">Leídas</option>
-            </select>
-          </div>
-          <button className="btn-clear" onClick={() => setFilter({})}>
-            <X size={14} /> Limpiar filtros
-          </button>
-        </div>
-      )}
-
-      {error && (
-        <div className="error-message">
-          <AlertTriangle size={16} />
-          {error}
-        </div>
-      )}
-
-      <div className="alerts-list">
-        {loading && alerts.length === 0 ? (
-          <div className="loading-state">Cargando alertas...</div>
-        ) : alerts.length === 0 ? (
-          <div className="empty-state">
-            <CheckCircle size={48} />
-            <h3>Sin alertas</h3>
-            <p>No hay alertas que mostrar</p>
-          </div>
-        ) : (
-          alerts.map((alert) => (
-            <div
-              key={alert.id}
-              className={`alert-item ${alert.acknowledged ? "acknowledged" : "unread"}`}
-            >
-              <div className="alert-main">
-                <div className="alert-header">
-                  {getSeverityDisplay(alert.severity)}
-                  <span className="alert-type">
-                    {getTypeDisplay(alert.type)}
-                  </span>
-                  <span className="alert-time">
-                    {formatTimestamp(alert.timestamp)}
-                  </span>
-                </div>
-                <h3 className="alert-title">{alert.title}</h3>
-                <p className="alert-description">{alert.description}</p>
-
-                {(alert.source.process_name ||
-                  alert.source.src_ip ||
-                  alert.source.domain) && (
-                  <div className="alert-source">
-                    {alert.source.process_name && (
-                      <span className="source-tag">
-                        📦 {alert.source.process_name}
-                        {alert.source.pid && ` (PID: ${alert.source.pid})`}
-                      </span>
-                    )}
-                    {alert.source.src_ip && (
-                      <span className="source-tag">
-                        📍 {alert.source.src_ip}
-                      </span>
-                    )}
-                    {alert.source.domain && (
-                      <span className="source-tag">
-                        🌐 {alert.source.domain}
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="alert-actions">
-                {!alert.acknowledged && (
-                  <button
-                    className="btn-action"
-                    onClick={() => acknowledgeAlert(alert.id)}
-                    title="Marcar como leída"
-                  >
-                    <Check size={16} />
-                  </button>
-                )}
-                <button
-                  className="btn-action delete"
-                  onClick={() => deleteAlert(alert.id)}
-                  title="Eliminar"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
+      <div className="view-content">
+        {stats && (
+          <div className="stats-dashboard-grid">
+            <div className="stat-panel glass-card">
+              <span className="stat-panel-value">{stats.total}</span>
+              <span className="stat-panel-label">Total Alertas</span>
             </div>
-          ))
+            <div className="stat-panel glass-card critical">
+              <span className="stat-panel-value">
+                {stats.by_severity?.critical || 0}
+              </span>
+              <span className="stat-panel-label">Estado Crítico</span>
+            </div>
+            <div className="stat-panel glass-card warning">
+              <span className="stat-panel-value">{stats.by_severity?.high || 0}</span>
+              <span className="stat-panel-label">Alta Prioridad</span>
+            </div>
+            <div className="stat-panel glass-card info">
+              <span className="stat-panel-value">{stats.recent_24h}</span>
+              <span className="stat-panel-label">Ciclo 24h</span>
+            </div>
+          </div>
         )}
+
+        {showFilters && (
+          <div className="filters-panel glass-card">
+            <div className="filter-field">
+              <label className="field-label">Nivel de Severidad</label>
+              <select
+                className="control-select"
+                value={filter.severity || ""}
+                onChange={(e) =>
+                  setFilter({ ...filter, severity: e.target.value || undefined })
+                }
+              >
+                <option value="">Todos los niveles</option>
+                <option value="critical">Crítica</option>
+                <option value="high">Alta</option>
+                <option value="medium">Media</option>
+                <option value="low">Baja</option>
+                <option value="info">Información</option>
+              </select>
+            </div>
+            <div className="filter-field">
+              <label className="field-label">Estado de Confirmación</label>
+              <select
+                className="control-select"
+                value={
+                  filter.acknowledged === undefined
+                    ? ""
+                    : String(filter.acknowledged)
+                }
+                onChange={(e) =>
+                  setFilter({
+                    ...filter,
+                    acknowledged:
+                      e.target.value === ""
+                        ? undefined
+                        : e.target.value === "true",
+                  })
+                }
+              >
+                <option value="">Todos los estados</option>
+                <option value="false">Pendientes</option>
+                <option value="true">Reconocidas</option>
+              </select>
+            </div>
+            <button className="filter-clear-btn" onClick={() => setFilter({})}>
+              <X size={14} /> Resetear Filtros
+            </button>
+          </div>
+        )}
+
+        {error && (
+          <div className="system-error glass-card">
+            <AlertTriangle size={16} />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <div className="alerts-feed">
+          {loading && alerts.length === 0 ? (
+            <div className="loading-placeholder">Estableciendo conexión con el registro...</div>
+          ) : alerts.length === 0 ? (
+            <div className="empty-feed glass-card">
+              <CheckCircle size={48} className="success-icon" />
+              <h3>Zona de Seguridad Estable</h3>
+              <p>No se han detectado anomalías pendientes de revisión.</p>
+            </div>
+          ) : (
+            <div className="feed-items">
+              {alerts.map((alert) => (
+                <div
+                  key={alert.id}
+                  className={`feed-item glass-card ${alert.acknowledged ? "acknowledged" : "unread"} ${alert.severity.toLowerCase()}`}
+                >
+                  <div className="item-main">
+                    <div className="item-meta">
+                      {getSeverityDisplay(alert.severity)}
+                      <span className="item-type">
+                        {getTypeDisplay(alert.type)}
+                      </span>
+                      <span className="item-time">
+                        {formatTimestamp(alert.timestamp)}
+                      </span>
+                    </div>
+                    <h3 className="item-title">{alert.title}</h3>
+                    <p className="item-description">{alert.description}</p>
+
+                    {(alert.source.process_name ||
+                      alert.source.src_ip ||
+                      alert.source.domain) && (
+                        <div className="item-origin">
+                          {alert.source.process_name && (
+                            <span className="origin-tag">
+                              📦 {alert.source.process_name}
+                              {alert.source.pid && ` [PID: ${alert.source.pid}]`}
+                            </span>
+                          )}
+                          {alert.source.src_ip && (
+                            <span className="origin-tag">
+                              📍 {alert.source.src_ip}
+                            </span>
+                          )}
+                          {alert.source.domain && (
+                            <span className="origin-tag">
+                              🌐 {alert.source.domain}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                  </div>
+
+                  <div className="item-actions">
+                    {!alert.acknowledged && (
+                      <button
+                        className="action-btn-circle success"
+                        onClick={() => acknowledgeAlert(alert.id)}
+                        title="Reconocer Evento"
+                      >
+                        <Check size={16} />
+                      </button>
+                    )}
+                    <button
+                      className="action-btn-circle danger"
+                      onClick={() => deleteAlert(alert.id)}
+                      title="Eliminar Registro"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -23,47 +23,33 @@ const TopIPsTable: React.FC<TopIPsTableProps> = ({ stats }) => {
 
   if (ipsData.length === 0) {
     return (
-      <div className="chart-container full-width">
-        <h3>Top 5 IPs Origen</h3>
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#888' }}>
-          Sin datos de IPs
+      <div className="stat-widget">
+        <h3 className="widget-title">Top 5 IPs Origen</h3>
+        <div className="empty-message small">
+          Sin registros de telemetría IP
         </div>
       </div>
     );
   }
 
   return (
-    <div className="chart-container full-width">
-      <h3>Top 5 IPs Origen</h3>
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{
-          width: '100%',
-          borderCollapse: 'collapse',
-          color: '#cbd5e1'
-        }}>
+    <div className="stat-widget">
+      <h3 className="widget-title">Principales Orígenes IP</h3>
+      <div className="table-responsive">
+        <table className="premium-mini-table">
           <thead>
-            <tr style={{ borderBottom: '2px solid rgba(100, 200, 255, 0.3)', backgroundColor: 'rgba(10, 14, 39, 0.8)' }}>
-              <th style={{ padding: '12px 16px', textAlign: 'left', color: '#64c8ff', fontWeight: '600' }}>IP Origen</th>
-              <th style={{ padding: '12px 16px', textAlign: 'right', color: '#64c8ff', fontWeight: '600' }}>Paquetes</th>
-              <th style={{ padding: '12px 16px', textAlign: 'right', color: '#64c8ff', fontWeight: '600' }}>% Total</th>
+            <tr>
+              <th>Nodo Source</th>
+              <th className="text-right">Volumen</th>
+              <th className="text-right">% Tráfico</th>
             </tr>
           </thead>
           <tbody>
             {ipsData.map((row, idx) => (
-              <tr 
-                key={idx}
-                style={{ 
-                  borderBottom: '1px solid rgba(100, 200, 255, 0.1)',
-                  backgroundColor: idx % 2 === 0 ? 'transparent' : 'rgba(100, 200, 255, 0.03)'
-                }}
-              >
-                <td style={{ padding: '12px 16px', color: '#0ea5e9', fontFamily: 'monospace' }}>
-                  {row.name}
-                </td>
-                <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: '500' }}>
-                  {row.count}
-                </td>
-                <td style={{ padding: '12px 16px', textAlign: 'right', color: '#a0aec0' }}>
+              <tr key={idx} className="premium-mini-row">
+                <td className="col-ip-addr">{row.name}</td>
+                <td className="text-right">{row.count}</td>
+                <td className="text-right col-percent">
                   {((row.count / totalPackets) * 100).toFixed(1)}%
                 </td>
               </tr>

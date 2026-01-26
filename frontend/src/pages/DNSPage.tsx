@@ -221,7 +221,6 @@ export const DNSPage: React.FC = () => {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      fractionalSecondDigits: 2,
     });
   };
 
@@ -233,43 +232,42 @@ export const DNSPage: React.FC = () => {
   };
 
   return (
-    <div className="dns-page">
-      <header className="dns-header">
-        <div className="header-title">
-          <Globe size={24} />
-          <h1>DNS Tracker</h1>
-          {stats && stats.suspicious_queries > 0 && (
-            <span className="suspicious-badge">
-              <AlertTriangle size={14} />
-              {stats.suspicious_queries} sospechosas
-            </span>
-          )}
+    <div className="view-container dns-view">
+      <header className="view-header">
+        <div className="header-text">
+          <h1 className="view-title">
+            <span className="title-icon">🌐</span> Rastreador DNS Avanzado
+          </h1>
+          <p className="view-subtitle">
+            Análisis heurístico de resoluciones de nombres, detección de exfiltración y túneles DNS en tiempo real.
+          </p>
         </div>
         <div className="header-actions">
-          <div className="search-box">
-            <Search size={16} />
+          <div className="premium-search-box">
+            <Search size={16} className="search-icon" />
             <input
               type="text"
-              placeholder="Buscar dominio..."
+              placeholder="Analizar dominio..."
+              className="premium-search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
           </div>
           <button
-            className="btn-icon"
+            className={`action-icon-btn ${showFilters ? "active" : ""}`}
             onClick={() => setShowFilters(!showFilters)}
-            title="Filtros"
+            title="Filtros de Análisis"
           >
             <Filter size={18} />
           </button>
-          <button className="btn-icon" onClick={loadData} title="Actualizar">
+          <button className="action-icon-btn" onClick={loadData} title="Sincronizar Datos">
             <RefreshCw size={18} className={loading ? "spinning" : ""} />
           </button>
           {records.length > 0 && (
-            <button className="btn-danger" onClick={clearHistory}>
+            <button className="premium-btn danger" onClick={clearHistory}>
               <Trash2 size={16} />
-              Limpiar
+              Purgar Historial
             </button>
           )}
         </div>
@@ -277,289 +275,283 @@ export const DNSPage: React.FC = () => {
 
       <PageHelp content={PAGE_HELP.dns} />
 
-      <div className="dns-overview">
-        {/* Stats Cards */}
-        <div className="stats-row">
-          <div className="stat-card">
-            <Activity size={20} />
-            <div className="stat-info">
-              <span className="stat-value">{stats?.total_queries || 0}</span>
-              <span className="stat-label">Queries totales</span>
+      <div className="view-content">
+        <div className="dns-dashboard-grid">
+          {/* Main Stats Row */}
+          <div className="stats-dashboard-grid grid-span-full">
+            <div className="stat-panel glass-card">
+              <div className="stat-icon-wrapper"><Activity size={20} /></div>
+              <span className="stat-panel-value">{stats?.total_queries || 0}</span>
+              <span className="stat-panel-label">Resoluciones Totales</span>
+            </div>
+            <div className="stat-panel glass-card">
+              <div className="stat-icon-wrapper"><Globe size={20} /></div>
+              <span className="stat-panel-value">{stats?.unique_domains || 0}</span>
+              <span className="stat-panel-label">Dominios Únicos</span>
+            </div>
+            <div className="stat-panel glass-card">
+              <div className="stat-icon-wrapper"><Shield size={20} /></div>
+              <span className="stat-panel-value">{stats?.queries_per_minute.toFixed(1) || 0}</span>
+              <span className="stat-panel-label">Resoluciones/Min</span>
+            </div>
+            <div className="stat-panel glass-card critical">
+              <div className="stat-icon-wrapper"><AlertTriangle size={20} /></div>
+              <span className="stat-panel-value">{stats?.failed_queries || 0}</span>
+              <span className="stat-panel-label">Consultas Fallidas</span>
             </div>
           </div>
-          <div className="stat-card">
-            <Globe size={20} />
-            <div className="stat-info">
-              <span className="stat-value">{stats?.unique_domains || 0}</span>
-              <span className="stat-label">Dominios únicos</span>
-            </div>
-          </div>
-          <div className="stat-card">
-            <Activity size={20} />
-            <div className="stat-info">
-              <span className="stat-value">
-                {stats?.queries_per_minute.toFixed(1) || 0}
-              </span>
-              <span className="stat-label">Queries/min</span>
-            </div>
-          </div>
-          <div className="stat-card warning">
-            <AlertTriangle size={20} />
-            <div className="stat-info">
-              <span className="stat-value">{stats?.failed_queries || 0}</span>
-              <span className="stat-label">Fallidas</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Tunneling Score */}
-        {indicators && (
-          <div className="tunneling-panel">
-            <div className="tunneling-header">
-              <Shield size={20} />
-              <span>Indicadores de DNS Tunneling</span>
-            </div>
-            <div className="tunneling-content">
-              <div
-                className="score-circle"
-                style={{ borderColor: getScoreColor(indicators.score) }}
-              >
-                <span
-                  className="score-value"
-                  style={{ color: getScoreColor(indicators.score) }}
-                >
-                  {indicators.score}
-                </span>
-                <span className="score-label">Score</span>
-              </div>
-              <div className="indicators-list">
-                <div className="indicator">
-                  <span className="indicator-label">Queries largos</span>
-                  <span className="indicator-value">
-                    {indicators.long_queries}
-                  </span>
-                </div>
-                <div className="indicator">
-                  <span className="indicator-label">Alta entropía</span>
-                  <span className="indicator-value">
-                    {indicators.high_entropy_queries}
-                  </span>
-                </div>
-                <div className="indicator">
-                  <span className="indicator-label">Muchos subdominios</span>
-                  <span className="indicator-value">
-                    {indicators.many_subdomains}
-                  </span>
-                </div>
-                <div className="indicator">
-                  <span className="indicator-label">Tipos inusuales</span>
-                  <span className="indicator-value">
-                    {indicators.unusual_types}
-                  </span>
-                </div>
-                <div className="indicator">
-                  <span className="indicator-label">Alta frecuencia</span>
-                  <span
-                    className={`indicator-value ${indicators.high_frequency ? "warning" : ""}`}
-                  >
-                    {indicators.high_frequency ? "Sí" : "No"}
-                  </span>
+          {/* Analysis Panel */}
+          {indicators && (
+            <div className="tunneling-analysis-panel glass-card grid-span-full">
+              <div className="analysis-header">
+                <Shield size={20} className="header-icon" />
+                <h3 className="analysis-title">Indicadores de Anomalía (Heurística)</h3>
+                <div className="analysis-badge">
+                  Análisis de Riesgo: <span className="risk-score" style={{ color: getScoreColor(indicators.score) }}>{indicators.score}%</span>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {showFilters && (
-        <div className="filters-panel">
-          <div className="filter-group">
-            <label>Proceso</label>
-            <input
-              type="text"
-              placeholder="Nombre del proceso"
-              value={filter.process_name || ""}
-              onChange={(e) =>
-                setFilter({
-                  ...filter,
-                  process_name: e.target.value || undefined,
-                })
-              }
-            />
-          </div>
-          <div className="filter-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={filter.suspicious_only}
-                onChange={(e) =>
-                  setFilter({ ...filter, suspicious_only: e.target.checked })
-                }
-              />
-              Solo sospechosas
-            </label>
-          </div>
-          <button
-            className="btn-clear"
-            onClick={() => setFilter({ suspicious_only: false })}
-          >
-            <X size={14} /> Limpiar filtros
-          </button>
-        </div>
-      )}
-
-      {error && (
-        <div className="error-message">
-          <AlertTriangle size={16} />
-          {error}
-        </div>
-      )}
-
-      {/* Top Domains */}
-      {stats && stats.top_domains.length > 0 && (
-        <div className="top-section">
-          <h3>Top Dominios</h3>
-          <div className="top-list">
-            {stats.top_domains.slice(0, 8).map((item, index) => (
-              <div key={index} className="top-item">
-                <span className="top-rank">#{index + 1}</span>
-                <span className="top-domain">{item.domain}</span>
-                <span className="top-count">{item.count}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Queries List */}
-      <div className="queries-section">
-        <h3>Queries Recientes</h3>
-        <div className="queries-table">
-          <div className="table-header">
-            <span></span>
-            <span>Hora</span>
-            <span>Dominio</span>
-            <span>Tipo</span>
-            <span>Proceso</span>
-            <span>Respuesta</span>
-            <span>Estado</span>
-          </div>
-          {loading && records.length === 0 ? (
-            <div className="loading-state">Cargando queries...</div>
-          ) : records.length === 0 ? (
-            <div className="empty-state">
-              <Globe size={32} />
-              <p>No hay queries DNS</p>
-            </div>
-          ) : (
-            records.map((record) => (
-              <React.Fragment key={record.query.id}>
-                <div
-                  className={`table-row clickable ${record.query.is_suspicious ? "suspicious" : ""} ${expandedQuery === record.query.id ? "expanded" : ""}`}
-                  onClick={() => fetchRelatedPackets(record.query.id)}
-                >
-                  <span className="cell-expand">
-                    {expandedQuery === record.query.id ? (
-                      <ChevronDown size={16} />
-                    ) : (
-                      <ChevronRight size={16} />
-                    )}
-                  </span>
-                  <span className="cell-time">
-                    {formatTimestamp(record.query.timestamp)}
-                  </span>
-                  <span className="cell-domain" title={record.query.query_name}>
-                    {record.query.query_name.length > 40
-                      ? `${record.query.query_name.substring(0, 40)}...`
-                      : record.query.query_name}
-                  </span>
-                  <span className="cell-type">{record.query.query_type}</span>
-                  <span className="cell-process">
-                    {record.query.process_name || "-"}
-                  </span>
-                  <span className="cell-answers">
-                    {record.response?.answers.length
-                      ? record.response.answers.slice(0, 2).join(", ")
-                      : "-"}
-                  </span>
-                  <span className="cell-status">
-                    {record.query.is_suspicious ? (
-                      <span
-                        className="status-badge suspicious"
-                        title={record.query.suspicion_reasons.join(", ")}
-                      >
-                        <AlertTriangle size={12} /> Sospechoso
-                      </span>
-                    ) : record.resolved ? (
-                      <span className="status-badge ok">OK</span>
-                    ) : record.response?.response_code ? (
-                      <span className="status-badge error">
-                        {record.response.response_code}
-                      </span>
-                    ) : (
-                      <span className="status-badge pending">Pendiente</span>
-                    )}
-                  </span>
+              <div className="analysis-body">
+                <div className="score-meter-container">
+                  <div
+                    className="score-meter-fill"
+                    style={{
+                      width: `${indicators.score}%`,
+                      backgroundColor: getScoreColor(indicators.score),
+                      boxShadow: `0 0 15px ${getScoreColor(indicators.score)}40`
+                    }}
+                  />
                 </div>
-
-                {/* Panel de paquetes relacionados */}
-                {expandedQuery === record.query.id && (
-                  <div className="related-packets-panel">
-                    <div className="packets-header">
-                      <Package size={16} />
-                      <span>Paquetes relacionados con esta query</span>
-                    </div>
-                    {loadingPackets ? (
-                      <div className="packets-loading">
-                        Cargando paquetes...
-                      </div>
-                    ) : relatedPackets.length === 0 ? (
-                      <div className="packets-empty">
-                        No se encontraron paquetes capturados para esta query.
-                        <br />
-                        <small>
-                          La captura debe estar activa para vincular paquetes.
-                        </small>
-                      </div>
-                    ) : (
-                      <div className="packets-list">
-                        {relatedPackets.map((packet, idx) => (
-                          <div key={idx} className="packet-item">
-                            <span className="packet-time">
-                              {new Date(packet.timestamp).toLocaleTimeString()}
-                            </span>
-                            <span className="packet-flow">
-                              {packet.src_ip}:{packet.src_port || "*"} →{" "}
-                              {packet.dst_ip}:{packet.dst_port || "*"}
-                            </span>
-                            <span className="packet-protocol">
-                              {packet.protocol}
-                            </span>
-                            <span className="packet-length">
-                              {packet.length} bytes
-                            </span>
-                          </div>
-                        ))}
-                        <button
-                          className="view-all-link"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            viewInCapture(
-                              record.query.id,
-                              record.query.query_name,
-                            );
-                          }}
-                        >
-                          <ExternalLink size={14} />
-                          Ver en captura
-                        </button>
-                      </div>
-                    )}
+                <div className="indicators-grid">
+                  <div className="indicator-box">
+                    <span className="indicator-name">Longitud Excesiva</span>
+                    <span className="indicator-data">{indicators.long_queries}</span>
                   </div>
-                )}
-              </React.Fragment>
-            ))
+                  <div className="indicator-box">
+                    <span className="indicator-name">Alta Entropía</span>
+                    <span className="indicator-data">{indicators.high_entropy_queries}</span>
+                  </div>
+                  <div className="indicator-box">
+                    <span className="indicator-name">Subdominios Inusuales</span>
+                    <span className="indicator-data">{indicators.many_subdomains}</span>
+                  </div>
+                  <div className="indicator-box">
+                    <span className="indicator-name">Tipos de Registro Raros</span>
+                    <span className="indicator-data">{indicators.unusual_types}</span>
+                  </div>
+                  <div className="indicator-box">
+                    <span className="indicator-name">Frecuencia Crítica</span>
+                    <span className={`indicator-data ${indicators.high_frequency ? "warning" : ""}`}>
+                      {indicators.high_frequency ? "CRÍTICA" : "NORMAL"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
+
+          {/* Filters Overlay */}
+          {showFilters && (
+            <div className="filters-panel glass-card grid-span-full">
+              <div className="filter-field">
+                <label className="field-label">Filtro por Proceso</label>
+                <input
+                  type="text"
+                  className="control-input"
+                  placeholder="Ej: chrome, system..."
+                  value={filter.process_name || ""}
+                  onChange={(e) =>
+                    setFilter({
+                      ...filter,
+                      process_name: e.target.value || undefined,
+                    })
+                  }
+                />
+              </div>
+              <div className="filter-field center">
+                <label className="checkbox-container">
+                  <input
+                    type="checkbox"
+                    checked={filter.suspicious_only}
+                    onChange={(e) =>
+                      setFilter({ ...filter, suspicious_only: e.target.checked })
+                    }
+                  />
+                  <span className="checkbox-label">Solo tráfico sospechoso</span>
+                </label>
+              </div>
+              <button
+                className="filter-clear-btn"
+                onClick={() => setFilter({ suspicious_only: false })}
+              >
+                <X size={14} /> Resetear Filtros
+              </button>
+            </div>
+          )}
+
+          {error && (
+            <div className="system-error glass-card grid-span-full">
+              <AlertTriangle size={16} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Top Section */}
+          <div className="top-entities-row grid-span-full">
+            {stats && stats.top_domains.length > 0 && (
+              <div className="top-panel glass-card">
+                <h3 className="panel-title">Dominios más Consultados</h3>
+                <div className="top-list">
+                  {stats.top_domains.slice(0, 10).map((item, index) => (
+                    <div key={index} className="top-list-item">
+                      <span className="item-rank">0{index + 1}</span>
+                      <span className="item-key">{item.domain}</span>
+                      <span className="item-val">{item.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Logs Section */}
+          <div className="queries-log-panel glass-card grid-span-full">
+            <div className="panel-header">
+              <h3 className="panel-title">Registro de Resoluciones (Real-time)</h3>
+            </div>
+            <div className="premium-table-view">
+              <table className="premium-table">
+                <thead>
+                  <tr>
+                    <th className="col-exp"></th>
+                    <th className="col-time">Timestamp</th>
+                    <th className="col-domain">Dominio</th>
+                    <th className="col-type">Tipo</th>
+                    <th className="col-proc">Proceso</th>
+                    <th className="col-resp">Resolución</th>
+                    <th className="col-stat">Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading && records.length === 0 ? (
+                    <tr><td colSpan={7} className="placeholder-row">Sincronizando flujo DNS...</td></tr>
+                  ) : records.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="placeholder-row">
+                        <Globe size={32} className="empty-icon" />
+                        <p>No se han interceptado peticiones DNS en este segmento.</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    records.map((record) => (
+                      <React.Fragment key={record.query.id}>
+                        <tr
+                          className={`premium-row clickable ${record.query.is_suspicious ? "suspicious" : ""} ${expandedQuery === record.query.id ? "expanded" : ""}`}
+                          onClick={() => fetchRelatedPackets(record.query.id)}
+                        >
+                          <td className="cell-expand">
+                            {expandedQuery === record.query.id ? (
+                              <ChevronDown size={14} />
+                            ) : (
+                              <ChevronRight size={14} />
+                            )}
+                          </td>
+                          <td className="cell-time">
+                            {formatTimestamp(record.query.timestamp)}
+                          </td>
+                          <td className="cell-domain" title={record.query.query_name}>
+                            {record.query.query_name}
+                          </td>
+                          <td className="cell-type">
+                            <span className="type-chip">{record.query.query_type}</span>
+                          </td>
+                          <td className="cell-proc">
+                            <span className="proc-chip">{record.query.process_name || "—"}</span>
+                          </td>
+                          <td className="cell-resp">
+                            <span className="resp-text">
+                              {record.response?.answers.length
+                                ? record.response.answers.slice(0, 1).join(", ")
+                                : "—"}
+                            </span>
+                          </td>
+                          <td className="cell-stat">
+                            {record.query.is_suspicious ? (
+                              <span className="status-indicator warning" title={record.query.suspicion_reasons.join(", ")}>
+                                <AlertTriangle size={12} /> ALERTA
+                              </span>
+                            ) : record.resolved ? (
+                              <span className="status-indicator success">OK</span>
+                            ) : record.response?.response_code ? (
+                              <span className="status-indicator error">
+                                {record.response.response_code}
+                              </span>
+                            ) : (
+                              <span className="status-indicator pending">PEND</span>
+                            )}
+                          </td>
+                        </tr>
+
+                        {expandedQuery === record.query.id && (
+                          <tr className="sub-panel-row">
+                            <td colSpan={7}>
+                              <div className="related-data-panel">
+                                <div className="panel-header">
+                                  <Package size={14} />
+                                  <span>Trazas de Red Vinculadas</span>
+                                </div>
+
+                                {loadingPackets ? (
+                                  <div className="panel-loading">Analizando correlación...</div>
+                                ) : relatedPackets.length === 0 ? (
+                                  <div className="panel-empty">
+                                    No se encontraron tramas de datos vinculadas a esta resolución.
+                                  </div>
+                                ) : (
+                                  <div className="traces-list">
+                                    <div className="traces-grid-header">
+                                      <span>Timestamp</span>
+                                      <span>Flujo de Datos</span>
+                                      <span>Protocolo</span>
+                                      <span>Payload</span>
+                                    </div>
+                                    {relatedPackets.map((packet, idx) => (
+                                      <div key={idx} className="trace-item">
+                                        <span className="trace-time">{new Date(packet.timestamp).toLocaleTimeString()}</span>
+                                        <span className="trace-flow">
+                                          {packet.src_ip} → {packet.dst_ip}
+                                        </span>
+                                        <span className="trace-prot">{packet.protocol}</span>
+                                        <span className="trace-size">{packet.length} B</span>
+                                      </div>
+                                    ))}
+                                    <div className="panel-actions">
+                                      <button
+                                        className="trace-view-btn"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          viewInCapture(
+                                            record.query.id,
+                                            record.query.query_name,
+                                          );
+                                        }}
+                                      >
+                                        <ExternalLink size={14} /> Abrir en Monitor de Captura
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>

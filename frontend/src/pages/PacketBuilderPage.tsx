@@ -1,15 +1,12 @@
 import {
+  AlertTriangle,
   ArrowRight,
-  Cpu,
   Globe,
   Layers,
   Network,
-  Play,
   RefreshCw,
-  Send,
   Sparkles,
-  Wand2,
-  Zap,
+  Zap
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import PageHelp, { PAGE_HELP } from "../components/PageHelp";
@@ -59,17 +56,17 @@ const PacketBuilderPage: React.FC = () => {
     color: string;
     icon: React.ReactNode;
   }[] = [
-    { id: "TCP", name: "TCP", color: "#64c8ff", icon: <Network size={20} /> },
-    { id: "UDP", name: "UDP", color: "#a78bfa", icon: <Zap size={20} /> },
-    {
-      id: "ICMP",
-      name: "ICMP",
-      color: "#fbbf24",
-      icon: <RefreshCw size={20} />,
-    },
-    { id: "DNS", name: "DNS", color: "#34d399", icon: <Globe size={20} /> },
-    { id: "HTTP", name: "HTTP", color: "#f472b6", icon: <Layers size={20} /> },
-  ];
+      { id: "TCP", name: "TCP", color: "#64c8ff", icon: <Network size={20} /> },
+      { id: "UDP", name: "UDP", color: "#a78bfa", icon: <Zap size={20} /> },
+      {
+        id: "ICMP",
+        name: "ICMP",
+        color: "#fbbf24",
+        icon: <RefreshCw size={20} />,
+      },
+      { id: "DNS", name: "DNS", color: "#34d399", icon: <Globe size={20} /> },
+      { id: "HTTP", name: "HTTP", color: "#f472b6", icon: <Layers size={20} /> },
+    ];
 
   // Plantillas predefinidas
   const templates = [
@@ -320,356 +317,273 @@ const PacketBuilderPage: React.FC = () => {
   const currentProtocol = protocols.find((p) => p.id === protocol);
 
   return (
-    <div className="packet-builder-page">
-      {/* Header */}
-      <div className="builder-header">
-        <div className="header-title">
-          <div className="title-icon">
-            <Send size={28} />
-          </div>
-          <div>
-            <h1>Packet Builder</h1>
-            <p>Construye y envía paquetes de red con ayuda de IA</p>
-          </div>
+    <div className="view-container builder-view full-width-layout">
+      <header className="view-header">
+        <div className="header-text">
+          <h1 className="view-title">
+            <span className="title-icon">🛠️</span> Arquitecto de Protocolos
+          </h1>
+          <p className="view-subtitle">
+            Constructor de tramas de bajo nivel con modelado inteligente de capas de red (L3/L4/L7).
+          </p>
         </div>
+        <div className="header-actions">
+          <button
+            className="premium-btn magic"
+            onClick={generateWithAI}
+            disabled={isAiLoading}
+          >
+            <Sparkles size={18} />
+            <span>{isAiLoading ? "Desarrollando..." : "Asistente IA"}</span>
+          </button>
+          <PageHelp content={PAGE_HELP.packetBuilder} />
+        </div>
+      </header>
 
-        <button
-          className="ai-magic-btn"
-          onClick={generateWithAI}
-          disabled={isAiLoading}
-        >
-          <Wand2 size={18} />
-          <span>{isAiLoading ? "Generando..." : "IA Mágica"}</span>
-          <Sparkles size={14} className="sparkle" />
-        </button>
-      </div>
-
-      <PageHelp content={PAGE_HELP.packetBuilder} />
-
-      <div className="builder-content">
-        {/* Panel izquierdo: Constructor visual */}
-        <div className="builder-main">
-          {/* Selector de protocolo */}
-          <div className="protocol-selector">
-            <h3>Protocolo</h3>
-            <div className="protocol-buttons">
-              {protocols.map((p) => (
-                <button
-                  key={p.id}
-                  className={`protocol-btn ${protocol === p.id ? "active" : ""}`}
-                  style={{ "--protocol-color": p.color } as React.CSSProperties}
-                  onClick={() => setProtocol(p.id)}
-                >
-                  {p.icon}
-                  <span>{p.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Visualización de capas del paquete */}
-          <div className={`packet-layers ${animatePacket ? "animate" : ""}`}>
-            {/* Capa IP */}
-            <div className="layer ip-layer">
-              <div className="layer-header">
-                <Globe size={18} />
-                <span>Capa IP (Layer 3)</span>
-              </div>
-              <div className="layer-fields">
-                <div className="field-group">
-                  <label>IP Origen</label>
-                  <input
-                    type="text"
-                    value={srcIp}
-                    onChange={(e) => setSrcIp(e.target.value)}
-                    placeholder="192.168.1.100"
-                  />
-                </div>
-                <div className="field-arrow">
-                  <ArrowRight size={20} />
-                </div>
-                <div className="field-group">
-                  <label>IP Destino</label>
-                  <input
-                    type="text"
-                    value={dstIp}
-                    onChange={(e) => setDstIp(e.target.value)}
-                    placeholder="8.8.8.8"
-                    className={!dstIp ? "required" : ""}
-                  />
-                </div>
-                <div className="field-group small">
-                  <label>TTL</label>
-                  <input
-                    type="number"
-                    value={ttl}
-                    onChange={(e) => setTtl(parseInt(e.target.value) || 64)}
-                    min={1}
-                    max={255}
-                  />
-                </div>
+      <div className="view-content">
+        <div className="builder-layout-grid">
+          {/* Main Configuration Area */}
+          <div className="builder-config-column">
+            {/* Protocol Selection Header */}
+            <div className="protocol-selector-card glass-card">
+              <h3 className="selector-title">Capa de Transporte (Select L4)</h3>
+              <div className="protocol-options">
+                {protocols.map((p) => (
+                  <button
+                    key={p.id}
+                    className={`proto-opt ${protocol === p.id ? "active" : ""}`}
+                    style={{ "--opt-color": p.color } as React.CSSProperties}
+                    onClick={() => setProtocol(p.id)}
+                  >
+                    <div className="proto-icon-box">{p.icon}</div>
+                    <span className="proto-name">{p.name}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Capa de Transporte */}
-            <div
-              className="layer transport-layer"
-              style={
-                {
-                  "--layer-color": currentProtocol?.color,
-                } as React.CSSProperties
-              }
-            >
-              <div className="layer-header">
-                <Cpu size={18} />
-                <span>Capa {protocol} (Layer 4)</span>
-              </div>
-              <div className="layer-fields">
-                {(protocol === "TCP" ||
-                  protocol === "UDP" ||
-                  protocol === "DNS" ||
-                  protocol === "HTTP") && (
-                  <>
-                    <div className="field-group">
-                      <label>Puerto Origen</label>
-                      <input
-                        type="number"
-                        value={srcPort}
-                        onChange={(e) =>
-                          setSrcPort(parseInt(e.target.value) || 0)
-                        }
-                        min={1}
-                        max={65535}
-                      />
-                    </div>
-                    <div className="field-arrow">
-                      <ArrowRight size={20} />
-                    </div>
-                    <div className="field-group">
-                      <label>Puerto Destino</label>
-                      <input
-                        type="number"
-                        value={dstPort}
-                        onChange={(e) =>
-                          setDstPort(parseInt(e.target.value) || 0)
-                        }
-                        min={1}
-                        max={65535}
-                      />
-                    </div>
-                  </>
-                )}
-
-                {protocol === "ICMP" && (
-                  <div className="field-group">
-                    <label>Tipo ICMP</label>
-                    <select
-                      value={icmpType}
-                      onChange={(e) => setIcmpType(parseInt(e.target.value))}
-                    >
-                      <option value={8}>8 - Echo Request (Ping)</option>
-                      <option value={0}>0 - Echo Reply</option>
-                      <option value={3}>3 - Destination Unreachable</option>
-                      <option value={11}>11 - Time Exceeded</option>
-                    </select>
+            {/* Visual Packet Builder Stack */}
+            <div className={`packet-construction-stack ${animatePacket ? "stack-pulse" : ""}`}>
+              {/* L3 - Network Layer */}
+              <div className="construction-layer layer-l3">
+                <div className="layer-header">
+                  <span className="layer-id">CAPA 3</span>
+                  <span className="layer-name">RED / INTERNET</span>
+                </div>
+                <div className="layer-body">
+                  <div className="input-group">
+                    <label>IP Origen</label>
+                    <input
+                      type="text"
+                      className="construct-input"
+                      value={srcIp}
+                      onChange={(e) => setSrcIp(e.target.value)}
+                      placeholder="IP del emisor"
+                    />
                   </div>
-                )}
+                  <div className="mid-arrow">→</div>
+                  <div className="input-group">
+                    <label>IP Destino</label>
+                    <input
+                      type="text"
+                      className={`construct-input ${!dstIp ? "highlight-error" : ""}`}
+                      value={dstIp}
+                      onChange={(e) => setDstIp(e.target.value)}
+                      placeholder="IP del receptor"
+                    />
+                  </div>
+                  <div className="input-group small-input">
+                    <label>TTL</label>
+                    <input
+                      type="number"
+                      className="construct-input text-center"
+                      value={ttl}
+                      onChange={(e) => setTtl(parseInt(e.target.value) || 64)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* L4 - Transport Layer */}
+              <div
+                className="construction-layer layer-l4"
+                style={{ "--layer-accent": currentProtocol?.color } as React.CSSProperties}
+              >
+                <div className="layer-header">
+                  <span className="layer-id">CAPA 4</span>
+                  <span className="layer-name">TRANSPORTE / {protocol}</span>
+                </div>
+                <div className="layer-body">
+                  {(["TCP", "UDP", "DNS", "HTTP"] as Protocol[]).includes(protocol) && (
+                    <>
+                      <div className="input-group">
+                        <label>Puerto Origen</label>
+                        <input
+                          type="number"
+                          className="construct-input"
+                          value={srcPort}
+                          onChange={(e) => setSrcPort(parseInt(e.target.value) || 0)}
+                        />
+                      </div>
+                      <div className="mid-arrow">→</div>
+                      <div className="input-group">
+                        <label>Puerto Destino</label>
+                        <input
+                          type="number"
+                          className="construct-input"
+                          value={dstPort}
+                          onChange={(e) => setDstPort(parseInt(e.target.value) || 0)}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {protocol === "ICMP" && (
+                    <div className="input-group grow">
+                      <label>Tipo de Mensaje ICMPv4</label>
+                      <select
+                        className="construct-select"
+                        value={icmpType}
+                        onChange={(e) => setIcmpType(parseInt(e.target.value))}
+                      >
+                        <option value={8}>8 - Echo Request (Ping)</option>
+                        <option value={0}>0 - Echo Reply</option>
+                        <option value={3}>3 - Destination Unreachable</option>
+                        <option value={11}>11 - Time Exceeded</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
 
                 {protocol === "TCP" && (
-                  <div className="tcp-flags">
-                    <label>Flags TCP</label>
+                  <div className="tcp-flags-config">
+                    <label className="sub-label">Flags de Control</label>
                     <div className="flags-grid">
                       {Object.entries(tcpFlags).map(([flag, value]) => (
-                        <label
-                          key={flag}
-                          className={`flag-toggle ${value ? "active" : ""}`}
-                        >
+                        <label key={flag} className={`flag-check ${value ? "active" : ""}`}>
                           <input
                             type="checkbox"
+                            className="hidden-input"
                             checked={value}
                             onChange={(e) =>
-                              setTcpFlags((prev) => ({
-                                ...prev,
-                                [flag]: e.target.checked,
-                              }))
+                              setTcpFlags((prev) => ({ ...prev, [flag]: e.target.checked }))
                             }
                           />
-                          <span>{flag.toUpperCase()}</span>
+                          {flag.toUpperCase()}
                         </label>
                       ))}
                     </div>
                   </div>
                 )}
               </div>
-            </div>
 
-            {/* Capa de Datos */}
-            <div className="layer payload-layer">
-              <div className="layer-header">
-                <Layers size={18} />
-                <span>Payload (Datos)</span>
-              </div>
-              <div className="layer-fields">
-                <div className="field-group full">
-                  <textarea
-                    value={payload}
-                    onChange={(e) => setPayload(e.target.value)}
-                    placeholder="Escribe aquí los datos a enviar o describe qué quieres hacer..."
-                    rows={3}
-                  />
+              {/* L7 - Application Layer */}
+              <div className="construction-layer layer-l7">
+                <div className="layer-header">
+                  <span className="layer-id">CAPA 7</span>
+                  <span className="layer-name">APLICACIÓN / CARGA ÚTIL</span>
+                </div>
+                <div className="layer-body">
+                  <div className="input-group grow">
+                    <label>Payload (Hex / Texto)</label>
+                    <textarea
+                      className="construct-textarea"
+                      value={payload}
+                      onChange={(e) => setPayload(e.target.value)}
+                      placeholder="Inserta el mensaje o carga útil aquí..."
+                      rows={3}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Preview hexadecimal */}
-          <div className="hex-preview">
-            <div className="preview-header">
-              <span>Vista Hexadecimal</span>
-              <span className="preview-bytes">
-                {Math.ceil(previewHex.replace(/\s/g, "").length / 2)} bytes
-              </span>
-            </div>
-            <code>{previewHex || "00 00 00 00 ..."}</code>
-          </div>
-
-          {/* Botón de envío */}
-          <div className="send-section">
-            <button
-              className={`send-btn ${isSending ? "sending" : ""}`}
-              onClick={sendPacket}
-              disabled={isSending || !dstIp}
-            >
-              {isSending ? (
-                <>
-                  <div className="send-spinner" />
-                  <span>Enviando...</span>
-                </>
-              ) : (
-                <>
-                  <Play size={20} />
-                  <span>Enviar Paquete</span>
-                </>
-              )}
-            </button>
-
-            {sendResult && (
-              <div
-                className={`send-result ${sendResult.success ? "success" : "error"}`}
-              >
-                {sendResult.success ? "✅" : "❌"} {sendResult.message}
+            {/* Binary Preview & Action Footer */}
+            <div className="builder-finalization glass-card">
+              <div className="binary-preview">
+                <div className="preview-label">BINARIO DE SALIDA (RAW PREVIEW)</div>
+                <div className="preview-content">
+                  <code>{previewHex || "Esperando parámetros..."}</code>
+                  <span className="byte-count">{Math.ceil(previewHex.replace(/\s/g, "").length / 2)} BYTES</span>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
+              <div className="action-row">
+                <button
+                  className={`inject-btn ${isSending ? "sending" : ""}`}
+                  onClick={sendPacket}
+                  disabled={isSending || !dstIp}
+                >
+                  <Zap size={18} className={isSending ? "pulse" : ""} />
+                  <span>{isSending ? "INYECTANDO TRÁFICO..." : "INYECTAR EN RED"}</span>
+                </button>
 
-        {/* Panel derecho: IA y plantillas */}
-        <div className="builder-sidebar">
-          {/* Asistente IA */}
-          <div className="ai-assistant">
-            <div className="ai-header">
-              <Sparkles size={20} />
-              <h3>Asistente IA</h3>
-            </div>
-
-            <div className="ai-input">
-              <input
-                type="text"
-                placeholder="¿Qué quieres hacer? Ej: hacer ping, consultar DNS..."
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    askAI((e.target as HTMLInputElement).value);
-                  }
-                }}
-              />
-              <button
-                onClick={() => askAI("ayuda general")}
-                disabled={isAiLoading}
-              >
-                {isAiLoading ? (
-                  <RefreshCw size={16} className="spin" />
-                ) : (
-                  <Wand2 size={16} />
-                )}
-              </button>
-            </div>
-
-            {aiAssistant && (
-              <div className="ai-response">
-                <div className="ai-suggestion">
-                  <strong>💡 Sugerencia:</strong>
-                  <p>{aiAssistant.suggestion}</p>
-                </div>
-                <div className="ai-explanation">
-                  <strong>📚 Explicación:</strong>
-                  <p>{aiAssistant.explanation}</p>
-                </div>
-                {aiAssistant.securityTip && (
-                  <div className="ai-security">
-                    <strong>🔐 Seguridad:</strong>
-                    <p>{aiAssistant.securityTip}</p>
+                {sendResult && (
+                  <div className={`inject-feedback ${sendResult.success ? "success" : "error"}`}>
+                    {sendResult.success ? <Zap size={14} /> : <AlertTriangle size={14} />}
+                    {sendResult.message}
                   </div>
                 )}
               </div>
-            )}
-          </div>
-
-          {/* Plantillas rápidas */}
-          <div className="quick-templates">
-            <h3>Plantillas Rápidas</h3>
-            <div className="templates-grid">
-              {templates.map((template, idx) => (
-                <button
-                  key={idx}
-                  className="template-btn"
-                  onClick={() => applyTemplate(template)}
-                >
-                  {protocols.find((p) => p.id === template.protocol)?.icon}
-                  <span>{template.name}</span>
-                </button>
-              ))}
             </div>
           </div>
 
-          {/* Tips educativos */}
-          <div className="edu-tips">
-            <h3>📖 ¿Sabías que...?</h3>
-            <div className="tip-content">
-              {protocol === "TCP" && (
-                <p>
-                  TCP usa un <strong>handshake de 3 vías</strong> (SYN → SYN-ACK
-                  → ACK) para establecer conexiones confiables antes de enviar
-                  datos.
-                </p>
-              )}
-              {protocol === "UDP" && (
-                <p>
-                  UDP es <strong>"dispara y olvida"</strong> - no verifica si el
-                  paquete llegó, pero es mucho más rápido que TCP para streaming
-                  y juegos.
-                </p>
-              )}
-              {protocol === "ICMP" && (
-                <p>
-                  El comando <strong>ping</strong> usa ICMP Echo Request (tipo
-                  8) y espera una respuesta Echo Reply (tipo 0) para medir
-                  latencia.
-                </p>
-              )}
-              {protocol === "DNS" && (
-                <p>
-                  Las consultas DNS traducen nombres como{" "}
-                  <strong>google.com</strong> a direcciones IP. Normalmente usan
-                  UDP puerto 53.
-                </p>
-              )}
-              {protocol === "HTTP" && (
-                <p>
-                  HTTP corre sobre TCP puerto 80. Los métodos más comunes son
-                  <strong> GET</strong> (obtener) y <strong>POST</strong>{" "}
-                  (enviar datos).
-                </p>
-              )}
+          {/* Sidebar Area - Insights & Presets */}
+          <div className="builder-info-column">
+            {/* AI Assistant Insight */}
+            <div className="info-card intelligence glass-card">
+              <div className="info-card-header">
+                <Sparkles size={18} className="icon-ai" />
+                <h4>Asistente Inteligente</h4>
+              </div>
+              <div className="info-card-body">
+                <div className="intent-box">
+                  <input
+                    type="text"
+                    className="intent-input"
+                    placeholder="Describe tu intención..."
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        askAI((e.target as HTMLInputElement).value);
+                      }
+                    }}
+                  />
+                </div>
+                {aiAssistant ? (
+                  <div className="ai-response-stack">
+                    <div className="ai-block">
+                      <div className="ai-block-label">Configuración AI</div>
+                      <p>{aiAssistant.suggestion}</p>
+                    </div>
+                    <div className="ai-block">
+                      <div className="ai-block-label">Análisis Técnico</div>
+                      <p>{aiAssistant.explanation}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="ai-placeholder">
+                    Ingresa una intención (ej: "ping a gateway") para asistencia.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Presets List */}
+            <div className="info-card presets glass-card">
+              <div className="info-card-header">
+                <Layers size={18} />
+                <h4>Plantillas Rápidas</h4>
+              </div>
+              <div className="presets-list">
+                {templates.map((t, idx) => (
+                  <button key={idx} className="preset-item" onClick={() => applyTemplate(t)}>
+                    <div className="preset-info">
+                      <div className="preset-name">{t.name}</div>
+                      <div className="preset-meta">{t.protocol}</div>
+                    </div>
+                    <ArrowRight size={14} className="preset-arrow" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

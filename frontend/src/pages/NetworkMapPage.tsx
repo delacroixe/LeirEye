@@ -5,18 +5,25 @@ import "./NetworkMapPage.css";
 
 const NetworkMapPage: React.FC = () => {
   return (
-    <div className="network-map-page">
-      <div className="page-header">
-        <h2>🗺️ Mapa de Red</h2>
-        <p className="page-description">
-          Visualización gráfica de conexiones y nodos de red
-        </p>
-      </div>
+    <div className="view-container network-map-view">
+      <header className="view-header">
+        <div className="header-text">
+          <h1 className="view-title">
+            <span className="title-icon">🗺️</span> Mapa de Infraestructura
+          </h1>
+          <p className="view-subtitle">
+            Representación topológica de nodos, flujos de tráfico y geolocalización de entidades remotas.
+          </p>
+        </div>
+        <div className="header-actions">
+          <PageHelp content={PAGE_HELP.networkMap} />
+        </div>
+      </header>
 
-      <PageHelp content={PAGE_HELP.networkMap} />
-
-      <div className="network-map-page-content">
-        <NetworkMap />
+      <div className="view-content full-height">
+        <div className="map-container glass-card">
+          <NetworkMap />
+        </div>
       </div>
     </div>
   );

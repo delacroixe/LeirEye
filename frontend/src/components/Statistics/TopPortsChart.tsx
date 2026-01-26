@@ -2,7 +2,7 @@
  * TopPortsChart - Gráfico de barras de top 10 puertos destino
  */
 import React, { useMemo } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { StatsData } from '../../services/api';
 
 interface TopPortsChartProps {
@@ -22,40 +22,58 @@ const TopPortsChart: React.FC<TopPortsChartProps> = ({ stats }) => {
 
   if (portsData.length === 0) {
     return (
-      <div className="chart-container full-width">
-        <h3>Top 10 Puertos Destino</h3>
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#888' }}>
-          Sin datos de puertos
+      <div className="stat-widget">
+        <h3 className="widget-title">Distribución de Puertos L4</h3>
+        <div className="empty-message small">
+          Sin telemetría de sockets detectada
         </div>
       </div>
     );
   }
 
   return (
-    <div className="chart-container full-width">
-      <h3>Top 10 Puertos Destino</h3>
-      <ResponsiveContainer width="100%" height={350}>
-        <BarChart 
-          data={portsData} 
-          layout="vertical"
-          margin={{ top: 20, right: 30, left: 60, bottom: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 200, 255, 0.1)" />
-          <XAxis type="number" stroke="#a0aec0" tick={{ fontSize: 12 }} />
-          <YAxis 
-            type="category" 
-            dataKey="name" 
-            width={55} 
-            stroke="#a0aec0"
-            tick={{ fontSize: 12 }}
-          />
-          <Tooltip 
-            formatter={(value) => `${value} paquetes`}
-            contentStyle={{ backgroundColor: '#1a1f3a', border: '1px solid rgba(100, 200, 255, 0.2)', borderRadius: '6px' }} 
-          />
-          <Bar dataKey="count" fill="#f59e0b" radius={[0, 8, 8, 0]} />
-        </BarChart>
-      </ResponsiveContainer>
+    <div className="stat-widget">
+      <h3 className="widget-title">Vector de Puertos Críticos</h3>
+      <div className="chart-canvas">
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            data={portsData}
+            layout="vertical"
+            margin={{ top: 0, right: 30, left: 40, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.03)" horizontal={false} />
+            <XAxis type="number" hide />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={60}
+              stroke="#475569"
+              tick={{ fontSize: 10, fontWeight: 800, fontFamily: 'monospace' }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <Tooltip
+              cursor={{ fill: 'rgba(255, 255, 255, 0.02)' }}
+              contentStyle={{
+                backgroundColor: '#0f172a',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                fontSize: '12px',
+                color: 'white'
+              }}
+              formatter={(value) => [`${value} Unidades`, 'Volumen']}
+            />
+            <Bar
+              dataKey="count"
+              fill="var(--color-warning)"
+              radius={[0, 4, 4, 0]}
+              barSize={12}
+            >
+              <div className="glow-bar" style={{ filter: 'blur(8px)', opacity: 0.5 }} />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

@@ -1,14 +1,8 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import {
-  AlertOctagon,
-  AlertTriangle,
   Bell,
+  Check,
   ExternalLink,
   HelpCircle,
-  Info,
   Loader2,
   X,
 } from "lucide-react";
@@ -16,45 +10,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertData, useAlerts } from "../contexts/AlertsContext";
 import { explainAlert } from "../services/api";
-
-const severityIcons: Record<string, React.ElementType> = {
-  critical: AlertOctagon,
-  high: AlertTriangle,
-  medium: AlertTriangle,
-  low: Info,
-  info: Info,
-};
-
-const severityColors: Record<
-  string,
-  { bg: string; text: string; border: string }
-> = {
-  critical: {
-    bg: "bg-red-500/10",
-    text: "text-red-500",
-    border: "border-red-500/30",
-  },
-  high: {
-    bg: "bg-orange-500/10",
-    text: "text-orange-500",
-    border: "border-orange-500/30",
-  },
-  medium: {
-    bg: "bg-yellow-500/10",
-    text: "text-yellow-500",
-    border: "border-yellow-500/30",
-  },
-  low: {
-    bg: "bg-blue-500/10",
-    text: "text-blue-500",
-    border: "border-blue-500/30",
-  },
-  info: {
-    bg: "bg-gray-500/10",
-    text: "text-gray-500",
-    border: "border-gray-500/30",
-  },
-};
+import "./AlertToast.css";
 
 export const AlertToast: React.FC = () => {
   const { notifications, dismissNotification, acknowledgeAlert } = useAlerts();
@@ -104,143 +60,85 @@ export const AlertToast: React.FC = () => {
   if (notifications.length === 0) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-[1000] flex flex-col gap-3 max-w-md w-full">
+    <div className="toast-stack">
       {notifications.map((alert) => {
-        const Icon = severityIcons[alert.severity] || Bell;
-        const colors = severityColors[alert.severity] || severityColors.info;
         const hasExplanation = explanations[alert.id];
         const isLoading = loadingExplanation === alert.id;
 
         return (
-          <Card
+          <div
             key={alert.id}
-            className={cn(
-              "relative overflow-hidden animate-in slide-in-from-right-full duration-300",
-              "bg-bg-secondary border p-4",
-              colors.border,
-              hasExplanation && "pb-6",
-            )}
+            className={`toast-item glass-card ${alert.severity}`}
           >
-            <div className="flex gap-3">
-              {/* Icon */}
-              <div className={cn("shrink-0 mt-0.5", colors.text)}>
-                <Icon size={20} />
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 min-w-0 space-y-2">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "text-xs uppercase font-semibold",
-                      colors.text,
-                      colors.border,
-                    )}
-                  >
-                    {alert.severity}
-                  </Badge>
-                  <span className="text-xs text-text-secondary">
-                    {alert.type.replace(/_/g, " ")}
-                  </span>
-                  {alert.count && alert.count > 1 && (
-                    <Badge
-                      variant="secondary"
-                      className="text-xs bg-accent/20 text-accent"
-                    >
-                      ×{alert.count}
-                    </Badge>
-                  )}
+            <div className="toast-head">
+              <div className="toast-main">
+                <div className="toast-icon">
+                  <Bell size={20} />
                 </div>
-
-                <h4 className="text-sm font-semibold text-text-primary">
-                  {alert.title}
-                </h4>
-                <p className="text-xs text-text-secondary line-clamp-2">
-                  {alert.description.slice(0, 120)}...
-                </p>
-
-                {hasExplanation && (
-                  <div className="mt-3 p-3 bg-accent/5 rounded-md border-l-2 border-accent">
-                    <span className="text-xs font-medium text-accent">
-                      🤖 IA explica:
+                <div className="toast-content">
+                  <div className="toast-meta">
+                    <span className="toast-severity">{alert.severity}</span>
+                    <span className="toast-type">
+                      {alert.type.replace(/_/g, " ")}
                     </span>
-                    <p className="text-xs text-text-secondary mt-1">
-                      {explanations[alert.id]}
-                    </p>
+                    {alert.count && alert.count > 1 && (
+                      <span className="toast-count">×{alert.count}</span>
+                    )}
                   </div>
-                )}
-
-                {alert.source.process_name && (
-                  <span className="inline-flex items-center gap-1 text-xs text-text-muted">
-                    📦 {alert.source.process_name}
-                  </span>
-                )}
+                  <h4 className="toast-title">{alert.title}</h4>
+                  <p className="toast-desc">{alert.description.slice(0, 120)}...</p>
+                </div>
               </div>
 
-              {/* Actions */}
-              <div className="flex flex-col gap-1 shrink-0">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 text-text-secondary hover:text-accent"
+              <div className="toast-actions">
+                <button
+                  className="toast-btn"
                   onClick={() => navigate("/alerts")}
                   title="Ver todas las alertas"
                 >
                   <ExternalLink size={14} />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={cn(
-                    "h-7 w-7",
-                    hasExplanation
-                      ? "text-accent"
-                      : "text-text-secondary hover:text-accent",
-                  )}
+                </button>
+                <button
+                  className={`toast-btn ${hasExplanation ? "active" : ""}`}
                   onClick={() => handleExplainAlert(alert.id, alert)}
                   disabled={isLoading}
-                  title="¿Por qué es importante?"
+                  title="Consultar Inteligencia"
                 >
                   {isLoading ? (
-                    <Loader2 size={14} className="animate-spin" />
+                    <Loader2 size={14} className="spinning" />
                   ) : (
                     <HelpCircle size={14} />
                   )}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 text-success hover:text-success hover:bg-success/10"
+                </button>
+                <button
+                  className="toast-btn success"
                   onClick={() => {
                     acknowledgeAlert(alert.id);
                     dismissNotification(alert.id);
                   }}
                   title="Reconocer"
                 >
-                  ✓
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 text-text-secondary hover:text-error hover:bg-error/10"
+                  <Check size={14} />
+                </button>
+                <button
+                  className="toast-btn danger"
                   onClick={() => dismissNotification(alert.id)}
                   title="Descartar"
                 >
                   <X size={14} />
-                </Button>
+                </button>
               </div>
             </div>
 
-            {/* Progress bar */}
-            <div
-              className={cn(
-                "absolute bottom-0 left-0 h-1 animate-[shrink_10s_linear_forwards]",
-                colors.bg.replace("/10", ""),
-              )}
-              style={{ width: "100%" }}
-            />
-          </Card>
+            {hasExplanation && (
+              <div className="ai-insight">
+                <span className="ai-label">🤖 Inteligencia de Nodo:</span>
+                <p className="ai-text">{explanations[alert.id]}</p>
+              </div>
+            )}
+
+            <div className="toast-timer" style={{ animationDuration: '10s', animationName: 'shrink', animationTimingFunction: 'linear', animationFillMode: 'forwards' }} />
+          </div>
         );
       })}
     </div>

@@ -5,17 +5,22 @@ import "./SystemPage.css";
 
 const SystemPage: React.FC = () => {
   return (
-    <div className="system-page">
-      <div className="page-header">
-        <h2>🖥️ Información del Sistema</h2>
-        <p className="page-description">
-          Estado del sistema y configuración de red
-        </p>
-      </div>
+    <div className="view-container system-view">
+      <header className="view-header">
+        <div className="header-text">
+          <h1 className="view-title">
+            <span className="title-icon">🖥️</span> Terminal del Sistema
+          </h1>
+          <p className="view-subtitle">
+            Monitoreo de recursos de hardware, interfaces físicas y tabla de sockets del kernel.
+          </p>
+        </div>
+        <div className="header-actions">
+          <PageHelp content={PAGE_HELP.system} />
+        </div>
+      </header>
 
-      <PageHelp content={PAGE_HELP.system} />
-
-      <div className="system-page-content">
+      <div className="view-content">
         <DeviceInfo />
       </div>
     </div>

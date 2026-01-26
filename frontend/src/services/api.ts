@@ -19,6 +19,24 @@ export interface PacketData {
   dns_domain?: string | null;
 }
 
+export interface WiFiNetwork {
+  ssid: string;
+  bssid: string;
+  rssi: number;
+  noise: number;
+  channel: number;
+  band: string;
+  width: string;
+  security: string;
+  protocol: string;
+  vendor?: string;
+  signal_quality: number;
+}
+
+export interface WiFiAnalysis {
+  available_networks: WiFiNetwork[];
+}
+
 export interface CaptureStatus {
   is_running: boolean;
   packets_captured: number;
@@ -241,6 +259,11 @@ class ApiService {
       `${API_BASE}/capture/send-packet`,
       packetConfig,
     );
+    return response.data;
+  }
+
+  async getWiFiAnalysis(): Promise<WiFiAnalysis> {
+    const response = await axios.get<WiFiAnalysis>(`${API_BASE}/wifi/analysis`);
     return response.data;
   }
 }

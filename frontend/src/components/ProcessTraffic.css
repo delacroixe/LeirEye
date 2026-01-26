@@ -1,179 +1,202 @@
-.process-traffic-container {
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 16px 0;
+/* Process Traffic - Professional Cyber Intelligence Theme */
+
+.process-monitor {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem !important;
+  height: 100%;
 }
 
-.process-header {
+.monitor-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
 }
 
-.process-header h3 {
-  margin: 0;
-  color: #e2e8f0;
-  font-size: 18px;
-}
-
-.refresh-btn {
-  background: #1e40af;
-  border: none;
+.monitor-title {
+  font-size: 1.1rem;
+  font-weight: 800;
   color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.2s;
+  letter-spacing: -0.01em;
 }
 
-.refresh-btn:hover:not(:disabled) {
-  background: #1e3a8a;
-  transform: rotate(20deg);
-}
-
-.refresh-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 32px 16px;
-  color: #94a3b8;
-}
-
-.processes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.process-item {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-
-.process-item:hover {
-  border-color: #475569;
-  background: #293548;
-}
-
-.process-header-row {
-  padding: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-}
-
-.process-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.process-name {
-  color: #e2e8f0;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.process-stats {
-  color: #94a3b8;
-  font-size: 12px;
-}
-
-.process-details {
-  background: #0f172a;
-  padding: 12px;
-  border-top: 1px solid #334155;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.detail-section {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.detail-section h4 {
-  margin: 0;
-  color: #cbd5e1;
-  font-size: 12px;
+.refresh-control {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  opacity: 0.7;
+  letter-spacing: 0.05em;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.protocols {
+.refresh-control:hover {
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.entities-list {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
 }
 
-.protocol-item {
+.entity-item {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 0.75rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.entity-item:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.entity-item.expanded {
+  background: rgba(15, 23, 42, 0.4);
+  border-color: rgba(6, 182, 212, 0.2);
+}
+
+.entity-header {
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.entity-main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.entity-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.entity-metrics {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.metric-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+.metric-tag.secondary {
+  color: #64748b;
+}
+
+.expand-icon {
+  font-family: monospace;
+  color: #475569;
+  font-size: 1.2rem;
+  margin-left: 1rem;
+}
+
+/* Entity Details */
+.entity-details {
+  padding: 0 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: slide-down 0.2s ease-out;
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detail-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+}
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.protocol-mini-chip {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-
-.protocol-badge {
-  padding: 4px 8px;
+  gap: 0.4rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  color: white;
-  font-size: 11px;
+  font-size: 0.65rem;
   font-weight: 600;
-}
-
-.protocol-count {
-  color: #cbd5e1;
-  font-size: 12px;
-}
-
-.ports {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.port-badge {
-  background: #1e40af;
-  color: #e0e7ff;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-family: monospace;
-}
-
-.ips {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.ip-badge {
-  background: #374151;
-  color: #e5e7eb;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-family: monospace;
-}
-
-.more-badge {
   color: #94a3b8;
-  font-size: 11px;
-  padding: 4px 8px;
+}
+
+.chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.port-mini-chip,
+.ip-mini-chip {
+  padding: 0.2rem 0.5rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #64748b;
+  font-family: monospace;
+}
+
+.more-chip {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.monitor-empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #475569;
   font-style: italic;
+  font-size: 0.8125rem;
 }

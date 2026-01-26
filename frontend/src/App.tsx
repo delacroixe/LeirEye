@@ -25,6 +25,7 @@ import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import SystemPage from "./pages/SystemPage";
+import WiFiPage from "./pages/WiFiPage";
 
 // Componente protegido para rutas que requieren autenticación
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
@@ -65,92 +66,109 @@ function AppContent() {
 
   return (
     <SyncProvider>
-      <div className="app-layout">
-        <Sidebar />
-        <div className="app-content">
-          <CaptureBar />
-          <div className="global-filter-container">
-            <GlobalFilterBadge />
+      <div className="app-container">
+        {/* Background Atmosphere */}
+        <div className="bg-blur-glow bg-blur-1" />
+        <div className="bg-blur-glow bg-blur-2" />
+
+        <div className="app-layout">
+          <Sidebar />
+
+          <div className="app-content-wrapper">
+            <CaptureBar />
+
+            <div className="global-filter-overlay">
+              <GlobalFilterBadge />
+            </div>
+
+            <main className="app-main-view">
+              <AlertToast />
+              <Routes>
+                <Route
+                  path="/capture"
+                  element={
+                    <ProtectedRoute>
+                      <CapturePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/statistics"
+                  element={
+                    <ProtectedRoute>
+                      <StatisticsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/network-map"
+                  element={
+                    <ProtectedRoute>
+                      <NetworkMapPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/alerts"
+                  element={
+                    <ProtectedRoute>
+                      <AlertsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dns"
+                  element={
+                    <ProtectedRoute>
+                      <DNSPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/wifi"
+                  element={
+                    <ProtectedRoute>
+                      <WiFiPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/packet-builder"
+                  element={
+                    <ProtectedRoute>
+                      <PacketBuilderPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/system"
+                  element={
+                    <ProtectedRoute>
+                      <SystemPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <SettingsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/" element={<Navigate to="/capture" replace />} />
+                <Route path="*" element={<Navigate to="/capture" replace />} />
+              </Routes>
+            </main>
           </div>
-          <main className="app-main">
-            <AlertToast />
-            <Routes>
-              <Route
-                path="/capture"
-                element={
-                  <ProtectedRoute>
-                    <CapturePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/statistics"
-                element={
-                  <ProtectedRoute>
-                    <StatisticsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/network-map"
-                element={
-                  <ProtectedRoute>
-                    <NetworkMapPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/alerts"
-                element={
-                  <ProtectedRoute>
-                    <AlertsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/dns"
-                element={
-                  <ProtectedRoute>
-                    <DNSPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/packet-builder"
-                element={
-                  <ProtectedRoute>
-                    <PacketBuilderPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/system"
-                element={
-                  <ProtectedRoute>
-                    <SystemPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <ProtectedRoute>
-                    <SettingsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/" element={<Navigate to="/capture" replace />} />
-              <Route path="*" element={<Navigate to="/capture" replace />} />
-            </Routes>
-          </main>
         </div>
       </div>
     </SyncProvider>

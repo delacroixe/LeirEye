@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSync } from '../contexts/SyncContext';
 import './DeviceInfo.css';
 
@@ -93,15 +93,15 @@ const DeviceInfo: React.FC = () => {
         fetch('http://localhost:8000/api/system/info'),
         fetch('http://localhost:8000/api/system/processes-with-connections')
       ]);
-      
+
       if (!infoRes.ok) {
         const errorData = await infoRes.json().catch(() => ({ detail: 'Error desconocido' }));
         throw new Error(errorData.detail || `Error ${infoRes.status}`);
       }
-      
+
       const infoData = await infoRes.json();
       const procData = await procRes.json();
-      
+
       setDeviceInfo(infoData);
       setProcesses(procData);
       setError(null);
@@ -116,7 +116,7 @@ const DeviceInfo: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-    
+
     if (autoRefresh) {
       const interval = setInterval(fetchData, 5000);
       return () => clearInterval(interval);
@@ -180,244 +180,254 @@ const DeviceInfo: React.FC = () => {
   }
 
   return (
-    <div className="device-info-container">
-      {/* Header con controles */}
-      <div className="device-info-header">
-        <div className="section-tabs">
-          <button 
-            className={`section-tab ${activeSection === 'device' ? 'active' : ''}`}
-            onClick={() => setActiveSection('device')}
-          >
-            🖥️ Dispositivo
-          </button>
-          <button 
-            className={`section-tab ${activeSection === 'processes' ? 'active' : ''}`}
-            onClick={() => setActiveSection('processes')}
-          >
-            📡 Procesos ({processes.length})
-          </button>
-        </div>
-        
-        <div className="header-controls">
-          <label className="auto-refresh-toggle">
-            <input 
-              type="checkbox" 
-              checked={autoRefresh} 
-              onChange={(e) => setAutoRefresh(e.target.checked)} 
+    <div className="system-monitor">
+      {/* Tab Navigation */}
+      <div className="monitor-tabs">
+        <button
+          className={`tab-btn ${activeSection === 'device' ? 'active' : ''}`}
+          onClick={() => setActiveSection('device')}
+        >
+          <span className="tab-icon">🖥️</span>
+          <span className="tab-label">Hardware & Red</span>
+        </button>
+        <button
+          className={`tab-btn ${activeSection === 'processes' ? 'active' : ''}`}
+          onClick={() => setActiveSection('processes')}
+        >
+          <span className="tab-icon">📡</span>
+          <span className="tab-label">Procesos Activos ({processes.length})</span>
+        </button>
+
+        <div className="tab-actions">
+          <label className="sync-toggle">
+            <input
+              type="checkbox"
+              checked={autoRefresh}
+              onChange={(e) => setAutoRefresh(e.target.checked)}
             />
-            <span>Auto-refresh</span>
+            <span className="toggle-label">Auto-Sinc</span>
           </label>
-          <button onClick={fetchData} className="refresh-btn" title="Actualizar ahora">
+          <button onClick={fetchData} className="action-circle" title="Refrescar manual">
             🔄
           </button>
           {lastUpdate && (
-            <span className="last-update">
-              {lastUpdate.toLocaleTimeString()}
+            <span className="timestamp">
+              SYNC: {lastUpdate.toLocaleTimeString()}
             </span>
           )}
         </div>
       </div>
 
-      {/* Contenido según sección activa */}
-      <div className="device-info-content">
+      <div className="monitor-viewport">
         {activeSection === 'device' && deviceInfo && (
-          <div className="device-section">
-            {/* Sistema */}
-            <div className="info-card system-card">
-              <h3>💻 Sistema</h3>
-              <div className="info-grid">
-                <div className="info-item">
-                  <label>Hostname</label>
-                  <span className="value hostname">{deviceInfo.system.hostname}</span>
+          <div className="hardware-grid">
+            {/* System Specs */}
+            <div className="hardware-panel glass-card">
+              <div className="panel-header">
+                <h3 className="panel-title">Especificaciones del Sistema</h3>
+              </div>
+              <div className="specs-grid">
+                <div className="spec-item">
+                  <span className="spec-label">Hostname</span>
+                  <span className="spec-value highlight">{deviceInfo.system.hostname}</span>
                 </div>
-                <div className="info-item">
-                  <label>OS</label>
-                  <span className="value">{deviceInfo.system.os} {deviceInfo.system.os_version}</span>
+                <div className="spec-item">
+                  <span className="spec-label">Kernel / OS</span>
+                  <span className="spec-value">{deviceInfo.system.os} {deviceInfo.system.os_version}</span>
                 </div>
-                <div className="info-item">
-                  <label>Arquitectura</label>
-                  <span className="value">{deviceInfo.system.architecture}</span>
+                <div className="spec-item">
+                  <span className="spec-label">Arquitectura</span>
+                  <span className="spec-value">{deviceInfo.system.architecture}</span>
                 </div>
-                <div className="info-item">
-                  <label>Uptime</label>
-                  <span className="value">{formatUptime(deviceInfo.system.uptime_hours)}</span>
+                <div className="spec-item">
+                  <span className="spec-label">Tiempo de Actividad</span>
+                  <span className="spec-value">{formatUptime(deviceInfo.system.uptime_hours)}</span>
                 </div>
               </div>
 
-              {/* Métricas de recursos */}
-              <div className="resource-meters">
-                <div className="meter">
-                  <label>CPU ({deviceInfo.system.cpu_count} cores)</label>
-                  <div className="meter-bar">
-                    <div 
-                      className="meter-fill" 
-                      style={{ 
+              {/* Real-time Load */}
+              <div className="load-meters">
+                <div className="load-meter">
+                  <div className="meter-info">
+                    <span className="meter-label">CPU ({deviceInfo.system.cpu_count} Núcleos)</span>
+                    <span className="meter-val">{deviceInfo.system.cpu_percent.toFixed(1)}%</span>
+                  </div>
+                  <div className="meter-track">
+                    <div
+                      className="meter-fill"
+                      style={{
                         width: `${deviceInfo.system.cpu_percent}%`,
                         backgroundColor: getUsageColor(deviceInfo.system.cpu_percent)
                       }}
                     />
                   </div>
-                  <span className="meter-value">{deviceInfo.system.cpu_percent.toFixed(1)}%</span>
                 </div>
-                
-                <div className="meter">
-                  <label>RAM ({deviceInfo.system.memory_used_gb}/{deviceInfo.system.memory_total_gb} GB)</label>
-                  <div className="meter-bar">
-                    <div 
-                      className="meter-fill" 
-                      style={{ 
+
+                <div className="load-meter">
+                  <div className="meter-info">
+                    <span className="meter-label">Memoria ({deviceInfo.system.memory_used_gb.toFixed(1)} / {deviceInfo.system.memory_total_gb.toFixed(1)} GB)</span>
+                    <span className="meter-val">{deviceInfo.system.memory_percent.toFixed(1)}%</span>
+                  </div>
+                  <div className="meter-track">
+                    <div
+                      className="meter-fill"
+                      style={{
                         width: `${deviceInfo.system.memory_percent}%`,
                         backgroundColor: getUsageColor(deviceInfo.system.memory_percent)
                       }}
                     />
                   </div>
-                  <span className="meter-value">{deviceInfo.system.memory_percent.toFixed(1)}%</span>
                 </div>
-                
-                <div className="meter">
-                  <label>Disco ({deviceInfo.system.disk_used_gb}/{deviceInfo.system.disk_total_gb} GB)</label>
-                  <div className="meter-bar">
-                    <div 
-                      className="meter-fill" 
-                      style={{ 
+
+                <div className="load-meter">
+                  <div className="meter-info">
+                    <span className="meter-label">Disco Principal</span>
+                    <span className="meter-val">{deviceInfo.system.disk_percent.toFixed(1)}%</span>
+                  </div>
+                  <div className="meter-track">
+                    <div
+                      className="meter-fill"
+                      style={{
                         width: `${deviceInfo.system.disk_percent}%`,
                         backgroundColor: getUsageColor(deviceInfo.system.disk_percent)
                       }}
                     />
                   </div>
-                  <span className="meter-value">{deviceInfo.system.disk_percent.toFixed(1)}%</span>
                 </div>
               </div>
             </div>
 
-            {/* Red */}
-            <div className="info-card network-card">
-              <h3>🌐 Red</h3>
-              <div className="info-grid network-grid">
-                <div className="info-item highlight">
-                  <label>IP Privada</label>
-                  <span className="value ip">{deviceInfo.private_ip}</span>
+            {/* Network Stack */}
+            <div className="hardware-panel glass-card">
+              <div className="panel-header">
+                <h3 className="panel-title">Stack de Conectividad</h3>
+              </div>
+              <div className="network-summary">
+                <div className="network-box primary">
+                  <span className="box-label">IPv4 Privada</span>
+                  <span className="box-value">{deviceInfo.private_ip}</span>
                 </div>
-                <div className="info-item highlight">
-                  <label>IP Pública</label>
-                  <span className="value ip">{deviceInfo.public_ip || 'No disponible'}</span>
+                <div className="network-box warning">
+                  <span className="box-label">IPv4 Pública</span>
+                  <span className="box-value">{deviceInfo.public_ip || 'No detectada'}</span>
                 </div>
-                <div className="info-item">
-                  <label>Gateway</label>
-                  <span className="value">{deviceInfo.gateway || 'N/A'}</span>
-                </div>
-                <div className="info-item">
-                  <label>DNS</label>
-                  <span className="value dns">{deviceInfo.dns_servers.join(', ') || 'N/A'}</span>
+                <div className="network-box secondary">
+                  <span className="box-label">Puerta de Enlace</span>
+                  <span className="box-value">{deviceInfo.gateway || '—'}</span>
                 </div>
               </div>
 
               {deviceInfo.geolocation && (
-                <div className="geo-info">
-                  <span className="geo-badge">📍 {deviceInfo.geolocation.city}, {deviceInfo.geolocation.region}</span>
-                  <span className="geo-detail">{deviceInfo.geolocation.country}</span>
-                  <span className="geo-isp" title={deviceInfo.geolocation.org}>
-                    ISP: {deviceInfo.geolocation.isp}
-                  </span>
+                <div className="geolocation-panel glass-card">
+                  <div className="geo-header">
+                    <span className="geo-icon">📍</span>
+                    <span className="geo-title">Geolocalización de Red</span>
+                  </div>
+                  <div className="geo-data">
+                    <p className="geo-location">{deviceInfo.geolocation.city}, {deviceInfo.geolocation.region}, {deviceInfo.geolocation.country}</p>
+                    <p className="geo-provider">Proveedor: {deviceInfo.geolocation.isp}</p>
+                  </div>
                 </div>
               )}
-            </div>
 
-            {/* Interfaces */}
-            <div className="info-card interfaces-card">
-              <h3>🔌 Interfaces de Red</h3>
-              <div className="interfaces-list">
-                {deviceInfo.interfaces.filter(i => i.is_up || i.ipv4).map((iface, idx) => (
-                  <div key={idx} className={`interface-item ${iface.is_up ? 'active' : 'inactive'}`}>
-                    <div className="interface-header">
-                      <span className={`status-dot ${iface.is_up ? 'up' : 'down'}`}></span>
-                      <span className="interface-name">{iface.name}</span>
-                      {iface.speed && <span className="interface-speed">{iface.speed} Mbps</span>}
+              <div className="interfaces-section">
+                <span className="section-subtitle">Interfaces Activas</span>
+                <div className="interfaces-grid">
+                  {deviceInfo.interfaces.filter(i => i.is_up || i.ipv4).map((iface, idx) => (
+                    <div key={idx} className={`iface-mini-card ${iface.is_up ? 'active' : ''}`}>
+                      <div className="iface-head">
+                        <span className="iface-status"></span>
+                        <span className="iface-name">{iface.name}</span>
+                      </div>
+                      <div className="iface-body">
+                        <span>{iface.ipv4 || 'Sin IP'}</span>
+                        <span className="mac">{iface.mac || '—'}</span>
+                      </div>
                     </div>
-                    <div className="interface-details">
-                      {iface.ipv4 && <span className="interface-ip">IPv4: {iface.ipv4}</span>}
-                      {iface.mac && <span className="interface-mac">MAC: {iface.mac}</span>}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         )}
 
         {activeSection === 'processes' && (
-          <div className="processes-section">
+          <div className="processes-viewport">
             {processes.length === 0 ? (
-              <div className="no-processes">
-                <p>No hay procesos con conexiones de red activas.</p>
-                <p className="hint">💡 Ejecutar el backend con <code>sudo</code> para ver todos los procesos.</p>
+              <div className="empty-viewport glass-card">
+                <p>No se han detectado procesos con sockets de red abiertos.</p>
+                <div className="hint-block">
+                  <span className="hint-icon">💡</span>
+                  <p>Inicie el servicio con privilegios de administrador para ver la tabla completa de procesos del kernel.</p>
+                </div>
               </div>
             ) : (
-              <div className="processes-list">
+              <div className="processes-table-view">
                 {processes.map(proc => (
-                  <div key={proc.pid} className="process-card">
-                    <div 
-                      className="process-header"
+                  <div key={proc.pid} className={`process-entry glass-card ${expandedPids.has(proc.pid) ? 'expanded' : ''}`}>
+                    <div
+                      className="entry-header"
                       onClick={() => toggleExpand(proc.pid)}
                     >
-                      <span className="expand-icon">
-                        {expandedPids.has(proc.pid) ? '▼' : '▶'}
-                      </span>
-                      <span className="process-name">{proc.name}</span>
-                      <span className="process-pid">PID: {proc.pid}</span>
-                      <span className="connection-badge">{proc.connection_count} conexiones</span>
-                      <div className="process-stats">
-                        <span className="stat cpu">
-                          CPU: <strong>{proc.cpu_percent.toFixed(1)}%</strong>
+                      <div className="entry-main">
+                        <span className="entry-arrow">
+                          {expandedPids.has(proc.pid) ? '−' : '+'}
                         </span>
-                        <span className="stat memory">
-                          RAM: <strong>{proc.memory_mb.toFixed(1)} MB</strong>
-                        </span>
+                        <span className="entry-name">{proc.name}</span>
+                        <span className="entry-pid">PID: {proc.pid}</span>
+                      </div>
+
+                      <div className="entry-metrics">
+                        <div className="metric">
+                          <span className="m-label">CPU</span>
+                          <span className="m-val">{proc.cpu_percent.toFixed(1)}%</span>
+                        </div>
+                        <div className="metric">
+                          <span className="m-label">RAM</span>
+                          <span className="m-val">{proc.memory_mb.toFixed(0)}MB</span>
+                        </div>
+                        <span className="conn-count">{proc.connection_count} Sockets</span>
                       </div>
                     </div>
-                    
+
                     {expandedPids.has(proc.pid) && (
-                      <div className="process-connections">
-                        <table className="connections-table">
-                          <thead>
-                            <tr>
-                              <th>Protocolo</th>
-                              <th>Local</th>
-                              <th>Remoto</th>
-                              <th>Estado</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {proc.connections.map((conn, idx) => (
-                              <tr key={idx}>
-                                <td>
-                                  <span className={`protocol-badge ${conn.protocol.toLowerCase()}`}>
-                                    {conn.protocol}
-                                  </span>
-                                </td>
-                                <td className="connection-addr">
-                                  {conn.local_ip}:{conn.local_port}
-                                </td>
-                                <td className="connection-addr">
-                                  {conn.remote_ip}:{conn.remote_port}
-                                </td>
-                                <td>
-                                  <span 
-                                    className="status-badge"
-                                    style={{ color: getStatusColor(conn.status) }}
-                                  >
-                                    {conn.status}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                        
+                      <div className="entry-details">
+                        <div className="connections-grid">
+                          <div className="table-wrapper">
+                            <table className="mini-table">
+                              <thead>
+                                <tr>
+                                  <th>Protocolo</th>
+                                  <th>Local Endpoint</th>
+                                  <th>Remote Endpoint</th>
+                                  <th>Estado</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {proc.connections.map((conn, idx) => (
+                                  <tr key={idx}>
+                                    <td><span className={`proto-tag ${conn.protocol.toLowerCase()}`}>{conn.protocol}</span></td>
+                                    <td>{conn.local_ip}:{conn.local_port}</td>
+                                    <td className="remote-addr">{conn.remote_ip || '—'}:{conn.remote_port || '—'}</td>
+                                    <td>
+                                      <span
+                                        className="status-chip"
+                                        style={{ color: getStatusColor(conn.status) }}
+                                      >
+                                        {conn.status}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
                         {proc.executable && (
-                          <div className="process-executable">
-                            <span className="exe-label">Ejecutable:</span>
-                            <code>{proc.executable}</code>
+                          <div className="binary-path">
+                            <span className="path-label">Binary Path:</span>
+                            <code className="path-value">{proc.executable}</code>
                           </div>
                         )}
                       </div>

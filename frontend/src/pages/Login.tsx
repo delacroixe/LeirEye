@@ -1,21 +1,10 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { useAuth } from "../contexts/AuthContext";
+import "./Login.css";
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -28,7 +17,6 @@ export const Login: React.FC = () => {
   const [error, setError] = useState("");
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [username, setUsername] = useState("");
-  const [fullName, setFullName] = useState("");
 
   // Redirigir si ya está autenticado
   useEffect(() => {
@@ -87,7 +75,6 @@ export const Login: React.FC = () => {
             email,
             username,
             password,
-            full_name: fullName,
           }),
         });
         if (!response.ok) {
@@ -121,238 +108,147 @@ export const Login: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-5">
-        <div className="flex flex-col items-center gap-4 text-primary">
-          <Loader size={40} className="animate-spin" />
-          <p>Verificando sesión...</p>
+      <div className="system-loading-overlay">
+        <div className="loading-core">
+          <Loader size={48} className="spinning-core" />
+          <div className="loading-text">
+            <span className="text-line">AUTENTICANDO NÚCLEO...</span>
+            <span className="text-line secondary">VERIFICANDO CREDENCIALES DE ACCESO</span>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-5">
-      <Card className="w-full max-w-[420px] shadow-2xl shadow-primary/10 animate-in slide-in-from-bottom-4 duration-300">
-        <CardHeader className="text-center space-y-4">
-          {/* Logo */}
-          <div className="flex justify-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/70 rounded-xl flex items-center justify-center text-3xl font-bold text-primary-foreground shadow-lg shadow-primary/30">
-              N
-            </div>
+    <div className="auth-container">
+      {/* Dynamic Background Elements */}
+      <div className="background-architecture">
+        <div className="glow-sphere sphere-1"></div>
+        <div className="glow-sphere sphere-2"></div>
+        <div className="data-grid-overlay"></div>
+      </div>
+
+      <div className="auth-portal glass-card">
+        <header className="portal-header">
+          <div className="portal-logo">
+            {/* Logo space */}
           </div>
-          <div>
-            <CardTitle className="text-2xl font-bold">LeirEye</CardTitle>
-            <CardDescription>Network Traffic Analyzer</CardDescription>
+          <div className="portal-brand">
+            <h1 className="brand-title">
+              LEIR<span className="highlight">EYE</span>
+            </h1>
+            <p className="brand-subtitle">CYBER INTELLIGENCE OPERATING SYSTEM</p>
           </div>
-        </CardHeader>
+        </header>
 
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold">
-                {isRegisterMode ? "Crear Cuenta" : "Iniciar Sesión"}
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                {isRegisterMode
-                  ? "Regístrate para comenzar a analizar tráfico de red"
-                  : "Accede con tu email y contraseña"}
-              </p>
+        <main className="portal-body">
+          {error && (
+            <div className="auth-error-block glass-card">
+              <span className="error-icon">⚠️</span>
+              <p className="error-message">{error}</p>
             </div>
+          )}
 
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
-            {/* Email */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="email"
-                className="text-xs font-semibold uppercase tracking-wide"
-              >
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="tu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isSubmitting}
-              />
-            </div>
-
-            {/* Username (Register only) */}
-            {isRegisterMode && (
-              <div className="space-y-2">
-                <Label
-                  htmlFor="username"
-                  className="text-xs font-semibold uppercase tracking-wide"
-                >
-                  Nombre de usuario
-                </Label>
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="tu_usuario"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                  disabled={isSubmitting}
-                  minLength={3}
-                />
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="fields-stack">
+              <div className="auth-field">
+                <label className="auth-label">Identificador de Operador (Email)</label>
+                <div className="input-wrapper">
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="operador@leireye.io"
+                    className="premium-auth-input"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
               </div>
-            )}
 
-            {/* Full Name (Register only) */}
-            {isRegisterMode && (
-              <div className="space-y-2">
-                <Label
-                  htmlFor="fullName"
-                  className="text-xs font-semibold uppercase tracking-wide"
-                >
-                  Nombre completo (opcional)
-                </Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  placeholder="Tu Nombre Completo"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  disabled={isSubmitting}
-                />
-              </div>
-            )}
-
-            {/* Password */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="password"
-                className="text-xs font-semibold uppercase tracking-wide"
-              >
-                Contraseña
-              </Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder={
-                    isRegisterMode ? "Mín. 8 caracteres" : "Tu contraseña"
-                  }
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isSubmitting}
-                  minLength={isRegisterMode ? 8 : 1}
-                  className="pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors disabled:opacity-50"
-                  disabled={isSubmitting}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-              {isRegisterMode && password && (
-                <div className="mt-2 p-3 bg-primary/5 rounded-md border-l-[3px] border-primary space-y-1">
-                  <p
-                    className={cn(
-                      "text-xs flex items-center gap-2",
-                      password.length >= 8
-                        ? "text-green-500"
-                        : "text-destructive",
-                    )}
-                  >
-                    ✓ Mínimo 8 caracteres
-                  </p>
-                  <p
-                    className={cn(
-                      "text-xs flex items-center gap-2",
-                      /[A-Z]/.test(password)
-                        ? "text-green-500"
-                        : "text-destructive",
-                    )}
-                  >
-                    ✓ Una mayúscula (A-Z)
-                  </p>
-                  <p
-                    className={cn(
-                      "text-xs flex items-center gap-2",
-                      /[a-z]/.test(password)
-                        ? "text-green-500"
-                        : "text-destructive",
-                    )}
-                  >
-                    ✓ Una minúscula (a-z)
-                  </p>
-                  <p
-                    className={cn(
-                      "text-xs flex items-center gap-2",
-                      /\d/.test(password)
-                        ? "text-green-500"
-                        : "text-destructive",
-                    )}
-                  >
-                    ✓ Un número (0-9)
-                  </p>
+              {isRegisterMode && (
+                <div className="auth-field fade-in">
+                  <label className="auth-label">Nombre de Código</label>
+                  <div className="input-wrapper">
+                    <Input
+                      id="username"
+                      type="text"
+                      placeholder="Codename_Alpha"
+                      className="premium-auth-input"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                      disabled={isSubmitting}
+                    />
+                  </div>
                 </div>
               )}
-              {isRegisterMode && !password && (
-                <p className="text-xs text-muted-foreground">
-                  Debe contener: mayúsculas, minúsculas y números
-                </p>
-              )}
+
+              <div className="auth-field">
+                <label className="auth-label">Clave de Encriptación</label>
+                <div className="input-wrapper">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••••••"
+                    className="premium-auth-input"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={isSubmitting}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="input-eye-toggle"
+                    disabled={isSubmitting}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              disabled={isSubmitting || isLoading}
-              className="w-full font-semibold uppercase tracking-wide"
-              size="lg"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader size={18} className="animate-spin mr-2" />
-                  Procesando...
-                </>
-              ) : isRegisterMode ? (
-                "Crear Cuenta"
-              ) : (
-                "Iniciar Sesión"
-              )}
-            </Button>
+            <footer className="portal-actions">
+              <button
+                type="submit"
+                disabled={isSubmitting || isLoading}
+                className={`premium-deploy-btn ${isSubmitting ? "deploying" : ""}`}
+              >
+                {isSubmitting ? (
+                  <div className="deploy-loading">
+                    <Loader size={20} className="spinning" />
+                    <span>SINCRONIZANDO...</span>
+                  </div>
+                ) : isRegisterMode ? (
+                  "INICIALIZAR PROTOCOLO"
+                ) : (
+                  "AUTORIZAR ACCESO"
+                )}
+              </button>
+
+              <div className="auth-switch">
+                <span className="switch-text">
+                  {isRegisterMode ? "¿Ya posee autorización?" : "¿Aún sin credenciales?"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsRegisterMode(!isRegisterMode);
+                    setError("");
+                  }}
+                  className="switch-action-btn"
+                  disabled={isSubmitting}
+                >
+                  {isRegisterMode ? "Iniciar Sesión" : "Registrar Operador"}
+                </button>
+              </div>
+            </footer>
           </form>
-        </CardContent>
-
-        <CardFooter className="flex flex-col gap-4 pt-4 border-t border-border">
-          <p className="text-sm text-muted-foreground text-center">
-            {isRegisterMode ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?"}
-            <button
-              type="button"
-              onClick={() => {
-                setIsRegisterMode(!isRegisterMode);
-                setError("");
-              }}
-              className="ml-2 text-primary hover:text-primary/80 font-medium transition-colors disabled:opacity-50"
-              disabled={isSubmitting}
-            >
-              {isRegisterMode ? "Inicia sesión" : "Regístrate aquí"}
-            </button>
-          </p>
-
-          <div className="w-full p-3 bg-primary/5 rounded-md text-center">
-            <p className="text-xs text-muted-foreground">
-              <strong className="text-foreground">Demo:</strong> El primer
-              usuario registrado será admin automáticamente
-            </p>
-          </div>
-        </CardFooter>
-      </Card>
+        </main>
+      </div>
     </div>
   );
 };

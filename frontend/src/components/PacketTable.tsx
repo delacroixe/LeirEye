@@ -123,86 +123,49 @@ const PacketTable: React.FC<PacketTableProps> = ({
   };
 
   return (
-    <div className="packet-table-container">
-      <div className="packet-table-header">
-        <div className="packet-table-title-row">
-          <h2>Paquetes Capturados ({filteredPackets.length})</h2>
+    <div className="packet-inspector glass-card">
+      <div className="inspector-header">
+        <div className="header-meta">
+          <h2 className="header-title">
+            Flujo de Datos ({filteredPackets.length})
+          </h2>
           <InfoTooltip content={TOOLTIP_CONTENT.packetTable} size="sm" />
         </div>
-        <div className="packet-header-controls">
-          <input
-            type="text"
-            placeholder="🔍 Buscar por IP, protocolo o puerto..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
+
+        <div className="header-actions">
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Filtro rápido (IP, Protocolo, Puertos...)"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-control"
+            />
+          </div>
           <button
             onClick={exportToCSV}
             disabled={filteredPackets.length === 0}
-            className="export-btn"
-            title="Descargar como CSV"
+            className="action-btn-outline"
+            title="Exportar registros a CSV"
           >
-            📥 Exportar CSV
+            📥 Exportar
           </button>
         </div>
       </div>
 
-      {loading && <div className="loading">Cargando paquetes...</div>}
+      {loading && <div className="fetching-indicator">Cargando unidades de datos...</div>}
 
-      <div className="table-wrapper">
-        <table className="packet-table">
+      <div className="inspector-table-view">
+        <table className="inspector-table">
           <thead>
             <tr>
               <th>Hora</th>
-              <th>
-                IP Origen
-                <InfoTooltip
-                  content={TOOLTIP_CONTENT.ipAddress}
-                  size="sm"
-                  position="bottom"
-                />
-              </th>
-              <th>
-                IP Destino
-                <InfoTooltip
-                  content={TOOLTIP_CONTENT.ipAddress}
-                  size="sm"
-                  position="bottom"
-                />
-              </th>
-              <th>
-                Protocolo
-                <InfoTooltip
-                  content={TOOLTIP_CONTENT.protocol}
-                  size="sm"
-                  position="bottom"
-                />
-              </th>
-              <th>
-                Puerto Src
-                <InfoTooltip
-                  content={TOOLTIP_CONTENT.ports}
-                  size="sm"
-                  position="bottom"
-                />
-              </th>
-              <th>
-                Puerto Dst
-                <InfoTooltip
-                  content={TOOLTIP_CONTENT.ports}
-                  size="sm"
-                  position="bottom"
-                />
-              </th>
-              <th>
-                Proceso
-                <InfoTooltip
-                  content={TOOLTIP_CONTENT.processTraffic}
-                  size="sm"
-                  position="bottom"
-                />
-              </th>
+              <th>Origen</th>
+              <th>Destino</th>
+              <th>Protocolo</th>
+              <th>P.Src</th>
+              <th>P.Dst</th>
+              <th>Proceso</th>
               <th>Tamaño</th>
               <th></th>
             </tr>
@@ -210,130 +173,121 @@ const PacketTable: React.FC<PacketTableProps> = ({
           <tbody>
             {filteredPackets.length === 0 ? (
               <tr>
-                <td colSpan={9} className="empty-message">
+                <td colSpan={9} className="placeholder-row">
                   {searchTerm
-                    ? "No hay paquetes que coincidan con la búsqueda."
-                    : "No hay paquetes capturados. Inicia una captura para comenzar."}
+                    ? "Sin registros coincidentes."
+                    : "Esperando flujo de datos entrante..."}
                 </td>
               </tr>
             ) : (
               filteredPackets.map((packet, index) => (
                 <React.Fragment key={index}>
                   <tr
-                    className={`packet-row ${activeProcessPid && packet.pid === activeProcessPid ? "highlighted" : ""}`}
+                    className={`data-row ${activeProcessPid && packet.pid === activeProcessPid ? "highlighted" : ""}`}
                     onClick={() => toggleExpand(index)}
                     style={{
-                      borderLeft: `4px solid ${getProtocolColor(packet.protocol)}`,
+                      borderLeft: `3px solid ${getProtocolColor(packet.protocol)}`,
                     }}
                   >
-                    <td>{formatTime(packet.timestamp)}</td>
-                    <td className="ip-addr">{packet.src_ip}</td>
-                    <td className="ip-addr">{packet.dst_ip}</td>
-                    <td>
+                    <td className="col-time">{formatTime(packet.timestamp)}</td>
+                    <td className="col-ip">{packet.src_ip}</td>
+                    <td className="col-ip">{packet.dst_ip}</td>
+                    <td className="col-protocol">
                       <span
-                        className="protocol-badge"
+                        className="protocol-chip"
                         style={{
-                          backgroundColor: getProtocolColor(packet.protocol),
+                          backgroundColor: `${getProtocolColor(packet.protocol)}20`,
+                          color: getProtocolColor(packet.protocol),
+                          borderColor: `${getProtocolColor(packet.protocol)}40`,
                         }}
                       >
                         {packet.protocol}
                       </span>
                       {packet.dns_domain && (
                         <span title={`DNS: ${packet.dns_domain}`}>
-                          <Globe size={12} className="dns-indicator" />
+                          <Globe size={12} className="meta-icon" />
                         </span>
                       )}
                     </td>
-                    <td>{packet.src_port || "-"}</td>
-                    <td>{packet.dst_port || "-"}</td>
-                    <td>
-                      {packet.process_name ? (
-                        <span className="process-badge">
-                          {packet.process_name}
-                        </span>
-                      ) : (
-                        <span className="process-badge unknown">
-                          Desconocido
-                        </span>
-                      )}
+                    <td className="col-port">{packet.src_port || "—"}</td>
+                    <td className="col-port">{packet.dst_port || "—"}</td>
+                    <td className="col-process">
+                      <span className={`process-chip ${!packet.process_name ? "unknown" : ""}`}>
+                        {packet.process_name || "kernel/init"}
+                      </span>
                     </td>
-                    <td>{packet.length}b</td>
-                    <td>
+                    <td className="col-size">{packet.length} B</td>
+                    <td className="col-actions">
                       <button
-                        className="explain-btn"
+                        className="academy-btn"
                         onClick={(e) => handleExplain(packet, e)}
-                        title="¿Qué es esto?"
+                        title="Analizar Unidad"
                       >
                         🎓
                       </button>
                     </td>
                   </tr>
                   {expandedRow === index && (
-                    <tr className="expanded-row">
+                    <tr className="detail-panel-row">
                       <td colSpan={9}>
-                        <div className="packet-details">
-                          <div className="detail-item">
-                            <strong>IP Origen:</strong> {packet.src_ip}
+                        <div className="detail-panel glass-card">
+                          <div className="grid-details">
+                            <div className="detail-entry">
+                              <span className="entry-label">Origen:</span>
+                              <span className="entry-value">{packet.src_ip}:{packet.src_port || "—"}</span>
+                            </div>
+                            <div className="detail-entry">
+                              <span className="entry-label">Destino:</span>
+                              <span className="entry-value">{packet.dst_ip}:{packet.dst_port || "—"}</span>
+                            </div>
+                            <div className="detail-entry">
+                              <span className="entry-label">Protocolo:</span>
+                              <span className="entry-value">{packet.protocol}</span>
+                            </div>
+
+                            {packet.dns_domain && (
+                              <div className="detail-entry dns-highlight">
+                                <Globe size={14} className="entry-icon" />
+                                <span className="entry-label">Dominio DNS:</span>
+                                <span className="entry-value domain">{packet.dns_domain}</span>
+                                {packet.dns_query_id && (
+                                  <a
+                                    href={`/dns?query_id=${packet.dns_query_id}`}
+                                    className="cyber-link"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    Trazar →
+                                  </a>
+                                )}
+                              </div>
+                            )}
+
+                            <div className="detail-entry">
+                              <span className="entry-label">Entidad:</span>
+                              <span className="entry-value">{packet.process_name || "Desconocida"} (PID: {packet.pid || "—"})</span>
+                            </div>
+
+                            {packet.flags && (
+                              <div className="detail-entry">
+                                <span className="entry-label">Control Flags:</span>
+                                <span className="entry-value flags">{packet.flags}</span>
+                              </div>
+                            )}
+
+                            <div className="detail-entry">
+                              <span className="entry-label">Sincronización:</span>
+                              <span className="entry-value">{packet.timestamp}</span>
+                            </div>
                           </div>
-                          <div className="detail-item">
-                            <strong>IP Destino:</strong> {packet.dst_ip}
-                          </div>
-                          <div className="detail-item">
-                            <strong>Protocolo:</strong> {packet.protocol}
-                          </div>
-                          {packet.dns_domain && (
-                            <div className="detail-item dns-info">
-                              <Globe size={14} />
-                              <strong>Dominio DNS:</strong>
-                              <span className="dns-domain">
-                                {packet.dns_domain}
-                              </span>
-                              {packet.dns_query_id && (
-                                <a
-                                  href={`/dns?query_id=${packet.dns_query_id}`}
-                                  className="dns-link"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  Ver en DNS Tracker →
-                                </a>
-                              )}
-                            </div>
-                          )}
-                          {packet.src_port && (
-                            <div className="detail-item">
-                              <strong>Puerto Origen:</strong> {packet.src_port}
-                            </div>
-                          )}
-                          {packet.dst_port && (
-                            <div className="detail-item">
-                              <strong>Puerto Destino:</strong> {packet.dst_port}
-                            </div>
-                          )}
-                          {packet.process_name && (
-                            <div className="detail-item">
-                              <strong>Proceso:</strong> {packet.process_name}{" "}
-                              (PID: {packet.pid})
-                            </div>
-                          )}
-                          {packet.flags && (
-                            <div className="detail-item">
-                              <strong>Flags TCP:</strong> {packet.flags}
-                            </div>
-                          )}
-                          <div className="detail-item">
-                            <strong>Tamaño:</strong> {packet.length} bytes
-                          </div>
+
                           {packet.payload_preview && (
-                            <div className="detail-item">
-                              <strong>Payload (hex):</strong>
-                              <div className="payload-hex">
+                            <div className="payload-viewer">
+                              <span className="entry-label">Data Payload Preview (Hexdump):</span>
+                              <div className="hex-viewer">
                                 {packet.payload_preview}
                               </div>
                             </div>
                           )}
-                          <div className="detail-item">
-                            <strong>Timestamp:</strong> {packet.timestamp}
-                          </div>
                         </div>
                       </td>
                     </tr>
@@ -345,7 +299,6 @@ const PacketTable: React.FC<PacketTableProps> = ({
         </table>
       </div>
 
-      {/* Modal de explicación */}
       {selectedPacket && (
         <PacketExplainer
           packet={selectedPacket}

@@ -51,22 +51,35 @@ const CapturePage: React.FC = () => {
   }, [packets, globalFilter, selectedDnsQueryId]);
 
   return (
-    <div className="capture-page">
-      <div className="page-header">
-        <h2>📦 Captura de Paquetes</h2>
-        <p className="page-description">
-          {globalFilter
-            ? `Mostrando ${filteredPackets.length} de ${packets.length} paquetes`
-            : "Visualiza el tráfico de red en tiempo real"}
-        </p>
-      </div>
+    <div className="view-container capture-view">
+      <header className="view-header">
+        <div className="header-text">
+          <h1 className="view-title">
+            <span className="title-icon">📦</span> Sincronización de Paquetes
+          </h1>
+          <p className="view-subtitle">
+            {globalFilter
+              ? `Filtrando ${filteredPackets.length} de ${packets.length} unidades de datos`
+              : "Monitorización activa de flujos de red en tiempo real"}
+          </p>
+        </div>
+        <div className="header-actions">
+          <PageHelp content={PAGE_HELP.capture} />
+        </div>
+      </header>
 
-      <PageHelp content={PAGE_HELP.capture} />
-
-      <div className="capture-page-content">
-        <ActivityTimeline packets={filteredPackets} />
-        <ProcessTraffic refreshTrigger={filteredPackets.length} />
-        <PacketTable packets={filteredPackets} loading={isCapturing} />
+      <div className="view-content">
+        <div className="dashboard-grid">
+          <div className="grid-span-full">
+            <ActivityTimeline packets={filteredPackets} />
+          </div>
+          <div className="grid-sidebar">
+            <ProcessTraffic refreshTrigger={filteredPackets.length} />
+          </div>
+          <div className="grid-main">
+            <PacketTable packets={filteredPackets} loading={isCapturing} />
+          </div>
+        </div>
       </div>
     </div>
   );

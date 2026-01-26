@@ -68,94 +68,93 @@ export const ProcessTraffic: React.FC<ProcessTrafficProps> = ({
   );
 
   return (
-    <div className="process-traffic-container">
-      <div className="process-header">
-        <h3>📊 Tráfico por Proceso</h3>
+    <div className="process-monitor glass-card">
+      <div className="monitor-header">
+        <h3 className="monitor-title">📊 Flujo por Entidad</h3>
         <button
           onClick={fetchProcessTraffic}
           disabled={loading}
-          className="refresh-btn"
+          className="refresh-control"
+          title="Sincronizar entidades"
         >
-          {loading ? "⟳" : "🔄"}
+          {loading ? "..." : "Sincronizar"}
         </button>
       </div>
 
       {sortedProcesses.length === 0 ? (
-        <div className="empty-state">
-          <p>Inicia una captura para ver el tráfico por proceso</p>
+        <div className="monitor-empty">
+          <p>Esperando telemetría de procesos activos...</p>
         </div>
       ) : (
-        <div className="processes-list">
+        <div className="entities-list">
           {sortedProcesses.map(([processName, stats]) => (
-            <div key={processName} className="process-item">
+            <div key={processName} className={`entity-item ${expandedProcess === processName ? "expanded" : ""}`}>
               <div
-                className="process-header-row"
+                className="entity-header"
                 onClick={() =>
                   setExpandedProcess(
                     expandedProcess === processName ? null : processName,
                   )
                 }
               >
-                <div className="process-info">
-                  <span className="process-name">
-                    {expandedProcess === processName ? "▼" : "▶"} {processName}
+                <div className="entity-main-info">
+                  <span className="entity-name">
+                    {processName}
                   </span>
-                  <span className="process-stats">
-                    {stats.count} paquetes • {formatBytes(stats.bytes)}
-                  </span>
+                  <div className="entity-metrics">
+                    <span className="metric-tag">{stats.count} PKTS</span>
+                    <span className="metric-tag secondary">{formatBytes(stats.bytes)}</span>
+                  </div>
                 </div>
+                <span className="expand-icon">{expandedProcess === processName ? "−" : "+"}</span>
               </div>
 
               {expandedProcess === processName && (
-                <div className="process-details">
-                  <div className="detail-section">
-                    <h4>Protocolos</h4>
-                    <div className="protocols">
+                <div className="entity-details">
+                  <div className="detail-row">
+                    <span className="detail-label">Protocolos:</span>
+                    <div className="chip-group">
                       {Object.entries(stats.protocols).map(
                         ([protocol, count]) => (
-                          <div key={protocol} className="protocol-item">
+                          <div key={protocol} className="protocol-mini-chip">
                             <span
-                              className="protocol-badge"
-                              style={{
-                                backgroundColor: getProtocolColor(protocol),
-                              }}
-                            >
-                              {protocol}
-                            </span>
-                            <span className="protocol-count">{count}</span>
+                              className="chip-dot"
+                              style={{ backgroundColor: getProtocolColor(protocol) }}
+                            />
+                            <span className="chip-label">{protocol}: {count}</span>
                           </div>
                         ),
                       )}
                     </div>
                   </div>
 
-                  <div className="detail-section">
-                    <h4>Puertos ({stats.ports.length})</h4>
-                    <div className="ports">
-                      {stats.ports.slice(0, 10).map((port) => (
-                        <span key={port} className="port-badge">
+                  <div className="detail-row">
+                    <span className="detail-label">Puertos Interactivos ({stats.ports.length}):</span>
+                    <div className="chip-group">
+                      {stats.ports.slice(0, 8).map((port) => (
+                        <span key={port} className="port-mini-chip">
                           {port}
                         </span>
                       ))}
-                      {stats.ports.length > 10 && (
-                        <span className="more-badge">
-                          +{stats.ports.length - 10}
+                      {stats.ports.length > 8 && (
+                        <span className="more-chip">
+                          +{stats.ports.length - 8}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="detail-section">
-                    <h4>IPs ({stats.ips.length})</h4>
-                    <div className="ips">
-                      {stats.ips.slice(0, 5).map((ip) => (
-                        <span key={ip} className="ip-badge">
+                  <div className="detail-row">
+                    <span className="detail-label">IPs de Comunicación ({stats.ips.length}):</span>
+                    <div className="chip-group">
+                      {stats.ips.slice(0, 3).map((ip) => (
+                        <span key={ip} className="ip-mini-chip">
                           {ip}
                         </span>
                       ))}
-                      {stats.ips.length > 5 && (
-                        <span className="more-badge">
-                          +{stats.ips.length - 5}
+                      {stats.ips.length > 3 && (
+                        <span className="more-chip">
+                          +{stats.ips.length - 3}
                         </span>
                       )}
                     </div>
