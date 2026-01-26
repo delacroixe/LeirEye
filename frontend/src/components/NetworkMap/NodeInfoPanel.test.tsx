@@ -4,7 +4,7 @@ import NodeInfoPanel from './NodeInfoPanel';
 import { NetworkMapNode } from '../../services/api';
 
 describe('NodeInfoPanel', () => {
-  const mockOnClose = jest.fn();
+  const mockOnClose = vi.fn();
 
   const localNode: NetworkMapNode = {
     id: '1',
@@ -40,7 +40,7 @@ describe('NodeInfoPanel', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('renderiza el panel con información del nodo', () => {

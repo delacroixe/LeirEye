@@ -1,12 +1,13 @@
 import { render, screen } from "@testing-library/react";
+import { vi } from "vitest";
 import { NetworkMapData } from "../../services/api";
 import GeoView from "./GeoView";
 
 // Mock de CSS
-jest.mock("leaflet/dist/leaflet.css", () => ({}));
+vi.mock("leaflet/dist/leaflet.css", () => ({}));
 
 // Mock de react-leaflet
-jest.mock("react-leaflet", () => ({
+vi.mock("react-leaflet", () => ({
   MapContainer: ({ children, center, zoom, style }: any) => (
     <div
       data-testid="map-container"
@@ -34,23 +35,28 @@ jest.mock("react-leaflet", () => ({
     ></div>
   ),
   useMap: () => ({
-    fitBounds: jest.fn(),
+    fitBounds: vi.fn(),
   }),
 }));
 
 // Mock de leaflet
-jest.mock("leaflet", () => ({
-  Icon: {
-    Default: {
-      prototype: {},
-      mergeOptions: jest.fn(),
+vi.mock("leaflet", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("leaflet")>();
+  return {
+    ...actual,
+    Icon: {
+      Default: {
+        prototype: {},
+        mergeOptions: vi.fn(),
+      },
     },
-  },
-  latLngBounds: jest.fn((positions) => ({
-    positions,
-  })),
-  latLng: jest.fn((lat, lon) => [lat, lon]),
-}));
+    latLngBounds: vi.fn((positions) => ({
+      positions,
+    })),
+    latLng: vi.fn((lat, lon) => [lat, lon]),
+  };
+});
+
 
 describe("GeoView", () => {
   const mockMapData: NetworkMapData = {

@@ -4,7 +4,7 @@ import NetworkMap from './index';
 import { useNetworkMap } from '../../hooks/useNetworkMap';
 
 // Mock de los subcomponentes
-jest.mock('./GraphView', () => ({
+vi.mock('./GraphView', () => ({
   __esModule: true,
   default: ({ onNodeSelect }: any) => (
     <div data-testid="graph-view" onClick={() => onNodeSelect({ id: '1', label: 'Test Node' })}>
@@ -13,12 +13,12 @@ jest.mock('./GraphView', () => ({
   ),
 }));
 
-jest.mock('./GeoView', () => ({
+vi.mock('./GeoView', () => ({
   __esModule: true,
   default: () => <div data-testid="geo-view">Geo View Mock</div>,
 }));
 
-jest.mock('./NodeInfoPanel', () => ({
+vi.mock('./NodeInfoPanel', () => ({
   __esModule: true,
   default: ({ node, onClose }: any) => (
     <div data-testid="node-info-panel">
@@ -29,9 +29,9 @@ jest.mock('./NodeInfoPanel', () => ({
 }));
 
 // Mock del hook useNetworkMap
-jest.mock('../../hooks/useNetworkMap');
+vi.mock('../../hooks/useNetworkMap');
 
-const mockUseNetworkMap = useNetworkMap as jest.MockedFunction<typeof useNetworkMap>;
+const mockUseNetworkMap = useNetworkMap as vi.MockedFunction<typeof useNetworkMap>;
 
 describe('NetworkMap', () => {
   const mockMapData = {
@@ -76,13 +76,13 @@ describe('NetworkMap', () => {
     selectedNode: null,
     autoRefresh: false,
     userLocation: [43.3, -2.0] as [number, number],
-    setSelectedNode: jest.fn(),
-    setAutoRefresh: jest.fn(),
-    refresh: jest.fn(),
+    setSelectedNode: vi.fn(),
+    setAutoRefresh: vi.fn(),
+    refresh: vi.fn(),
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockUseNetworkMap.mockReturnValue(defaultHookReturn);
   });
 
@@ -98,7 +98,7 @@ describe('NetworkMap', () => {
   });
 
   test('muestra estado de error cuando hay error', () => {
-    const mockRefresh = jest.fn();
+    const mockRefresh = vi.fn();
     mockUseNetworkMap.mockReturnValue({
       ...defaultHookReturn,
       error: 'Error de red',
@@ -174,7 +174,7 @@ describe('NetworkMap', () => {
   });
 
   test('toggle de auto-refresh funciona correctamente', () => {
-    const mockSetAutoRefresh = jest.fn();
+    const mockSetAutoRefresh = vi.fn();
     mockUseNetworkMap.mockReturnValue({
       ...defaultHookReturn,
       setAutoRefresh: mockSetAutoRefresh,
@@ -189,7 +189,7 @@ describe('NetworkMap', () => {
   });
 
   test('botón de refresh llama a la función refresh', () => {
-    const mockRefresh = jest.fn();
+    const mockRefresh = vi.fn();
     mockUseNetworkMap.mockReturnValue({
       ...defaultHookReturn,
       refresh: mockRefresh,
@@ -204,7 +204,7 @@ describe('NetworkMap', () => {
   });
 
   test('muestra panel de información del nodo seleccionado en vista de grafo', async () => {
-    const mockSetSelectedNode = jest.fn();
+    const mockSetSelectedNode = vi.fn();
     mockUseNetworkMap.mockReturnValue({
       ...defaultHookReturn,
       selectedNode: mockMapData.nodes[0],
@@ -218,7 +218,7 @@ describe('NetworkMap', () => {
   });
 
   test('cierra panel de información del nodo', () => {
-    const mockSetSelectedNode = jest.fn();
+    const mockSetSelectedNode = vi.fn();
     mockUseNetworkMap.mockReturnValue({
       ...defaultHookReturn,
       selectedNode: mockMapData.nodes[0],

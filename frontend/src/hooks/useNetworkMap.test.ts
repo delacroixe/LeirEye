@@ -3,16 +3,16 @@ import apiService, { NetworkMapData } from "../services/api";
 import { useNetworkMap } from "./useNetworkMap";
 
 // Mock dependencies
-jest.mock("../services/api");
-const mockApiService = apiService as jest.Mocked<typeof apiService>;
+vi.mock("../services/api");
+const mockApiService = apiService as vi.Mocked<typeof apiService>;
 
 // Mock fetch for geo IP - block it to avoid act() warnings
-global.fetch = jest.fn(() =>
+global.fetch = vi.fn(() =>
   Promise.resolve({
     ok: false,
     json: async () => ({}),
   }),
-) as jest.Mock;
+) as vi.Mock;
 
 describe("useNetworkMap", () => {
   const mockNetworkMapData: NetworkMapData = {
@@ -58,7 +58,7 @@ describe("useNetworkMap", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // Mock successful API call by default
     mockApiService.getNetworkMap.mockResolvedValue(mockNetworkMapData);
   });
@@ -91,7 +91,7 @@ describe("useNetworkMap", () => {
   });
 
   test("handles errors when loading map data", async () => {
-    const consoleErrorSpy = jest
+    const consoleErrorSpy = vi
       .spyOn(console, "error")
       .mockImplementation(() => {});
     mockApiService.getNetworkMap.mockRejectedValueOnce(

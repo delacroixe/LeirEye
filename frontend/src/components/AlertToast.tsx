@@ -1,3 +1,7 @@
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import {
   AlertOctagon,
   AlertTriangle,
@@ -12,7 +16,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertData, useAlerts } from "../contexts/AlertsContext";
 import { explainAlert } from "../services/api";
-import "./AlertToast.css";
 
 const severityIcons: Record<string, React.ElementType> = {
   critical: AlertOctagon,
@@ -22,12 +25,35 @@ const severityIcons: Record<string, React.ElementType> = {
   info: Info,
 };
 
-const severityColors: Record<string, string> = {
-  critical: "#dc2626",
-  high: "#ea580c",
-  medium: "#ca8a04",
-  low: "#2563eb",
-  info: "#6b7280",
+const severityColors: Record<
+  string,
+  { bg: string; text: string; border: string }
+> = {
+  critical: {
+    bg: "bg-red-500/10",
+    text: "text-red-500",
+    border: "border-red-500/30",
+  },
+  high: {
+    bg: "bg-orange-500/10",
+    text: "text-orange-500",
+    border: "border-orange-500/30",
+  },
+  medium: {
+    bg: "bg-yellow-500/10",
+    text: "text-yellow-500",
+    border: "border-yellow-500/30",
+  },
+  low: {
+    bg: "bg-blue-500/10",
+    text: "text-blue-500",
+    border: "border-blue-500/30",
+  },
+  info: {
+    bg: "bg-gray-500/10",
+    text: "text-gray-500",
+    border: "border-gray-500/30",
+  },
 };
 
 export const AlertToast: React.FC = () => {
@@ -40,7 +66,6 @@ export const AlertToast: React.FC = () => {
 
   const handleExplainAlert = async (alertId: string, alert: AlertData) => {
     if (explanations[alertId]) {
-      // Toggle: si ya tiene explicación, la oculta
       setExplanations((prev) => {
         const copy = { ...prev };
         delete copy[alertId];
@@ -79,100 +104,143 @@ export const AlertToast: React.FC = () => {
   if (notifications.length === 0) return null;
 
   return (
-    <div className="alert-toast-container">
+    <div className="fixed bottom-4 right-4 z-[1000] flex flex-col gap-3 max-w-md w-full">
       {notifications.map((alert) => {
         const Icon = severityIcons[alert.severity] || Bell;
-        const color = severityColors[alert.severity] || "#64c8ff";
+        const colors = severityColors[alert.severity] || severityColors.info;
         const hasExplanation = explanations[alert.id];
         const isLoading = loadingExplanation === alert.id;
 
         return (
-          <div
+          <Card
             key={alert.id}
-            className={`alert-toast alert-toast-${alert.severity} ${hasExplanation ? "expanded" : ""}`}
-            style={{ "--severity-color": color } as React.CSSProperties}
+            className={cn(
+              "relative overflow-hidden animate-in slide-in-from-right-full duration-300",
+              "bg-bg-secondary border p-4",
+              colors.border,
+              hasExplanation && "pb-6",
+            )}
           >
-            <div className="toast-icon" style={{ color }}>
-              <Icon size={20} />
-            </div>
+            <div className="flex gap-3">
+              {/* Icon */}
+              <div className={cn("shrink-0 mt-0.5", colors.text)}>
+                <Icon size={20} />
+              </div>
 
-            <div className="toast-content">
-              <div className="toast-header">
-                <span className="toast-severity">
-                  {alert.severity.toUpperCase()}
-                </span>
-                <span className="toast-type">
-                  {alert.type.replace(/_/g, " ")}
-                </span>
-                {alert.count && alert.count > 1 && (
-                  <span
-                    className="toast-count"
-                    title={`${alert.count} alertas similares agrupadas`}
+              {/* Content */}
+              <div className="flex-1 min-w-0 space-y-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-xs uppercase font-semibold",
+                      colors.text,
+                      colors.border,
+                    )}
                   >
-                    ×{alert.count}
+                    {alert.severity}
+                  </Badge>
+                  <span className="text-xs text-text-secondary">
+                    {alert.type.replace(/_/g, " ")}
+                  </span>
+                  {alert.count && alert.count > 1 && (
+                    <Badge
+                      variant="secondary"
+                      className="text-xs bg-accent/20 text-accent"
+                    >
+                      ×{alert.count}
+                    </Badge>
+                  )}
+                </div>
+
+                <h4 className="text-sm font-semibold text-text-primary">
+                  {alert.title}
+                </h4>
+                <p className="text-xs text-text-secondary line-clamp-2">
+                  {alert.description.slice(0, 120)}...
+                </p>
+
+                {hasExplanation && (
+                  <div className="mt-3 p-3 bg-accent/5 rounded-md border-l-2 border-accent">
+                    <span className="text-xs font-medium text-accent">
+                      🤖 IA explica:
+                    </span>
+                    <p className="text-xs text-text-secondary mt-1">
+                      {explanations[alert.id]}
+                    </p>
+                  </div>
+                )}
+
+                {alert.source.process_name && (
+                  <span className="inline-flex items-center gap-1 text-xs text-text-muted">
+                    📦 {alert.source.process_name}
                   </span>
                 )}
               </div>
-              <h4 className="toast-title">{alert.title}</h4>
-              <p className="toast-description">
-                {alert.description.slice(0, 120)}...
-              </p>
 
-              {hasExplanation && (
-                <div className="toast-explanation">
-                  <span className="explanation-label">🤖 IA explica:</span>
-                  <p>{explanations[alert.id]}</p>
-                </div>
-              )}
-
-              {alert.source.process_name && (
-                <span className="toast-process">
-                  📦 {alert.source.process_name}
-                </span>
-              )}
+              {/* Actions */}
+              <div className="flex flex-col gap-1 shrink-0">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-text-secondary hover:text-accent"
+                  onClick={() => navigate("/alerts")}
+                  title="Ver todas las alertas"
+                >
+                  <ExternalLink size={14} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn(
+                    "h-7 w-7",
+                    hasExplanation
+                      ? "text-accent"
+                      : "text-text-secondary hover:text-accent",
+                  )}
+                  onClick={() => handleExplainAlert(alert.id, alert)}
+                  disabled={isLoading}
+                  title="¿Por qué es importante?"
+                >
+                  {isLoading ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <HelpCircle size={14} />
+                  )}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-success hover:text-success hover:bg-success/10"
+                  onClick={() => {
+                    acknowledgeAlert(alert.id);
+                    dismissNotification(alert.id);
+                  }}
+                  title="Reconocer"
+                >
+                  ✓
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-text-secondary hover:text-error hover:bg-error/10"
+                  onClick={() => dismissNotification(alert.id)}
+                  title="Descartar"
+                >
+                  <X size={14} />
+                </Button>
+              </div>
             </div>
 
-            <div className="toast-actions">
-              <button
-                className="toast-action view-all"
-                onClick={() => navigate("/alerts")}
-                title="Ver todas las alertas"
-              >
-                <ExternalLink size={14} />
-              </button>
-              <button
-                className={`toast-action explain ${hasExplanation ? "active" : ""}`}
-                onClick={() => handleExplainAlert(alert.id, alert)}
-                disabled={isLoading}
-                title="¿Por qué es importante?"
-              >
-                {isLoading ? (
-                  <Loader2 size={14} className="spinner" />
-                ) : (
-                  <HelpCircle size={14} />
-                )}
-              </button>
-              <button
-                className="toast-action acknowledge"
-                onClick={() => {
-                  acknowledgeAlert(alert.id);
-                  dismissNotification(alert.id);
-                }}
-                title="Reconocer"
-              >
-                ✓
-              </button>
-              <button
-                className="toast-action dismiss"
-                onClick={() => dismissNotification(alert.id)}
-                title="Descartar"
-              >
-                <X size={14} />
-              </button>
-            </div>
-
-            <div className="toast-progress" />
-          </div>
+            {/* Progress bar */}
+            <div
+              className={cn(
+                "absolute bottom-0 left-0 h-1 animate-[shrink_10s_linear_forwards]",
+                colors.bg.replace("/10", ""),
+              )}
+              style={{ width: "100%" }}
+            />
+          </Card>
         );
       })}
     </div>

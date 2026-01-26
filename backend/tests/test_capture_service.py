@@ -36,23 +36,28 @@ class TestPacketCaptureService:
         
         assert service.on_packet_callback == callback
     
-    @patch('app.services.packet_capture.capture_service.get_if_list')
-    def test_get_available_interfaces(self, mock_get_if_list):
+    @patch('app.services.system_info.get_network_interfaces')
+    def test_get_available_interfaces(self, mock_get_interfaces):
         """get_available_interfaces retorna interfaces válidas"""
-        mock_get_if_list.return_value = ["eth0", "wlan0", "lo", "docker0"]
+        # Crear mocks de interfaces con atributos
+        iface1 = Mock(ipv4=True, ipv6=False); iface1.name = "eth0"
+        iface2 = Mock(ipv4=False, ipv6=True); iface2.name = "wlan0"
+        iface3 = Mock(ipv4=False, ipv6=False); iface3.name = "lo"
+        mock_get_interfaces.return_value = [iface1, iface2, iface3]
         
         service = PacketCaptureService()
         interfaces = service.get_available_interfaces()
         
         # Debería filtrar "lo" y ordenar
         assert "lo" not in interfaces
-        assert "eth0" in interfaces or "wlan0" in interfaces
+        assert "eth0" in interfaces
+        assert "wlan0" in interfaces
         assert interfaces == sorted(interfaces)
     
-    @patch('app.services.packet_capture.capture_service.get_if_list')
-    def test_get_available_interfaces_handles_exception(self, mock_get_if_list):
+    @patch('app.services.system_info.get_network_interfaces')
+    def test_get_available_interfaces_handles_exception(self, mock_get_interfaces):
         """get_available_interfaces maneja excepciones correctamente"""
-        mock_get_if_list.side_effect = Exception("Test error")
+        mock_get_interfaces.side_effect = Exception("Test error")
         
         service = PacketCaptureService()
         interfaces = service.get_available_interfaces()

@@ -1,13 +1,13 @@
 // Mock vis-network antes de importar GraphView
-jest.mock("vis-network/standalone", () => ({
-  Network: jest.fn().mockImplementation(() => ({
-    on: jest.fn(),
-    off: jest.fn(),
-    setData: jest.fn(),
-    destroy: jest.fn(),
-    fit: jest.fn(),
+vi.mock("vis-network/standalone", () => ({
+  Network: vi.fn().mockImplementation(() => ({
+    on: vi.fn(),
+    off: vi.fn(),
+    setData: vi.fn(),
+    destroy: vi.fn(),
+    fit: vi.fn(),
   })),
-  DataSet: jest.fn().mockImplementation((data) => data),
+  DataSet: vi.fn().mockImplementation((data) => data),
 }));
 
 import GraphView from "./GraphView";

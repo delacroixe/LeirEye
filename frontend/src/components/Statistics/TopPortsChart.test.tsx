@@ -4,7 +4,7 @@ import TopPortsChart from './TopPortsChart';
 import { StatsData } from '../../services/api';
 
 // Mock recharts to avoid rendering issues in tests
-jest.mock('recharts', () => ({
+vi.mock('recharts', () => ({
   ResponsiveContainer: ({ children }: any) => <div>{children}</div>,
   BarChart: ({ children }: any) => <div>{children}</div>,
   Bar: () => <div />,
@@ -39,7 +39,7 @@ describe('TopPortsChart', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('renders chart title', () => {

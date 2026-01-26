@@ -3,7 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import { AuthProvider, useAuth } from './AuthContext';
 
 // Mock fetch
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 // Componente de prueba para acceder al contexto
 const TestComponent = () => {
@@ -23,9 +23,9 @@ const TestComponent = () => {
 
 describe('AuthContext', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     localStorage.clear();
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as vi.Mock).mockResolvedValue({
       ok: false,
       json: () => Promise.resolve({ detail: 'Not authenticated' }),
     });

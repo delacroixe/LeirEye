@@ -1,6 +1,69 @@
-/* Importar variables centralizadas */
-@import "./styles/variables.css";
+@import "tailwindcss";
 
+/* ============================================
+   LeirEye - Custom Theme para Tailwind v4
+   Mapeo de variables CSS existentes al sistema de Tailwind
+   ============================================ */
+
+@theme {
+  /* Colores de Fondo */
+  --color-bg-primary: #0a0e27;
+  --color-bg-secondary: #1a1f3a;
+  --color-bg-tertiary: #25304f;
+
+  /* Colores de Texto */
+  --color-text-primary: #e5e7eb;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+
+  /* Colores de Acento */
+  --color-accent: #64c8ff;
+  --color-accent-hover: #3bb3ff;
+
+  /* Colores de Estado */
+  --color-success: #51cf66;
+  --color-warning: #ffc107;
+  --color-error: #ff6b6b;
+  --color-danger: #ff6b6b;
+  --color-info: #64c8ff;
+
+  /* Colores de Protocolo */
+  --color-protocol-tcp: #64c8ff;
+  --color-protocol-udp: #a78bfa;
+  --color-protocol-icmp: #fbbf24;
+  --color-protocol-dns: #34d399;
+  --color-protocol-http: #f472b6;
+  --color-protocol-https: #22d3ee;
+  --color-protocol-other: #9ca3af;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Fonts */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-mono:
+    "SF Mono", "Monaco", "Inconsolata", "Fira Code", "Fira Mono",
+    "Droid Sans Mono", "Source Code Pro", monospace;
+
+  /* Animations */
+  --animate-spin: spin 1s linear infinite;
+  --animate-pulse: pulse 2s ease-in-out infinite;
+  --animate-fade-in: fadeIn 0.3s ease-out;
+  --animate-slide-in: slideIn 0.3s ease-out;
+}
+
+/* Importar variables CSS legacy para compatibilidad durante migración */
+@import "./styles/variables.css";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Base styles */
 html,
 body,
 #root {
@@ -19,4 +82,92 @@ body {
 
 code {
   font-family: var(--font-family-mono);
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  /* LeirEye Dark Theme - Colores principales */
+  --background: #0a0e27;
+  --foreground: #e5e7eb;
+  --card: #1a1f3a;
+  --card-foreground: #e5e7eb;
+  --popover: #1a1f3a;
+  --popover-foreground: #e5e7eb;
+  --primary: #64c8ff;
+  --primary-foreground: #0a0e27;
+  --secondary: #25304f;
+  --secondary-foreground: #e5e7eb;
+  --muted: #25304f;
+  --muted-foreground: #9ca3af;
+  --accent: #64c8ff;
+  --accent-foreground: #0a0e27;
+  --destructive: #ff6b6b;
+  --border: rgba(100, 200, 255, 0.15);
+  --input: #25304f;
+  --ring: #64c8ff;
+  --chart-1: #64c8ff;
+  --chart-2: #51cf66;
+  --chart-3: #a78bfa;
+  --chart-4: #ffc107;
+  --chart-5: #f472b6;
+  --sidebar: #0a0e27;
+  --sidebar-foreground: #e5e7eb;
+  --sidebar-primary: #64c8ff;
+  --sidebar-primary-foreground: #0a0e27;
+  --sidebar-accent: #25304f;
+  --sidebar-accent-foreground: #e5e7eb;
+  --sidebar-border: rgba(100, 200, 255, 0.1);
+  --sidebar-ring: #64c8ff;
+}
+
+/* .dark class no necesaria - LeirEye siempre usa tema oscuro */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

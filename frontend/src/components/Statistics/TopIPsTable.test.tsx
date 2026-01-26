@@ -23,7 +23,7 @@ describe('TopIPsTable', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('renders table title', () => {

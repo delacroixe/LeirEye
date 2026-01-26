@@ -29,7 +29,7 @@ class TestStatsRoutes:
         with patch(
             "app.routes.stats.capture_service"
         ) as mock_capture:
-            mock_capture.stats = mock_stats
+            mock_capture.stats_manager.stats = mock_stats
 
             response = await client.get("/api/stats/summary")
 
@@ -56,7 +56,7 @@ class TestStatsRoutes:
         with patch(
             "app.routes.stats.capture_service"
         ) as mock_capture:
-            mock_capture.stats = mock_stats
+            mock_capture.stats_manager.stats = mock_stats
 
             response = await client.get("/api/stats/protocols")
 
@@ -81,7 +81,7 @@ class TestStatsRoutes:
         with patch(
             "app.routes.stats.capture_service"
         ) as mock_capture:
-            mock_capture.stats = mock_stats
+            mock_capture.stats_manager.stats = mock_stats
 
             response = await client.get("/api/stats/protocols")
 
@@ -101,7 +101,7 @@ class TestStatsRoutes:
         with patch(
             "app.routes.stats.capture_service"
         ) as mock_capture:
-            mock_capture.stats = mock_stats
+            mock_capture.stats_manager.stats = mock_stats
 
             response = await client.get("/api/stats/top-ips?limit=5")
 
@@ -120,7 +120,7 @@ class TestStatsRoutes:
         with patch(
             "app.routes.stats.capture_service"
         ) as mock_capture:
-            mock_capture.stats = mock_stats
+            mock_capture.stats_manager.stats = mock_stats
 
             response = await client.get("/api/stats/top-ports?limit=10")
 
@@ -147,7 +147,7 @@ class TestNetworkMapRoute:
         with patch(
             "app.routes.stats.capture_service"
         ) as mock_capture:
-            mock_capture.stats = mock_stats
+            mock_capture.stats_manager.stats = mock_stats
 
             response = await client.get("/api/stats/network-map")
 
@@ -174,7 +174,7 @@ class TestNetworkMapRoute:
         ) as mock_capture, patch(
             "app.routes.stats.get_batch_locations"
         ) as mock_geo:
-            mock_capture.stats = mock_stats
+            mock_capture.stats_manager.stats = mock_stats
             mock_geo.return_value = {
                 "192.168.1.1": {"country": "Local", "city": "LAN"},
                 "8.8.8.8": {"country": "USA", "city": "Mountain View"},

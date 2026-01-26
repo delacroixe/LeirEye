@@ -1,41 +1,46 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import { vi } from "vitest";
 import apiService from "../../services/api";
 import Statistics from "./index";
 
 // Mock the API service
-jest.mock("../../services/api", () => ({
-  __esModule: true,
-  default: {
-    getStatsSummary: jest.fn(),
-  },
-}));
+vi.mock("../../services/api", () => {
+  return {
+    __esModule: true,
+    default: {
+      getStatsSummary: vi.fn(),
+    },
+  };
+});
+
 
 // Mock child components to simplify testing
-jest.mock("./StatsCards", () => {
-  return function MockStatsCards() {
+vi.mock("./StatsCards", () => ({
+  default: function MockStatsCards() {
     return <div data-testid="stats-cards">StatsCards Mock</div>;
-  };
-});
+  }
+}));
 
-jest.mock("./TopIPsTable", () => {
-  return function MockTopIPsTable() {
+vi.mock("./TopIPsTable", () => ({
+  default: function MockTopIPsTable() {
     return <div data-testid="top-ips-table">TopIPsTable Mock</div>;
-  };
-});
+  }
+}));
 
-jest.mock("./TopPortsChart", () => {
-  return function MockTopPortsChart() {
+vi.mock("./TopPortsChart", () => ({
+  default: function MockTopPortsChart() {
     return <div data-testid="top-ports-chart">TopPortsChart Mock</div>;
-  };
-});
+  }
+}));
 
-jest.mock("../ProcessPacketStats", () => {
-  return function MockProcessPacketStats() {
+vi.mock("../ProcessPacketStats", () => ({
+  default: function MockProcessPacketStats() {
     return (
       <div data-testid="process-packet-stats">ProcessPacketStats Mock</div>
     );
-  };
-});
+  }
+}));
+
 
 const mockStatsData = {
   total_packets: 1000,
@@ -50,11 +55,11 @@ const mockStatsData = {
 
 describe("Statistics", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("renders title after loading", async () => {
-    (apiService.getStatsSummary as jest.Mock).mockResolvedValue(mockStatsData);
+    (apiService.getStatsSummary as vi.Mock).mockResolvedValue(mockStatsData);
 
     render(<Statistics />);
 
@@ -66,8 +71,8 @@ describe("Statistics", () => {
   });
 
   test("shows loading state initially", () => {
-    (apiService.getStatsSummary as jest.Mock).mockImplementation(
-      () => new Promise(() => {}), // Never resolves
+    (apiService.getStatsSummary as vi.Mock).mockImplementation(
+      () => new Promise(() => { }), // Never resolves
     );
 
     render(<Statistics />);
@@ -76,7 +81,7 @@ describe("Statistics", () => {
   });
 
   test("fetches and displays stats on mount", async () => {
-    (apiService.getStatsSummary as jest.Mock).mockResolvedValue(mockStatsData);
+    (apiService.getStatsSummary as vi.Mock).mockResolvedValue(mockStatsData);
 
     render(<Statistics />);
 
@@ -89,7 +94,7 @@ describe("Statistics", () => {
   });
 
   test("shows empty message when no stats available", async () => {
-    (apiService.getStatsSummary as jest.Mock).mockResolvedValue(null);
+    (apiService.getStatsSummary as vi.Mock).mockResolvedValue(null);
 
     render(<Statistics />);
 
@@ -101,10 +106,10 @@ describe("Statistics", () => {
   });
 
   test("handles API errors gracefully", async () => {
-    const consoleErrorSpy = jest
+    const consoleErrorSpy = vi
       .spyOn(console, "error")
-      .mockImplementation(() => {});
-    (apiService.getStatsSummary as jest.Mock).mockRejectedValue(
+      .mockImplementation(() => { });
+    (apiService.getStatsSummary as vi.Mock).mockRejectedValue(
       new Error("API Error"),
     );
 
@@ -121,10 +126,10 @@ describe("Statistics", () => {
   });
 
   test("renders ProcessPacketStats when packets and processes provided", async () => {
-    (apiService.getStatsSummary as jest.Mock).mockResolvedValue(mockStatsData);
+    (apiService.getStatsSummary as vi.Mock).mockResolvedValue(mockStatsData);
 
     const packets = [{ id: 1 }];
-    const processes = [{ pid: 123 }];
+    const processes = [{ pid: 123, name: "test_process" }];
 
     render(<Statistics packets={packets} processes={processes} />);
 
@@ -134,7 +139,7 @@ describe("Statistics", () => {
   });
 
   test("does not render ProcessPacketStats when no packets and processes", async () => {
-    (apiService.getStatsSummary as jest.Mock).mockResolvedValue(mockStatsData);
+    (apiService.getStatsSummary as vi.Mock).mockResolvedValue(mockStatsData);
 
     render(<Statistics />);
 

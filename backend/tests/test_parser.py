@@ -37,7 +37,7 @@ class TestPacketParser:
     def test_parse_udp_packet(self):
         """Parser extrae correctamente información de paquete UDP"""
         # Crear paquete UDP de prueba
-        packet = Ether() / IP(src="10.0.0.1", dst="10.0.0.2") / UDP(sport=53, dport=53)
+        packet = Ether() / IP(src="10.0.0.1", dst="10.0.0.2") / UDP(sport=5555, dport=5555)
         
         with patch('app.services.packet_capture.parser.connection_cache') as mock_cache:
             mock_cache.get_process.return_value = None
@@ -48,8 +48,8 @@ class TestPacketParser:
         assert result is not None
         assert result.src_ip == "10.0.0.1"
         assert result.dst_ip == "10.0.0.2"
-        assert result.src_port == 53
-        assert result.dst_port == 53
+        assert result.src_port == 5555
+        assert result.dst_port == 5555
         assert result.protocol == "UDP"
         assert result.flags is None
     

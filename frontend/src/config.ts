@@ -1,19 +1,20 @@
 /**
  * Configuración centralizada de la aplicación
  * Lee variables de entorno con fallbacks para desarrollo local
+ * Vite usa import.meta.env en lugar de process.env
  */
 
 // API Backend
 export const API_BASE_URL =
-  process.env.REACT_APP_API_URL?.trim() || "http://localhost:8000/api";
+  import.meta.env.VITE_API_URL?.trim() || "http://localhost:8000/api";
 
 // WebSocket
 export const WS_BASE_URL =
-  process.env.REACT_APP_WS_URL?.trim() || "ws://localhost:8000/api";
+  import.meta.env.VITE_WS_URL?.trim() || "ws://localhost:8000/api";
 
 // Geo IP API
 export const GEO_IP_API_URL =
-  process.env.REACT_APP_GEO_IP_URL?.trim() || "http://ip-api.com/json/";
+  import.meta.env.VITE_GEO_IP_URL?.trim() || "http://ip-api.com/json/";
 
 // Configuración de reconexión WebSocket
 export const WS_RECONNECT_ATTEMPTS = 5;

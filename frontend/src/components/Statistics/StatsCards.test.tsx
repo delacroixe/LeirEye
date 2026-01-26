@@ -16,7 +16,7 @@ describe('StatsCards', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test('renders all stat cards with correct values', () => {
