@@ -1,0 +1,32 @@
+/* Network Map - Professional Cyber Intelligence Theme */
+
+.network-map-view {
+  height: calc(100vh - 8rem);
+}
+
+.network-map-view .view-content.full-height {
+  flex: 1;
+  min-height: 0;
+}
+
+.map-container {
+  flex: 1;
+  height: 100%;
+  padding: 0 !important;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fix for NetworkMap internal layout if needed */
+.map-container>div {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Override for legend or controls if they exist in NetworkMap */
+.map-controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+}

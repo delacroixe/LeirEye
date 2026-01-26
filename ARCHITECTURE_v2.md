@@ -4,7 +4,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        NETMENTOR v2.0.0                             │
+│                        LeirEye v2.0.0                             │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -151,6 +151,7 @@
 ## Data Flow
 
 ### Authentication Flow
+
 ```
 ┌─────────────┐
 │ User Input  │
@@ -190,6 +191,7 @@
 ```
 
 ### Protected Request Flow
+
 ```
 ┌─────────────────┐
 │ Request from UI │
@@ -259,16 +261,16 @@
 
 ## Technology Stack
 
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **Frontend** | React 19 + TypeScript | UI & Routing |
-| **API** | FastAPI | REST & WebSocket |
-| **Database** | PostgreSQL + SQLAlchemy | User data persistence |
-| **Auth** | JWT + bcrypt | Security |
-| **Cache** | Redis | Optional future use |
-| **AI** | Ollama + llama3.2 | Packet analysis |
-| **Network** | Scapy + Netifaces | Packet capture |
-| **Container** | Docker Compose | Local development |
+| Layer         | Technology              | Purpose               |
+| ------------- | ----------------------- | --------------------- |
+| **Frontend**  | React 19 + TypeScript   | UI & Routing          |
+| **API**       | FastAPI                 | REST & WebSocket      |
+| **Database**  | PostgreSQL + SQLAlchemy | User data persistence |
+| **Auth**      | JWT + bcrypt            | Security              |
+| **Cache**     | Redis                   | Optional future use   |
+| **AI**        | Ollama + llama3.2       | Packet analysis       |
+| **Network**   | Scapy + Netifaces       | Packet capture        |
+| **Container** | Docker Compose          | Local development     |
 
 ---
 

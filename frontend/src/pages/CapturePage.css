@@ -1,0 +1,26 @@
+.title-icon {
+  font-style: normal;
+  display: inline-block;
+  transform: translateY(-2px);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Fix for nested component spacing if needed */
+.grid-main,
+.grid-sidebar,
+.grid-span-full {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .view-title {
+    font-size: 1.5rem;
+  }
+}

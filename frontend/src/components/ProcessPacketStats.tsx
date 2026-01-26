@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import React, { useEffect, useState } from 'react';
+import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import './ProcessPacketStats.css';
 
 interface ProcessPacketStat {
@@ -26,11 +26,11 @@ const ProcessPacketStats: React.FC<ProcessPacketStatsProps> = ({ packets, proces
     packets.forEach(packet => {
       const processName = packet.process_name || 'Desconocido';
       const pid = packet.pid || 0;
-      
+
       if (!processMap.has(processName)) {
         processMap.set(processName, { packets: 0, connections: 0, pid });
       }
-      
+
       const data = processMap.get(processName)!;
       data.packets += 1;
     });
@@ -77,116 +77,137 @@ const ProcessPacketStats: React.FC<ProcessPacketStatsProps> = ({ packets, proces
 
   if (chartData.length === 0) {
     return (
-      <div className="stats-placeholder">
-        <p>No hay datos de procesos y paquetes</p>
+      <div className="stat-widget full-span">
+        <h3 className="widget-title">Correlación Proceso/Paquete</h3>
+        <div className="empty-message">
+          No hay flujos de datos suficientes para establecer correlación estadística.
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="process-packet-stats">
-      <h3>📊 Estadísticas de Procesos vs Paquetes</h3>
+    <div className="stat-widget correlation-widget full-span">
+      <div className="widget-header">
+        <h3 className="widget-title">Análisis de Correlación: Proceso vs Tráfico</h3>
+        <div className="header-legend">
+          <span className="legend-dot packets">Paquetes</span>
+          <span className="legend-dot sockets">Sockets</span>
+        </div>
+      </div>
 
-      <div className="charts-container">
-        {/* Gráfico de barras - Procesos por paquetes */}
-        <div className="chart-wrapper">
-          <h4>Procesos más activos</h4>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2f5a" />
-              <XAxis 
-                dataKey="name" 
-                tick={{ fill: '#8892b0', fontSize: 12 }}
-                angle={-45}
-                textAnchor="end"
-                height={80}
-              />
-              <YAxis tick={{ fill: '#8892b0', fontSize: 12 }} />
-              <Tooltip 
-                contentStyle={{
-                  backgroundColor: '#1a1f3a',
-                  border: '1px solid #2a2f5a',
-                  borderRadius: '6px'
-                }}
-                cursor={{ fill: 'rgba(100, 200, 255, 0.1)' }}
-              />
-              <Legend />
-              <Bar dataKey="packets" fill="#3b82f6" name="Paquetes" />
-              <Bar dataKey="connections" fill="#22c55e" name="Conexiones" />
-            </BarChart>
-          </ResponsiveContainer>
+      <div className="correlation-grid">
+        {/* Active Processes Chart */}
+        <div className="viz-block">
+          <h4 className="viz-title">Impacto por Proceso (Top 10)</h4>
+          <div className="viz-canvas">
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.03)" vertical={false} />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fill: '#475569', fontSize: 10, fontWeight: 800 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fill: '#475569', fontSize: 10, fontWeight: 800 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#0f172a',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    fontSize: '11px'
+                  }}
+                  cursor={{ fill: 'rgba(255, 255, 255, 0.02)' }}
+                />
+                <Bar dataKey="packets" fill="var(--color-primary)" radius={[4, 4, 0, 0]} barSize={20} />
+                <Bar dataKey="connections" fill="var(--color-success)" radius={[4, 4, 0, 0]} barSize={20} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        {/* Gráfico de pastel - Protocolos */}
+        {/* Protocol Distribution */}
         {protocolData.length > 0 && (
-          <div className="chart-wrapper">
-            <h4>Distribución de protocolos</h4>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={protocolData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, value }) => `${name}: ${value}`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {protocolData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: '#1a1f3a',
-                    border: '1px solid #2a2f5a',
-                    borderRadius: '6px'
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="viz-block donut-block">
+            <h4 className="viz-title">Composición de Protocolos</h4>
+            <div className="viz-canvas">
+              <ResponsiveContainer width="100%" height={240}>
+                <PieChart>
+                  <Pie
+                    data={protocolData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {protocolData.map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={colors[index % colors.length]} stroke="none" />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#0f172a',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '8px',
+                      fontSize: '11px'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="donut-center">
+                <span className="donut-label">TOTAL</span>
+                <span className="donut-val">{packets.length}</span>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Tabla de resumen */}
-      <div className="summary-table">
-        <h4>Resumen por proceso</h4>
-        <table>
+      {/* Analytics List */}
+      <div className="analytics-table-wrapper">
+        <h4 className="viz-title">Matriz de Rendimiento por Entidad</h4>
+        <table className="premium-mini-table">
           <thead>
             <tr>
-              <th>Proceso</th>
-              <th>Paquetes</th>
-              <th>Conexiones</th>
-              <th>% Total</th>
+              <th>Identificador de Proceso</th>
+              <th className="text-right">Paquetes</th>
+              <th className="text-right">Sockets</th>
+              <th className="text-right">Uso de Banda</th>
             </tr>
           </thead>
           <tbody>
             {chartData.map((proc, idx) => {
               const totalPackets = chartData.reduce((sum, p) => sum + p.packets, 0);
               const percentage = totalPackets > 0 ? ((proc.packets / totalPackets) * 100).toFixed(1) : '0';
-              
+
               return (
-                <tr key={idx}>
+                <tr key={idx} className="premium-mini-row">
                   <td>
-                    <span className="process-name" title={proc.fullName}>
-                      {proc.name}
-                    </span>
+                    <div className="proc-entry">
+                      <span className="proc-name" title={proc.fullName}>{proc.name}</span>
+                      <span className="proc-pid">PID: {proc.pid}</span>
+                    </div>
                   </td>
-                  <td>{proc.packets}</td>
-                  <td>{proc.connections}</td>
-                  <td>
-                    <span className="percentage-bar">
-                      <div 
+                  <td className="text-right">{proc.packets}</td>
+                  <td className="text-right">{proc.connections}</td>
+                  <td className="text-right">
+                    <div className="percentage-track">
+                      <div
                         className="percentage-fill"
-                        style={{ 
+                        style={{
                           width: `${percentage}%`,
                           backgroundColor: colors[idx % colors.length]
                         }}
                       />
-                      <span className="percentage-text">{percentage}%</span>
-                    </span>
+                      <span className="percentage-num">{percentage}%</span>
+                    </div>
                   </td>
                 </tr>
               );

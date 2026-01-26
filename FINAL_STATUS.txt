@@ -1,5 +1,5 @@
 ╔════════════════════════════════════════════════════════════════════════════╗
-║                  NETMENTOR v2.0.0 - ESTADO FINAL                          ║
+║                  LeirEye v2.0.0 - ESTADO FINAL                          ║
 ║                   MkDocs Documentation Implementation                      ║
 ╚════════════════════════════════════════════════════════════════════════════╝
 
@@ -160,7 +160,7 @@ Tiempo:
 
 ═══════════════════════════════════════════════════════════════════════════
 
-✨ DIFERENCIALES DE NETMENTOR
+✨ DIFERENCIALES DE LeirEye
 
 La documentación refleja la propuesta de valor única:
 

@@ -1,16 +1,22 @@
 // Servicio para WebSocket
+import {
+  WS_CAPTURE_URL,
+  WS_RECONNECT_ATTEMPTS,
+  WS_RECONNECT_DELAY_MS,
+} from "../config";
+
 export interface WebSocketMessage {
-  type: 'packet' | 'status' | 'stats';
+  type: "packet" | "status" | "stats";
   data: any;
 }
 
 export class WebSocketService {
   private ws: WebSocket | null = null;
-  private url: string = 'ws://localhost:8000/api/capture/ws';
+  private url: string = WS_CAPTURE_URL;
   private listeners: Map<string, Function[]> = new Map();
   private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
-  private reconnectDelay = 3000;
+  private maxReconnectAttempts = WS_RECONNECT_ATTEMPTS;
+  private reconnectDelay = WS_RECONNECT_DELAY_MS;
 
   connect(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -18,31 +24,34 @@ export class WebSocketService {
         this.ws = new WebSocket(this.url);
 
         this.ws.onopen = () => {
-          console.log('WebSocket conectado');
+          console.log("WebSocket conectado");
           this.reconnectAttempts = 0;
-          this.emit('connected');
+          this.emit("connected");
           resolve();
         };
 
         this.ws.onmessage = (event) => {
           try {
             const message: WebSocketMessage = JSON.parse(event.data);
-            console.log(`📨 WS mensaje recibido: type=${message.type}`, message.data);
+            console.log(
+              `📨 WS mensaje recibido: type=${message.type}`,
+              message.data,
+            );
             this.emit(message.type, message.data);
           } catch (error) {
-            console.error('Error parseando mensaje WebSocket:', error);
+            console.error("Error parseando mensaje WebSocket:", error);
           }
         };
 
         this.ws.onerror = (error) => {
-          console.error('Error WebSocket:', error);
-          this.emit('error', error);
+          console.error("Error WebSocket:", error);
+          this.emit("error", error);
           reject(error);
         };
 
         this.ws.onclose = () => {
-          console.log('WebSocket desconectado');
-          this.emit('disconnected');
+          console.log("WebSocket desconectado");
+          this.emit("disconnected");
           this.attemptReconnect();
         };
       } catch (error) {
@@ -54,8 +63,13 @@ export class WebSocketService {
   private attemptReconnect() {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
-      console.log(`Reintentando conexión ${this.reconnectAttempts}/${this.maxReconnectAttempts}...`);
-      setTimeout(() => this.connect().catch(console.error), this.reconnectDelay);
+      console.log(
+        `Reintentando conexión ${this.reconnectAttempts}/${this.maxReconnectAttempts}...`,
+      );
+      setTimeout(
+        () => this.connect().catch(console.error),
+        this.reconnectDelay,
+      );
     }
   }
 
@@ -70,7 +84,7 @@ export class WebSocketService {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     } else {
-      console.error('WebSocket no está conectado');
+      console.error("WebSocket no está conectado");
     }
   }
 
@@ -105,7 +119,9 @@ export class WebSocketService {
 
   private emit(event: string, data?: any) {
     const callbacks = this.listeners.get(event);
-    console.log(`📤 emit('${event}'): ${callbacks?.length || 0} listeners registrados`);
+    console.log(
+      `📤 emit('${event}'): ${callbacks?.length || 0} listeners registrados`,
+    );
     if (callbacks) {
       callbacks.forEach((callback) => callback(data));
     }
@@ -116,4 +132,5 @@ export class WebSocketService {
   }
 }
 
-export default new WebSocketService();
+const webSocketService = new WebSocketService();
+export default webSocketService;
