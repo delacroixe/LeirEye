@@ -1,11 +1,13 @@
 """
 Funciones de seguridad: hashing de passwords y JWT
 """
+
 from datetime import datetime, timedelta
 from typing import Optional, Any
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 import logging
+import hashlib
 
 from .config import settings
 
@@ -17,26 +19,95 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # ==================== PASSWORD ====================
 
+
+def _normalize_password(password: str) -> str:
+    """
+    Normalizar contraseña usando SHA-256 para asegurar que no exceda 72 bytes.
+    Esto previene el error: "password cannot be longer than 72 bytes"
+    
+    Args:
+        password: Contraseña en plaintext
+        
+    Returns:
+        Hash SHA-256 de 64 caracteres (siempre < 72 bytes)
+    """
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verificar password contra hash"""
-    return pwd_context.verify(plain_password, hashed_password)
+    """
+    Verificar password contra hash bcrypt.
+    Normaliza el plaintext con SHA-256 antes de verificar.
+    
+    Estrategias de compatibilidad:
+    1. SHA-256 normalizado (nuevo método)
+    2. Plaintext directo (hashes antiguos <72 bytes)
+    3. Plaintext truncado a 72 bytes (hashes antiguos >72 bytes)
+    """
+    try:
+        # Estrategia 1: Verificar con SHA-256 normalizado (nuevo método)
+        normalized = _normalize_password(plain_password)
+        try:
+            if pwd_context.verify(normalized, hashed_password):
+                return True
+        except ValueError:
+            # El hash no es compatible con SHA-256, intentar otros métodos
+            pass
+        
+        # Estrategia 2: Verificar directamente (hashes antiguos <72 bytes)
+        try:
+            if len(plain_password.encode('utf-8')) <= 72:
+                if pwd_context.verify(plain_password, hashed_password):
+                    logger.debug("✓ Password verificado con método antiguo (compatibilidad <72 bytes)")
+                    return True
+        except ValueError:
+            pass
+        
+        # Estrategia 3: Truncar a 72 bytes (hashes antiguos >72 bytes truncados)
+        # Algunos sistemas antigos truncaban passwords a 72 bytes automáticamente
+        try:
+            truncated = plain_password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
+            if pwd_context.verify(truncated, hashed_password):
+                logger.debug("✓ Password verificado con método antiguo (compatibilidad truncado)")
+                return True
+        except (ValueError, UnicodeDecodeError):
+            pass
+        
+        # Todas las estrategias fallaron
+        return False
+        
+    except Exception as e:
+        logger.error(f"Error inesperado al verificar password: {e}")
+        return False
 
 
 def get_password_hash(password: str) -> str:
-    """Generar hash de password"""
-    return pwd_context.hash(password)
+    """
+    Generar hash bcrypt de password.
+    Normaliza la contraseña con SHA-256 antes de hashear con bcrypt.
+    Esto asegura que bcrypt nunca reciba >72 bytes.
+    """
+    try:
+        normalized = _normalize_password(password)
+        return pwd_context.hash(normalized)
+    except ValueError as e:
+        logger.error(f"Error al hashear password: {e}")
+        # Fallback: truncar a 72 bytes como último recurso
+        truncated = password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
+        return pwd_context.hash(truncated)
 
 
 # ==================== JWT TOKENS ====================
 
+
 def create_access_token(
     subject: str | Any,
     expires_delta: Optional[timedelta] = None,
-    additional_claims: Optional[dict] = None
+    additional_claims: Optional[dict] = None,
 ) -> str:
     """
     Crear token JWT de acceso
-    
+
     Args:
         subject: ID del usuario o identificador único
         expires_delta: Tiempo de expiración personalizado
@@ -45,47 +116,47 @@ def create_access_token(
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    
+        expire = datetime.utcnow() + timedelta(
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        )
+
     to_encode = {
         "sub": str(subject),
         "exp": expire,
         "iat": datetime.utcnow(),
-        "type": "access"
+        "type": "access",
     }
-    
+
     if additional_claims:
         to_encode.update(additional_claims)
-    
+
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
 def create_refresh_token(subject: str | Any) -> str:
     """Crear token JWT de refresh (mayor duración)"""
     expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    
+
     to_encode = {
         "sub": str(subject),
         "exp": expire,
         "iat": datetime.utcnow(),
-        "type": "refresh"
+        "type": "refresh",
     }
-    
+
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
 def decode_token(token: str) -> Optional[dict]:
     """
     Decodificar y validar token JWT
-    
+
     Returns:
         Payload del token o None si es inválido
     """
     try:
         payload = jwt.decode(
-            token, 
-            settings.SECRET_KEY, 
-            algorithms=[settings.ALGORITHM]
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
         return payload
     except JWTError as e:
@@ -96,22 +167,24 @@ def decode_token(token: str) -> Optional[dict]:
 def verify_token(token: str, token_type: str = "access") -> Optional[str]:
     """
     Verificar token y retornar subject (user_id)
-    
+
     Args:
         token: Token JWT
         token_type: Tipo esperado ("access" o "refresh")
-    
+
     Returns:
         Subject del token (user_id) o None si es inválido
     """
     payload = decode_token(token)
-    
+
     if not payload:
         return None
-    
+
     # Verificar tipo de token
     if payload.get("type") != token_type:
-        logger.warning(f"Tipo de token incorrecto: esperado {token_type}, recibido {payload.get('type')}")
+        logger.warning(
+            f"Tipo de token incorrecto: esperado {token_type}, recibido {payload.get('type')}"
+        )
         return None
-    
+
     return payload.get("sub")

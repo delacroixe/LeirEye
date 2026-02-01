@@ -24,7 +24,7 @@ Herramienta educativa de análisis de tráfico de red con IA local.
 Captura, visualiza, y **entiende** qué está pasando en tu red.
 
 [Empezar :rocket:](getting-started/index.md){ .md-button .md-button--primary }
-[GitHub :fontawesome-brands-github:](https://github.com/yourusername/leireye){ .md-button }
+[GitHub :fontawesome-brands-github:](https://github.com/delacroixe/LeirEye){ .md-button }
 
 </div>
 

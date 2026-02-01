@@ -1,0 +1,239 @@
+.did-you-know {
+  background: linear-gradient(135deg, #1a1d29 0%, #252a3a 100%);
+  border: 1px solid #3a3f52;
+  border-radius: 12px;
+  padding: 16px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.did-you-know::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ffd700, #ffaa00, #ffd700);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.dyk-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.dyk-icon {
+  color: #ffd700;
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));
+}
+
+.dyk-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffd700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dyk-refresh {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: #8b8fa3;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.dyk-refresh:hover {
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+  transform: rotate(180deg);
+}
+
+.dyk-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.dyk-content.animating {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.dyk-tip-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dyk-tip-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.dyk-tip-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e8eaed;
+}
+
+.dyk-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #b8bcc8;
+  line-height: 1.5;
+}
+
+.dyk-relevance {
+  font-size: 0.75rem;
+  color: #64d2ff;
+  background: rgba(100, 210, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.dyk-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dyk-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dyk-nav button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #b8bcc8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.dyk-nav button:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: #ffd700;
+  color: #ffd700;
+}
+
+.dyk-counter {
+  font-size: 0.75rem;
+  color: #6b7280;
+  min-width: 40px;
+  text-align: center;
+}
+
+.dyk-category {
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.dyk-category.protocol {
+  background: rgba(100, 149, 237, 0.15);
+  color: #6495ed;
+}
+
+.dyk-category.security {
+  background: rgba(255, 99, 71, 0.15);
+  color: #ff6347;
+}
+
+.dyk-category.network {
+  background: rgba(50, 205, 50, 0.15);
+  color: #32cd32;
+}
+
+.dyk-category.traffic {
+  background: rgba(255, 215, 0, 0.15);
+  color: #ffd700;
+}
+
+.dyk-category.general {
+  background: rgba(138, 43, 226, 0.15);
+  color: #9370db;
+}
+
+/* Compact variant for sidebar */
+.did-you-know.compact {
+  min-height: 140px;
+  padding: 12px;
+}
+
+.did-you-know.compact .dyk-tip-icon {
+  font-size: 1.2rem;
+}
+
+.did-you-know.compact .dyk-tip-header h4 {
+  font-size: 0.9rem;
+}
+
+.did-you-know.compact .dyk-content p {
+  font-size: 0.8rem;
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .did-you-know {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    border-color: #30363d;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .did-you-know {
+    min-height: 160px;
+    padding: 12px;
+  }
+
+  .dyk-content p {
+    font-size: 0.85rem;
+  }
+
+  .dyk-tip-header h4 {
+    font-size: 0.9rem;
+  }
+}
