@@ -31,10 +31,13 @@ export interface WiFiNetwork {
   protocol: string;
   vendor?: string;
   signal_quality: number;
+  is_current: boolean;
 }
 
 export interface WiFiAnalysis {
+  current_network: WiFiNetwork | null;
   available_networks: WiFiNetwork[];
+  privacy_mode_active: boolean;
 }
 
 export interface CaptureStatus {
@@ -264,6 +267,66 @@ class ApiService {
 
   async getWiFiAnalysis(): Promise<WiFiAnalysis> {
     const response = await axios.get<WiFiAnalysis>(`${API_BASE}/wifi/analysis`);
+    return response.data;
+  }
+
+  // ============ Advanced AI Analysis ============
+
+  async analyzeWiFiWithAI(networks: WiFiNetwork[]): Promise<{
+    summary: string;
+    security_score?: number;
+    security_findings?: string[];
+    optimization_tips?: string[];
+    crowded_channels?: number[];
+    error?: string;
+  }> {
+    const response = await axios.post(`${API_BASE}/ai/analyze-wifi`, {
+      networks,
+    });
+    return response.data;
+  }
+
+  async analyzeDNSWithAI(
+    logs: { domain: string; type?: string; timestamp?: string }[],
+  ): Promise<{
+    threats?: { domain: string; reason: string; risk: string }[];
+    status?: string;
+    error?: string;
+  }> {
+    const response = await axios.post(`${API_BASE}/ai/analyze-dns`, { logs });
+    return response.data;
+  }
+
+  async getCraftingHelpWithAI(
+    intent: string,
+    protocol: string,
+  ): Promise<{
+    suggestion?: string;
+    fields?: Record<string, any>;
+    error?: string;
+  }> {
+    const response = await axios.post(`${API_BASE}/ai/crafting-help`, {
+      intent,
+      protocol,
+    });
+    return response.data;
+  }
+
+  async analyzeStatsWithAI(stats: any): Promise<{
+    insight?: string;
+    insights?: string[];
+    error?: string;
+  }> {
+    const response = await axios.post(`${API_BASE}/ai/analyze-stats`, stats);
+    return response.data;
+  }
+
+  async analyzeMapWithAI(mapData: any): Promise<{
+    insight?: string;
+    analysis?: string;
+    error?: string;
+  }> {
+    const response = await axios.post(`${API_BASE}/ai/analyze-map`, mapData);
     return response.data;
   }
 }

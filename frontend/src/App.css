@@ -69,6 +69,10 @@
   gap: 2rem;
 }
 
+.dashboard-grid.single-column {
+  grid-template-columns: 1fr;
+}
+
 .grid-span-full {
   grid-column: 1 / -1;
 }

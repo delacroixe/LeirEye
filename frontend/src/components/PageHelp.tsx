@@ -1,17 +1,9 @@
-import {
-  BookOpen,
-  ChevronDown,
-  ChevronUp,
-  Lightbulb,
-  Target,
-  X,
-} from "lucide-react";
+import { HelpCircle, Lightbulb, Target, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import "./PageHelp.css";
 
 export interface PageHelpContent {
-  title: string;
-  description: string;
   whatIs: string;
   whyImportant: string;
   howToUse: string[];
@@ -21,14 +13,13 @@ export interface PageHelpContent {
 
 interface PageHelpProps {
   content: PageHelpContent;
+  pageId: string; // ID único para persistencia
   defaultExpanded?: boolean;
 }
 
 // Contenido de ayuda para cada página
 export const PAGE_HELP: Record<string, PageHelpContent> = {
   capture: {
-    title: "Captura de Paquetes",
-    description: "Captura y analiza tráfico de red en tiempo real",
     whatIs:
       "Esta página captura todos los paquetes de red que pasan por tu interfaz seleccionada. Cada fila representa un paquete: quién envía, quién recibe, qué protocolo usa y cuántos datos contiene.",
     whyImportant:
@@ -54,8 +45,6 @@ export const PAGE_HELP: Record<string, PageHelpContent> = {
   },
 
   statistics: {
-    title: "Estadísticas",
-    description: "Análisis visual del tráfico capturado",
     whatIs:
       "Esta página analiza todos los paquetes capturados y te muestra métricas agregadas: distribución por protocolo, las IPs más activas, los puertos más usados y el tráfico por proceso.",
     whyImportant:
@@ -78,8 +67,6 @@ export const PAGE_HELP: Record<string, PageHelpContent> = {
   },
 
   networkMap: {
-    title: "Mapa de Red",
-    description: "Visualiza conexiones y geolocalización de IPs",
     whatIs:
       "El Mapa de Red transforma los datos de paquetes en visualizaciones: un grafo interactivo donde cada nodo es una IP y cada línea una conexión, y un mapa geográfico que muestra dónde están físicamente los servidores con los que te comunicas.",
     whyImportant:
@@ -103,8 +90,6 @@ export const PAGE_HELP: Record<string, PageHelpContent> = {
   },
 
   alerts: {
-    title: "Alertas de Seguridad",
-    description: "Detección automática de comportamientos sospechosos",
     whatIs:
       "El sistema analiza automáticamente el tráfico en busca de patrones sospechosos: posible DNS tunneling (datos ocultos en consultas DNS), escaneos de puertos, nuevas conexiones a IPs desconocidas, o tráfico a ubicaciones geográficas inusuales.",
     whyImportant:
@@ -128,8 +113,6 @@ export const PAGE_HELP: Record<string, PageHelpContent> = {
   },
 
   dns: {
-    title: "Monitor DNS",
-    description: "Análisis detallado de consultas DNS y detección de tunneling",
     whatIs:
       "DNS traduce nombres (google.com) a IPs (142.250.185.78). Esta página muestra todas las consultas DNS, las respuestas recibidas, y analiza si alguna podría ser sospechosa de 'DNS Tunneling' - una técnica para ocultar datos en consultas DNS.",
     whyImportant:
@@ -153,8 +136,6 @@ export const PAGE_HELP: Record<string, PageHelpContent> = {
   },
 
   packetBuilder: {
-    title: "Constructor de Paquetes",
-    description: "Crea y envía paquetes de red personalizados (educativo)",
     whatIs:
       "Esta herramienta te permite construir paquetes de red desde cero, seleccionando cada campo: protocolo, IPs, puertos, flags TCP, payload. Es principalmente educativa para entender cómo se estructuran los paquetes.",
     whyImportant:
@@ -176,8 +157,6 @@ export const PAGE_HELP: Record<string, PageHelpContent> = {
   },
 
   system: {
-    title: "Información del Sistema",
-    description: "Detalles de tu sistema y configuración de red",
     whatIs:
       "Esta página muestra información sobre tu sistema operativo, hardware, interfaces de red disponibles, tu IP pública y privada, y los procesos que tienen conexiones de red activas.",
     whyImportant:
@@ -199,9 +178,29 @@ export const PAGE_HELP: Record<string, PageHelpContent> = {
     ],
   },
 
+  wifi: {
+    whatIs:
+      "Esta página escanea las redes WiFi circundantes, analizando su intensidad de señal (RSSI), canal de operación y protocolos de seguridad (WPA2, WPA3, etc.).",
+    whyImportant:
+      "La seguridad inalámbrica es crítica. Identificar redes con seguridad débil, canales saturados o puntos de acceso sospechosos es vital para mantener una red segura.",
+    howToUse: [
+      "Haz clic en 'Escanear Aire' para actualizar la lista de redes",
+      "Usa 'AI Audit' para que la IA evalúe la seguridad de tu entorno",
+      "Identifica el mejor canal para tu propio punto de acceso",
+      "Detecta si hay redes duplicadas o con señales sospechosas",
+    ],
+    tips: [
+      "RSSI más alto (más cerca de 0) indica mejor señal",
+      "Los canales 1, 6 y 11 son los únicos que no se solapan en 2.4GHz",
+      "La geolocalización es aproximada basada en la base de datos de BSSID",
+    ],
+    relatedPages: [
+      { name: "Mapa de Red", path: "/map" },
+      { name: "Alertas", path: "/alerts" },
+    ],
+  },
+
   settings: {
-    title: "Configuración",
-    description: "Personaliza el comportamiento de la aplicación",
     whatIs:
       "Aquí puedes ajustar opciones de la aplicación: límites de captura, intervalos de actualización, tema visual, y notificaciones.",
     whyImportant:
@@ -220,136 +219,103 @@ export const PAGE_HELP: Record<string, PageHelpContent> = {
   },
 };
 
-const PageHelp: React.FC<PageHelpProps> = ({
-  content,
-  defaultExpanded = false,
-}) => {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
-  const [isDismissed, setIsDismissed] = useState(false);
+const PageHelp: React.FC<PageHelpProps> = ({ content, pageId }) => {
+  const [isDismissed, setIsDismissed] = useState(true);
 
   // Recuperar preferencia del usuario
   useEffect(() => {
-    const dismissed = localStorage.getItem(
-      `pageHelp_${content.title}_dismissed`,
-    );
-    if (dismissed === "true") {
-      setIsDismissed(true);
+    const dismissed = localStorage.getItem(`pageHelp_${pageId}_dismissed`);
+    // Por defecto ahora es true (cerrado)
+    if (dismissed === "false") {
+      setIsDismissed(false);
     }
-  }, [content.title]);
+  }, [pageId]);
 
   const handleDismiss = () => {
     setIsDismissed(true);
-    localStorage.setItem(`pageHelp_${content.title}_dismissed`, "true");
+    localStorage.setItem(`pageHelp_${pageId}_dismissed`, "true");
   };
 
   const handleShow = () => {
     setIsDismissed(false);
-    localStorage.removeItem(`pageHelp_${content.title}_dismissed`);
+    localStorage.setItem(`pageHelp_${pageId}_dismissed`, "false");
   };
 
-  if (isDismissed) {
-    return (
-      <button
-        className="page-help-show-btn"
-        onClick={handleShow}
-        title="Mostrar ayuda de página"
-      >
-        <BookOpen size={16} />
-        <span>¿Qué es esto?</span>
-      </button>
-    );
-  }
-
-  return (
-    <div className={`page-help ${isExpanded ? "expanded" : "collapsed"}`}>
-      <div
-        className="page-help-header"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <div className="page-help-title">
-          <BookOpen size={18} className="help-icon" />
-          <div>
-            <h3>{content.title}</h3>
-            <p className="help-subtitle">{content.description}</p>
-          </div>
-        </div>
+  const banner = (
+    <div className="page-help">
+      <div className="page-help-header">
+        <div className="page-help-title"></div>
         <div className="page-help-actions">
           <button
-            className="help-toggle"
-            title={isExpanded ? "Colapsar" : "Expandir"}
-          >
-            {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-          </button>
-          <button
             className="help-dismiss"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDismiss();
-            }}
-            title="Ocultar (puedes volver a mostrar)"
+            onClick={handleDismiss}
+            title="Cerrar ayuda"
           >
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
       </div>
 
-      {isExpanded && (
-        <div className="page-help-content">
-          <div className="help-section">
-            <div className="help-section-header">
-              <span className="help-section-icon">📖</span>
-              <h4>¿Qué es?</h4>
-            </div>
-            <p>{content.whatIs}</p>
+      <div className="page-help-content">
+        <div className="help-section">
+          <div className="help-section-header">
+            <span className="help-section-icon">📖</span>
+            <h4>¿Qué es?</h4>
           </div>
-
-          <div className="help-section">
-            <div className="help-section-header">
-              <Target size={16} className="help-section-icon" />
-              <h4>¿Por qué es importante?</h4>
-            </div>
-            <p>{content.whyImportant}</p>
-          </div>
-
-          <div className="help-section">
-            <div className="help-section-header">
-              <span className="help-section-icon">🎯</span>
-              <h4>¿Cómo se usa?</h4>
-            </div>
-            <ol className="help-steps">
-              {content.howToUse.map((step, index) => (
-                <li key={index}>{step}</li>
-              ))}
-            </ol>
-          </div>
-
-          {content.tips && content.tips.length > 0 && (
-            <div className="help-section tips-section">
-              <div className="help-section-header">
-                <Lightbulb size={16} className="help-section-icon" />
-                <h4>Tips</h4>
-              </div>
-              <ul className="help-tips">
-                {content.tips.map((tip, index) => (
-                  <li key={index}>{tip}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {content.relatedPages && content.relatedPages.length > 0 && (
-            <div className="help-related">
-              <span className="related-label">Páginas relacionadas:</span>
-              {content.relatedPages.map((page) => (
-                <a key={page.path} href={page.path} className="related-link">
-                  {page.name}
-                </a>
-              ))}
-            </div>
-          )}
+          <p>{content.whatIs}</p>
         </div>
-      )}
+
+        <div className="help-section">
+          <div className="help-section-header">
+            <Target size={16} className="help-section-icon" />
+            <h4>¿Por qué es importante?</h4>
+          </div>
+          <p>{content.whyImportant}</p>
+        </div>
+
+        <div className="help-divider" />
+
+        <div className="help-section">
+          <div className="help-section-header">
+            <span className="help-section-icon">🎯</span>
+            <h4>Cómo usar esta página</h4>
+          </div>
+          <ol className="help-steps">
+            {content.howToUse.map((step, index) => (
+              <li key={index}>{step}</li>
+            ))}
+          </ol>
+        </div>
+
+        {content.tips && content.tips.length > 0 && (
+          <div className="help-section tips-section">
+            <div className="help-section-header">
+              <Lightbulb size={16} className="help-section-icon" />
+              <h4>Consejos pro</h4>
+            </div>
+            <ul className="help-tips">
+              {content.tips.map((tip, index) => (
+                <li key={index}>{tip}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
+  );
+
+  return (
+    <>
+      <button
+        className={`page-help-info-icon ${!isDismissed ? "active" : ""}`}
+        onClick={isDismissed ? handleShow : handleDismiss}
+        title={isDismissed ? "Ver ayuda" : "Ocultar ayuda"}
+      >
+        <HelpCircle size={20} />
+      </button>
+
+      {!isDismissed && createPortal(banner, document.body)}
+    </>
   );
 };
 

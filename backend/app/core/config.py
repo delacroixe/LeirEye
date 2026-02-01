@@ -4,7 +4,7 @@ Configuración de la aplicación usando Pydantic Settings
 
 import os
 from functools import lru_cache
-from typing import List
+from typing import List, Optional
 
 from pydantic_settings import BaseSettings
 
@@ -44,7 +44,12 @@ class Settings(BaseSettings):
 
     # Ollama
     OLLAMA_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "llama3.2:3b"
+    OLLAMA_MODEL: str = "llama3.2:latest"
+    
+    # LiteLLM (Optional for metrics/traceability)
+    # Configure callbacks via env variables (e.g. LITELLM_LOG="success", LANGFUSE_PUBLIC_KEY, etc.)
+    USE_LITELLM: bool = False
+    LITELLM_API_BASE: Optional[str] = None
     
     # Development
     SEED_DEFAULT_USER: bool = False

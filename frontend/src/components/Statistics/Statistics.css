@@ -121,7 +121,7 @@
 }
 
 .premium-mini-table th {
-  padding: 0.75rem 0;
+  padding: 0.75rem 0.5rem;
   text-align: left;
   font-size: 0.6rem;
   font-weight: 800;
@@ -130,14 +130,32 @@
   border-bottom: 2px solid rgba(255, 255, 255, 0.03);
 }
 
+.premium-mini-table th.text-right {
+  text-align: right;
+}
+
 .premium-mini-row {
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
 }
 
 .premium-mini-row td {
-  padding: 0.75rem 0;
+  padding: 0.75rem 0.5rem;
   font-size: 0.8125rem;
   color: #cbd5e1;
+}
+
+.premium-mini-table th:first-child,
+.premium-mini-row td:first-child {
+  padding-left: 0;
+}
+
+.premium-mini-table th:last-child,
+.premium-mini-row td:last-child {
+  padding-right: 0;
+}
+
+.premium-mini-row td.text-right {
+  text-align: right;
 }
 
 .col-ip-addr {

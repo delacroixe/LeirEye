@@ -153,23 +153,32 @@ const GraphView: React.FC<GraphViewProps> = ({ mapData, onNodeSelect }) => {
   return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
 };
 
-function createTooltip(node: NetworkMapNode): string {
-  let html = `<div class="vis-tooltip-custom">
-    <div class="tooltip-header">${node.isLocal ? "🏠" : "🌐"} ${node.label}</div>
+function createTooltip(node: NetworkMapNode): HTMLElement {
+  const container = document.createElement("div");
+  container.className = "vis-tooltip-custom";
+  const headerColor = node.isLocal ? "#22c55e" : "#3b82f6";
+
+  container.innerHTML = `
+    <div class="tooltip-header" style="color: ${headerColor};">
+      ${node.isLocal ? "🏠" : "🌐"} ${node.label}
+    </div>
     <div class="tooltip-body">
       <div class="tooltip-row"><span>Tipo:</span> ${node.networkType}</div>
-      <div class="tooltip-row"><span>Tráfico:</span> ${node.traffic} paquetes</div>`;
+      <div class="tooltip-row"><span>Tráfico:</span> ${node.traffic} pkts</div>
+      ${
+        node.geo && !node.isLocal
+          ? `
+        <div class="tooltip-divider" style="height: 1px; background: rgba(255,255,255,0.05); margin: 5px 0;"></div>
+        <div class="tooltip-row"><span>País:</span> ${node.geo.country}</div>
+        <div class="tooltip-row"><span>Ciudad:</span> ${node.geo.city}</div>
+        <div class="tooltip-row"><span>ISP:</span> ${node.geo.isp}</div>
+      `
+          : ""
+      }
+    </div>
+  `;
 
-  if (node.geo && !node.isLocal) {
-    html += `
-      <div class="tooltip-divider"></div>
-      <div class="tooltip-row"><span>País:</span> ${node.geo.country}</div>
-      <div class="tooltip-row"><span>Ciudad:</span> ${node.geo.city}</div>
-      <div class="tooltip-row"><span>ISP:</span> ${node.geo.isp}</div>`;
-  }
-
-  html += "</div></div>";
-  return html;
+  return container;
 }
 
 export default GraphView;

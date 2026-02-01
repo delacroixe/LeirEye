@@ -33,15 +33,16 @@ export const CaptureBar: React.FC = () => {
   return (
     <div className="capture-bar-wrapper">
       <div className="capture-bar glass-card">
-        {/* Main Control Strip */}
-        <div className="bar-primary">
-          {/* Status Diagnostic */}
-          <div className="status-diagnostic">
-            <div className={`connection-orb ${wsConnected ? "online" : "offline"}`} />
-            <div className="status-meta">
-              <span className="status-label">ESTADO DEL MOTOR</span>
+        {/* Totalmente integrado en una sola fila para ahorrar espacio */}
+        <div className="bar-main-row">
+          {/* Status Diagnostic - Muy compacto */}
+          <div className="status-compact">
+            <div
+              className={`connection-orb ${wsConnected ? "online" : "offline"}`}
+            />
+            <div className="status-text">
               <span className={`status-val ${isCapturing ? "active" : ""}`}>
-                {isCapturing ? "SISTEMA ARMADO - MONITORIZANDO" : "SISTEMA EN STANDBY"}
+                {isCapturing ? "MONITORIZANDO" : "STANDBY"}
               </span>
             </div>
           </div>
@@ -49,16 +50,16 @@ export const CaptureBar: React.FC = () => {
           <div className="divider" />
 
           {/* Engine Parameters */}
-          <div className="engine-parameters">
-            <div className="param-group">
-              <label className="param-label">INTERFACE</label>
+          <div className="engine-parameters-compact">
+            <div className="param-item">
               <select
                 value={networkInterface}
                 onChange={(e) => setNetworkInterface(e.target.value)}
                 disabled={isCapturing}
-                className="param-select"
+                className="param-select-compact"
+                title="Interfaz de red"
               >
-                <option value="">AUTO-SELECT</option>
+                <option value="">AUTO</option>
                 {interfaces.map((iface) => (
                   <option key={iface} value={iface}>
                     {iface}
@@ -67,84 +68,64 @@ export const CaptureBar: React.FC = () => {
               </select>
             </div>
 
-            <div className="param-group stretch">
-              <label className="param-label">FILTRO BPF (KERNEL-LEVEL)</label>
+            <div className="param-item stretch">
               <Input
                 type="text"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                placeholder="ej: tcp port 80 or udp"
+                placeholder="Filtro BPF: ej. tcp port 80"
                 disabled={isCapturing}
-                className="param-input"
+                className="param-input-compact"
               />
             </div>
 
-            <div className="param-group small">
-              <label className="param-label">BUFFER</label>
-              <Input
-                type="number"
-                value={maxPackets}
-                onChange={(e) => setMaxPackets(Number(e.target.value))}
-                min="1"
-                max="10000"
-                disabled={isCapturing}
-                className="param-input text-center"
-              />
+            {/* Macros integradas aquí en lugar de otra fila */}
+            <div className="macros-inline">
+              {filterChips.map((chip) => (
+                <button
+                  key={chip.label}
+                  onClick={() => setFilter(chip.value)}
+                  disabled={isCapturing}
+                  className={`macro-pill ${filter === chip.value ? "active" : ""}`}
+                >
+                  {chip.label}
+                </button>
+              ))}
             </div>
           </div>
 
           <div className="divider" />
 
           {/* System Actions */}
-          <div className="system-actions">
+          <div className="system-actions-compact">
             {!isCapturing ? (
               <button
                 onClick={startCapture}
                 disabled={loading}
-                className="action-btn primary-action"
+                className="action-btn-compact primary"
               >
-                {loading ? <Loader size={16} className="spinning" /> : "DESPLEGAR MOTOR"}
+                {loading ? (
+                  <Loader size={14} className="spinning" />
+                ) : (
+                  "CAPTURAR"
+                )}
               </button>
             ) : (
               <button
                 onClick={stopCapture}
-                className="action-btn danger-action"
+                className="action-btn-compact danger"
               >
-                DETENER CAPTURA
+                PARAR
               </button>
             )}
 
             <button
               onClick={resetCapture}
               disabled={loading}
-              className="action-btn secondary-action"
-              title="Borrar buffer local"
+              className="action-btn-compact secondary"
+              title="Purgar datos"
             >
               PURGAR
-            </button>
-          </div>
-        </div>
-
-        {/* Quick Filter Matrix */}
-        <div className="bar-secondary">
-          <div className="matrix-label">MACROS DE FILTRADO:</div>
-          <div className="matrix-chips">
-            {filterChips.map((chip) => (
-              <button
-                key={chip.label}
-                onClick={() => setFilter(chip.value)}
-                disabled={isCapturing}
-                className={`matrix-chip ${filter === chip.value ? "active" : ""}`}
-              >
-                {chip.label}
-              </button>
-            ))}
-            <button
-              onClick={() => setFilter("")}
-              disabled={isCapturing}
-              className="matrix-chip clear"
-            >
-              ✕ RESET FILTRO
             </button>
           </div>
         </div>

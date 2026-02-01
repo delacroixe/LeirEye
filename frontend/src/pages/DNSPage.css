@@ -2,7 +2,7 @@
 .dns-dashboard-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .grid-span-full {
@@ -10,7 +10,43 @@
 }
 
 /* Stats Diagnostic Bar */
-/* (Reuses .stat-panel from AlertsPage.css for consistency) */
+.stats-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-panel {
+  padding: 1rem 1.25rem !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-panel-value {
+  font-size: 2rem;
+  font-weight: 950;
+  color: white;
+  line-height: 1;
+}
+
+.stat-panel-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #475569;
+  letter-spacing: 0.1em;
+}
+
+.stat-panel.critical {
+  border-left: 4px solid #ef4444;
+}
+
+.stat-panel.critical .stat-panel-value {
+  color: #ef4444;
+}
+
 .stat-icon-wrapper {
   width: 32px;
   height: 32px;
@@ -31,10 +67,10 @@
 
 /* Tunneling Analysis Panel */
 .tunneling-analysis-panel {
-  padding: 2.5rem !important;
+  padding: 1.5rem 2rem !important;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.25rem;
   border: 1px solid rgba(6, 182, 212, 0.1) !important;
 }
 
@@ -45,33 +81,33 @@
 }
 
 .analysis-title {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 800;
   color: white;
   flex: 1;
 }
 
 .analysis-badge {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
   color: #64748b;
   background: rgba(0, 0, 0, 0.3);
-  padding: 0.5rem 1rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .risk-score {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-family: monospace;
 }
 
 .score-meter-container {
-  height: 8px;
+  height: 6px;
   background: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .score-meter-fill {
@@ -81,15 +117,15 @@
 
 .indicators-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
 }
 
 .indicator-box {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 1.25rem;
+  gap: 0.25rem;
+  padding: 1rem;
   background: rgba(15, 23, 42, 0.4);
   border-radius: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.03);
@@ -166,19 +202,47 @@
   font-family: monospace;
 }
 
+/* Filters Panel */
+.filters-panel {
+  padding: 1rem 1.5rem !important;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.filter-field.center {
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 0.5rem;
+}
+
 /* Queries Log Table */
 .queries-log-panel {
   padding: 0 !important;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 800px;
 }
 
 .queries-log-panel .panel-header {
-  padding: 1.5rem 2rem;
+  padding: 1.25rem 1.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(15, 23, 42, 0.2);
 }
 
 .premium-table-view {
   width: 100%;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .premium-table {
@@ -186,15 +250,11 @@
   border-collapse: collapse;
 }
 
-.premium-table th {
-  padding: 1rem 1.5rem;
-  text-align: left;
-  font-size: 0.65rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: #475569;
-  letter-spacing: 0.1em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+.premium-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #0f172a;
 }
 
 .premium-row {
@@ -360,4 +420,156 @@
 .trace-view-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px -5px rgba(6, 182, 212, 0.4);
+}
+
+/* AI Analysis Panel */
+.ai-analysis-panel {
+  margin-bottom: 2rem;
+  padding: 1.5rem !important;
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.08),
+    rgba(6, 182, 212, 0.05)
+  ) !important;
+  border: 1px solid rgba(139, 92, 246, 0.2) !important;
+  border-radius: 1rem;
+}
+
+.ai-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ai-panel-header h3 {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+}
+
+.ai-icon {
+  color: #8b5cf6;
+}
+
+.ai-panel-header .close-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.ai-panel-header .close-btn:hover {
+  color: white;
+}
+
+.ai-error {
+  color: #f87171;
+  font-size: 0.875rem;
+}
+
+.ai-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ai-summary {
+  font-size: 0.9rem;
+  color: #e2e8f0;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Threats List */
+.threats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.threat-item {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  border-left: 3px solid #f59e0b;
+}
+
+.threat-item.risk-high {
+  border-left-color: #ef4444;
+}
+
+.threat-item.risk-low {
+  border-left-color: #22c55e;
+}
+
+.threat-domain {
+  font-weight: 700;
+  color: white;
+  font-size: 0.85rem;
+}
+
+.threat-reason {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.threat-risk {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #f59e0b;
+}
+
+.threat-item.risk-high .threat-risk {
+  color: #ef4444;
+}
+
+.threat-item.risk-low .threat-risk {
+  color: #22c55e;
+}
+
+/* AI Button */
+.action-icon-btn.ai-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.15),
+    rgba(6, 182, 212, 0.1)
+  );
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.action-icon-btn.ai-btn:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.25),
+    rgba(6, 182, 212, 0.15)
+  );
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.action-icon-btn.ai-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-icon-btn.ai-btn .btn-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #c4b5fd;
 }

@@ -1,9 +1,9 @@
 /**
  * Hook para obtener y gestionar datos del mapa de red
  */
-import { useState, useEffect, useCallback } from 'react';
-import apiService, { NetworkMapData, NetworkMapNode } from '../services/api';
-import { GEO_IP_API_URL } from '../config';
+import { useCallback, useEffect, useState } from "react";
+import { GEO_IP_API_URL } from "../config";
+import apiService, { NetworkMapData, NetworkMapNode } from "../services/api";
 
 interface UseNetworkMapOptions {
   autoRefreshInterval?: number;
@@ -14,15 +14,13 @@ interface UseNetworkMapResult {
   loading: boolean;
   error: string | null;
   selectedNode: NetworkMapNode | null;
-  autoRefresh: boolean;
   userLocation: [number, number];
   setSelectedNode: (node: NetworkMapNode | null) => void;
-  setAutoRefresh: (value: boolean) => void;
   refresh: () => void;
 }
 
 export const useNetworkMap = (
-  options: UseNetworkMapOptions = {}
+  options: UseNetworkMapOptions = {},
 ): UseNetworkMapResult => {
   const { autoRefreshInterval = 30000 } = options;
 
@@ -30,8 +28,9 @@ export const useNetworkMap = (
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<NetworkMapNode | null>(null);
-  const [autoRefresh, setAutoRefresh] = useState(false);
-  const [userLocation, setUserLocation] = useState<[number, number]>([43.3, -2.0]);
+  const [userLocation, setUserLocation] = useState<[number, number]>([
+    43.3, -2.0,
+  ]);
 
   // Obtener ubicación del usuario
   useEffect(() => {
@@ -39,11 +38,11 @@ export const useNetworkMap = (
       try {
         const response = await fetch(GEO_IP_API_URL);
         const data = await response.json();
-        if (data.status === 'success' && data.lat && data.lon) {
+        if (data.status === "success" && data.lat && data.lon) {
           setUserLocation([data.lat, data.lon]);
         }
       } catch {
-        console.log('No se pudo obtener la ubicación del usuario');
+        console.log("No se pudo obtener la ubicación del usuario");
       }
     };
     fetchUserLocation();
@@ -56,7 +55,7 @@ export const useNetworkMap = (
       const data = await apiService.getNetworkMap();
       setMapData(data);
     } catch (err) {
-      setError('Error al cargar el mapa de red');
+      setError("Error al cargar el mapa de red");
       console.error(err);
     } finally {
       if (showLoading) setLoading(false);
@@ -68,16 +67,34 @@ export const useNetworkMap = (
     fetchMapData(true);
   }, [fetchMapData]);
 
-  // Auto-refresh
+  // Auto-refresh inteligente basado en configuración global
   useEffect(() => {
-    if (!autoRefresh) return;
+    // Obtener intervalo de refresco de la configuración
+    const getRefreshConfig = () => {
+      const savedSettings = localStorage.getItem("netmentor_settings");
+      if (savedSettings) {
+        try {
+          const settings = JSON.parse(savedSettings);
+          return {
+            enabled: settings.autoRefresh !== false,
+            interval: (settings.refreshInterval || 5) * 1000,
+          };
+        } catch (e) {
+          console.error("Error parsing settings:", e);
+        }
+      }
+      return { enabled: true, interval: 30000 }; // Por defecto 30s para mapa (es pesado)
+    };
+
+    const config = getRefreshConfig();
+    if (!config.enabled) return;
 
     const interval = setInterval(() => {
       fetchMapData(false);
-    }, autoRefreshInterval);
+    }, config.interval);
 
     return () => clearInterval(interval);
-  }, [autoRefresh, autoRefreshInterval, fetchMapData]);
+  }, [fetchMapData]);
 
   const refresh = useCallback(() => {
     fetchMapData(true);
@@ -88,10 +105,8 @@ export const useNetworkMap = (
     loading,
     error,
     selectedNode,
-    autoRefresh,
     userLocation,
     setSelectedNode,
-    setAutoRefresh,
     refresh,
   };
 };

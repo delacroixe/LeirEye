@@ -32,7 +32,7 @@
 }
 
 .legend-dot::before {
-  content: '';
+  content: "";
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -122,6 +122,7 @@
 .proc-name {
   font-weight: 700;
   color: white;
+  white-space: nowrap;
 }
 
 .proc-pid {

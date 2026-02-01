@@ -11,12 +11,9 @@ const NetworkMapPage: React.FC = () => {
           <h1 className="view-title">
             <span className="title-icon">🗺️</span> Mapa de Infraestructura
           </h1>
-          <p className="view-subtitle">
-            Representación topológica de nodos, flujos de tráfico y geolocalización de entidades remotas.
-          </p>
         </div>
         <div className="header-actions">
-          <PageHelp content={PAGE_HELP.networkMap} />
+          <PageHelp content={PAGE_HELP.networkMap} pageId="networkMap" />
         </div>
       </header>
 

@@ -1,7 +1,7 @@
-/* Capture Bar - Professional Cyber Intelligence Theme */
+/* Capture Bar - Slim & Optimized Version */
 
 .capture-bar-wrapper {
-  padding: 1.5rem 3rem 0;
+  padding: 0.5rem 1.5rem 0;
   z-index: 20;
 }
 
@@ -11,117 +11,128 @@
   flex-direction: column;
 }
 
-.bar-primary {
-  padding: 1rem 2rem;
+.bar-main-row {
+  padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
-  gap: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 1rem;
+  min-height: 48px;
 }
 
-.status-diagnostic {
+.status-compact {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  min-width: 240px;
+  gap: 0.75rem;
+  margin-right: 0.5rem;
 }
 
-.connection-orb {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #334155;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.connection-orb.online {
-  background: var(--color-success);
-  box-shadow: 0 0 15px var(--color-success);
-}
-
-.status-meta {
+.status-text {
   display: flex;
   flex-direction: column;
 }
 
-.status-label {
-  font-size: 0.6rem;
-  font-weight: 800;
-  color: #475569;
-  letter-spacing: 0.1em;
-}
-
 .status-val {
-  font-size: 0.75rem;
-  font-weight: 900;
+  font-size: 0.7rem;
+  font-weight: 800;
   color: #64748b;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .status-val.active {
-  color: white;
+  color: #10b981;
 }
 
 .divider {
   width: 1px;
-  height: 32px;
+  height: 20px;
   background: rgba(255, 255, 255, 0.05);
 }
 
-.engine-parameters {
+.engine-parameters-compact {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.75rem;
 }
 
-.param-group {
+.param-item {
   display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  align-items: center;
 }
 
-.param-group.stretch {
+.param-item.stretch {
   flex: 1;
+  max-width: 400px;
 }
 
-.param-group.small {
-  width: 80px;
+.param-select-compact {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.4rem !important;
+  height: 28px !important;
+  padding: 0 0.5rem !important;
+  font-size: 0.7rem !important;
+  color: white !important;
+  cursor: pointer;
 }
 
-.param-label {
-  font-size: 0.6rem;
-  font-weight: 800;
-  color: #475569;
-}
-
-.param-select,
-.param-input {
-  background: rgba(0, 0, 0, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  border-radius: 0.5rem !important;
-  height: 32px !important;
+.param-input-compact {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.4rem !important;
+  height: 28px !important;
   padding: 0 0.75rem !important;
   font-size: 0.75rem !important;
   color: white !important;
 }
 
-.param-select:focus,
-.param-input:focus {
-  border-color: var(--color-primary) !important;
+.param-select-compact:focus,
+.param-input-compact:focus {
+  border-color: #06b6d4 !important;
   outline: none;
 }
 
-.system-actions {
+.macros-inline {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.4rem;
+  margin-left: 0.5rem;
 }
 
-.action-btn {
-  height: 36px;
-  padding: 0 1.25rem;
-  border-radius: 0.5rem;
-  font-size: 0.7rem;
+.macro-pill {
+  padding: 0.2rem 0.6rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.macro-pill:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.macro-pill.active {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: #06b6d4;
+  color: #06b6d4;
+}
+
+.system-actions-compact {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn-compact {
+  height: 30px;
+  padding: 0 0.75rem;
+  border-radius: 0.4rem;
+  font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   cursor: pointer;
@@ -129,85 +140,21 @@
   border: 1px solid transparent;
 }
 
-.primary-action {
+.action-btn-compact.primary {
   background: white;
   color: black;
 }
 
-.primary-action:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
-}
-
-.danger-action {
+.action-btn-compact.danger {
   background: rgba(239, 68, 68, 0.1);
   border-color: rgba(239, 68, 68, 0.2);
   color: #f87171;
 }
 
-.danger-action:hover {
-  background: #ef4444;
-  color: white;
-}
-
-.secondary-action {
+.action-btn-compact.secondary {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.05);
   color: #94a3b8;
-}
-
-.secondary-action:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-/* Secondary Bar */
-.bar-secondary {
-  padding: 0.75rem 2rem;
-  background: rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.matrix-label {
-  font-size: 0.6rem;
-  font-weight: 800;
-  color: #475569;
-  letter-spacing: 0.1em;
-}
-
-.matrix-chips {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.matrix-chip {
-  padding: 0.25rem 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-  font-size: 0.65rem;
-  font-weight: 800;
-  color: #64748b;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.matrix-chip:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.matrix-chip.active {
-  background: rgba(6, 182, 212, 0.1);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.matrix-chip.clear {
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.1);
 }
 
 /* Error Overlay */

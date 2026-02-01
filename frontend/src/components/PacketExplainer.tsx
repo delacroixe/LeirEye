@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import apiService, { PacketData } from '../services/api';
-import './PacketExplainer.css';
+import { Brain, Sparkles, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { useAI } from "../contexts/AIContext";
+import apiService, { PacketData } from "../services/api";
+import "./PacketExplainer.css";
 
 interface PacketExplainerProps {
   packet: PacketData | null;
@@ -16,7 +19,11 @@ interface Explanation {
   details: Record<string, any>;
 }
 
-const PacketExplainer: React.FC<PacketExplainerProps> = ({ packet, onClose }) => {
+const PacketExplainer: React.FC<PacketExplainerProps> = ({
+  packet,
+  onClose,
+}) => {
+  const { status: aiStatus } = useAI();
   const [explanation, setExplanation] = useState<Explanation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +34,7 @@ const PacketExplainer: React.FC<PacketExplainerProps> = ({ packet, onClose }) =>
     const fetchExplanation = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const result = await apiService.explainPacket({
           protocol: packet.protocol,
@@ -41,8 +48,8 @@ const PacketExplainer: React.FC<PacketExplainerProps> = ({ packet, onClose }) =>
         });
         setExplanation(result);
       } catch (err: any) {
-        console.error('Error obteniendo explicación:', err);
-        setError(err.message || 'Error al obtener explicación');
+        console.error("Error obteniendo explicación:", err);
+        setError(err.message || "Error al obtener explicación");
       } finally {
         setLoading(false);
       }
@@ -53,20 +60,24 @@ const PacketExplainer: React.FC<PacketExplainerProps> = ({ packet, onClose }) =>
 
   if (!packet) return null;
 
-  return (
+  return createPortal(
     <div className="explainer-overlay" onClick={onClose}>
       <div className="explainer-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="explainer-close" onClick={onClose}>×</button>
-        
         <div className="explainer-header">
-          <span className="explainer-icon">🎓</span>
-          <h2>¿Qué está pasando?</h2>
+          <div className="ai-icon-container">
+            <Brain className="ai-head-icon" size={24} />
+            <Sparkles className="ai-sparkle-icon" size={14} />
+          </div>
+          <h2>Análisis Inteligente</h2>
+          <button className="explainer-close" onClick={onClose}>
+            <X size={20} />
+          </button>
         </div>
 
         {loading && (
           <div className="explainer-loading">
-            <div className="loading-spinner"></div>
-            <p>Analizando paquete...</p>
+            <div className="ai-scan-line"></div>
+            <p>El motor de inteligencia está analizando el flujo...</p>
           </div>
         )}
 
@@ -108,24 +119,34 @@ const PacketExplainer: React.FC<PacketExplainerProps> = ({ packet, onClose }) =>
               <div className="details-grid">
                 <div className="detail-item">
                   <span className="detail-label">Protocolo</span>
-                  <span className="detail-value">{explanation.details.protocol}</span>
+                  <span className="detail-value">
+                    {explanation.details.protocol}
+                  </span>
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">Origen</span>
-                  <span className="detail-value">{explanation.details.src}</span>
+                  <span className="detail-value">
+                    {explanation.details.src}
+                  </span>
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">Destino</span>
-                  <span className="detail-value">{explanation.details.dst}</span>
+                  <span className="detail-value">
+                    {explanation.details.dst}
+                  </span>
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">Tamaño</span>
-                  <span className="detail-value">{explanation.details.size}</span>
+                  <span className="detail-value">
+                    {explanation.details.size}
+                  </span>
                 </div>
                 {explanation.details.flags && (
                   <div className="detail-item">
                     <span className="detail-label">Flags</span>
-                    <span className="detail-value">{explanation.details.flags}</span>
+                    <span className="detail-value">
+                      {explanation.details.flags}
+                    </span>
                   </div>
                 )}
               </div>
@@ -133,14 +154,28 @@ const PacketExplainer: React.FC<PacketExplainerProps> = ({ packet, onClose }) =>
 
             {/* Fuente */}
             <div className="explainer-source">
-              {explanation.source === 'ollama' && '🤖 Explicado por IA'}
-              {explanation.source === 'cache' && '⚡ Respuesta instantánea'}
-              {explanation.source === 'basic' && 'ℹ️ Explicación básica'}
+              {explanation.source === "ollama" && (
+                <div className="ai-source-badge">
+                  <Sparkles size={12} />
+                  <span>Sugerido por {aiStatus?.model || "Local LLM"}</span>
+                </div>
+              )}
+              {explanation.source === "cache" && (
+                <div className="cache-source-badge">
+                  <span>⚡ Respuesta desde cache local</span>
+                </div>
+              )}
+              {explanation.source === "basic" && (
+                <div className="basic-source-badge">
+                  <span>⚠️ Modo de explicación básica (IA no detectada)</span>
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

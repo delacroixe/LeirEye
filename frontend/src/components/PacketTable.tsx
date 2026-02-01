@@ -1,4 +1,4 @@
-import { Globe } from "lucide-react";
+import { Brain, Globe } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { useSync } from "../contexts/SyncContext";
 import { PacketData } from "../services/api";
@@ -153,7 +153,9 @@ const PacketTable: React.FC<PacketTableProps> = ({
         </div>
       </div>
 
-      {loading && <div className="fetching-indicator">Cargando unidades de datos...</div>}
+      {loading && (
+        <div className="fetching-indicator">Cargando unidades de datos...</div>
+      )}
 
       <div className="inspector-table-view">
         <table className="inspector-table">
@@ -212,18 +214,20 @@ const PacketTable: React.FC<PacketTableProps> = ({
                     <td className="col-port">{packet.src_port || "—"}</td>
                     <td className="col-port">{packet.dst_port || "—"}</td>
                     <td className="col-process">
-                      <span className={`process-chip ${!packet.process_name ? "unknown" : ""}`}>
+                      <span
+                        className={`process-chip ${!packet.process_name ? "unknown" : ""}`}
+                      >
                         {packet.process_name || "kernel/init"}
                       </span>
                     </td>
                     <td className="col-size">{packet.length} B</td>
                     <td className="col-actions">
                       <button
-                        className="academy-btn"
+                        className="academy-btn ai-enhance"
                         onClick={(e) => handleExplain(packet, e)}
-                        title="Analizar Unidad"
+                        title="IA: Analizar Unidad"
                       >
-                        🎓
+                        <Brain size={14} />
                       </button>
                     </td>
                   </tr>
@@ -234,22 +238,32 @@ const PacketTable: React.FC<PacketTableProps> = ({
                           <div className="grid-details">
                             <div className="detail-entry">
                               <span className="entry-label">Origen:</span>
-                              <span className="entry-value">{packet.src_ip}:{packet.src_port || "—"}</span>
+                              <span className="entry-value">
+                                {packet.src_ip}:{packet.src_port || "—"}
+                              </span>
                             </div>
                             <div className="detail-entry">
                               <span className="entry-label">Destino:</span>
-                              <span className="entry-value">{packet.dst_ip}:{packet.dst_port || "—"}</span>
+                              <span className="entry-value">
+                                {packet.dst_ip}:{packet.dst_port || "—"}
+                              </span>
                             </div>
                             <div className="detail-entry">
                               <span className="entry-label">Protocolo:</span>
-                              <span className="entry-value">{packet.protocol}</span>
+                              <span className="entry-value">
+                                {packet.protocol}
+                              </span>
                             </div>
 
                             {packet.dns_domain && (
                               <div className="detail-entry dns-highlight">
                                 <Globe size={14} className="entry-icon" />
-                                <span className="entry-label">Dominio DNS:</span>
-                                <span className="entry-value domain">{packet.dns_domain}</span>
+                                <span className="entry-label">
+                                  Dominio DNS:
+                                </span>
+                                <span className="entry-value domain">
+                                  {packet.dns_domain}
+                                </span>
                                 {packet.dns_query_id && (
                                   <a
                                     href={`/dns?query_id=${packet.dns_query_id}`}
@@ -264,25 +278,38 @@ const PacketTable: React.FC<PacketTableProps> = ({
 
                             <div className="detail-entry">
                               <span className="entry-label">Entidad:</span>
-                              <span className="entry-value">{packet.process_name || "Desconocida"} (PID: {packet.pid || "—"})</span>
+                              <span className="entry-value">
+                                {packet.process_name || "Desconocida"} (PID:{" "}
+                                {packet.pid || "—"})
+                              </span>
                             </div>
 
                             {packet.flags && (
                               <div className="detail-entry">
-                                <span className="entry-label">Control Flags:</span>
-                                <span className="entry-value flags">{packet.flags}</span>
+                                <span className="entry-label">
+                                  Control Flags:
+                                </span>
+                                <span className="entry-value flags">
+                                  {packet.flags}
+                                </span>
                               </div>
                             )}
 
                             <div className="detail-entry">
-                              <span className="entry-label">Sincronización:</span>
-                              <span className="entry-value">{packet.timestamp}</span>
+                              <span className="entry-label">
+                                Sincronización:
+                              </span>
+                              <span className="entry-value">
+                                {packet.timestamp}
+                              </span>
                             </div>
                           </div>
 
                           {packet.payload_preview && (
                             <div className="payload-viewer">
-                              <span className="entry-label">Data Payload Preview (Hexdump):</span>
+                              <span className="entry-label">
+                                Data Payload Preview (Hexdump):
+                              </span>
                               <div className="hex-viewer">
                                 {packet.payload_preview}
                               </div>

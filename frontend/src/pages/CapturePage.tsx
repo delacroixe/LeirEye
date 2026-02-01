@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import ActivityTimeline from "../components/ActivityTimeline";
 import PacketTable from "../components/PacketTable";
 import PageHelp, { PAGE_HELP } from "../components/PageHelp";
-import ProcessTraffic from "../components/ProcessTraffic";
 import { useCaptureContext } from "../contexts/CaptureContext";
 import { useSync } from "../contexts/SyncContext";
 import "./CapturePage.css";
@@ -57,26 +56,18 @@ const CapturePage: React.FC = () => {
           <h1 className="view-title">
             <span className="title-icon">📦</span> Sincronización de Paquetes
           </h1>
-          <p className="view-subtitle">
-            {globalFilter
-              ? `Filtrando ${filteredPackets.length} de ${packets.length} unidades de datos`
-              : "Monitorización activa de flujos de red en tiempo real"}
-          </p>
         </div>
         <div className="header-actions">
-          <PageHelp content={PAGE_HELP.capture} />
+          <PageHelp content={PAGE_HELP.capture} pageId="capture" />
         </div>
       </header>
 
       <div className="view-content">
-        <div className="dashboard-grid">
+        <div className="dashboard-grid single-column">
           <div className="grid-span-full">
             <ActivityTimeline packets={filteredPackets} />
           </div>
-          <div className="grid-sidebar">
-            <ProcessTraffic refreshTrigger={filteredPackets.length} />
-          </div>
-          <div className="grid-main">
+          <div className="grid-span-full">
             <PacketTable packets={filteredPackets} loading={isCapturing} />
           </div>
         </div>

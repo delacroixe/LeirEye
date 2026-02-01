@@ -88,11 +88,22 @@
 .inspector-table-view {
   width: 100%;
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 60vh;
+  min-height: 300px;
 }
 
 .inspector-table {
   width: 100%;
   border-collapse: collapse;
+  position: relative;
+}
+
+.inspector-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #0f172a; /* Solid color for sticky header */
 }
 
 .inspector-table th {
@@ -187,6 +198,19 @@
   cursor: pointer;
   transition: all 0.2s;
   font-size: 0.75rem;
+}
+
+.academy-btn.ai-enhance {
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #c4b5fd;
+}
+
+.academy-btn.ai-enhance:hover {
+  background: #8b5cf6;
+  border-color: #8b5cf6;
+  color: white;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
 }
 
 .academy-btn:hover {
@@ -292,7 +316,7 @@
   padding: 1.5rem;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 0.75rem;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.8125rem;
   color: #64748b;
   line-height: 1.6;

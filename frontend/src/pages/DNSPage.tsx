@@ -1,22 +1,20 @@
 import {
   Activity,
   AlertTriangle,
+  Brain,
   ChevronDown,
   ChevronRight,
   ExternalLink,
-  Filter,
   Globe,
   Package,
-  RefreshCw,
-  Search,
   Shield,
-  Trash2,
-  X,
 } from "lucide-react";
+
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageHelp, { PAGE_HELP } from "../components/PageHelp";
 import { API_BASE_URL } from "../config";
+import { useAI } from "../contexts/AIContext";
 import { useSync } from "../contexts/SyncContext";
 import "./DNSPage.css";
 
@@ -82,6 +80,7 @@ interface TunnelingIndicators {
 }
 
 export const DNSPage: React.FC = () => {
+  const { status: aiStatus } = useAI();
   const [records, setRecords] = useState<DNSRecord[]>([]);
   const [stats, setStats] = useState<DNSStats | null>(null);
   const [indicators, setIndicators] = useState<TunnelingIndicators | null>(
@@ -94,8 +93,14 @@ export const DNSPage: React.FC = () => {
     process_name?: string;
     suspicious_only: boolean;
   }>({ suspicious_only: false });
-  const [showFilters, setShowFilters] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+
+  // AI Analysis
+  const [aiAnalysis, setAiAnalysis] = useState<{
+    threats?: { domain: string; reason: string; risk: string }[];
+    status?: string;
+    error?: string;
+  } | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   // Estado para paquetes relacionados
   const [expandedQuery, setExpandedQuery] = useState<string | null>(null);
@@ -193,27 +198,27 @@ export const DNSPage: React.FC = () => {
 
   useEffect(() => {
     loadData();
-    const interval = setInterval(loadData, 5000);
-    return () => clearInterval(interval);
-  }, [loadData]);
 
-  const clearHistory = async () => {
-    if (!window.confirm("¿Estás seguro de limpiar el historial DNS?")) return;
-    try {
-      const response = await fetch(`${API_BASE_URL}/dns/clear`, {
-        method: "POST",
-      });
-      if (response.ok) {
-        await loadData();
+    // Obtener intervalo de refresco de la configuración
+    const savedSettings = localStorage.getItem("netmentor_settings");
+    let intervalMs = 5000;
+    let autoRefresh = true;
+
+    if (savedSettings) {
+      try {
+        const settings = JSON.parse(savedSettings);
+        autoRefresh = settings.autoRefresh !== false;
+        intervalMs = (settings.refreshInterval || 5) * 1000;
+      } catch (e) {
+        console.error("Error parsing settings:", e);
       }
-    } catch (err) {
-      console.error("Error clearing history:", err);
     }
-  };
 
-  const handleSearch = () => {
-    setFilter({ ...filter, domain: searchTerm || undefined });
-  };
+    if (autoRefresh) {
+      const interval = setInterval(loadData, intervalMs);
+      return () => clearInterval(interval);
+    }
+  }, [loadData]);
 
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -235,68 +240,92 @@ export const DNSPage: React.FC = () => {
     <div className="view-container dns-view">
       <header className="view-header">
         <div className="header-text">
-          <h1 className="view-title">
-            <span className="title-icon">🌐</span> Rastreador DNS Avanzado
-          </h1>
-          <p className="view-subtitle">
-            Análisis heurístico de resoluciones de nombres, detección de exfiltración y túneles DNS en tiempo real.
-          </p>
+          <h1 className="view-title">Rastreador DNS Avanzado</h1>
         </div>
         <div className="header-actions">
-          <div className="premium-search-box">
-            <Search size={16} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Analizar dominio..."
-              className="premium-search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            />
-          </div>
-          <button
-            className={`action-icon-btn ${showFilters ? "active" : ""}`}
-            onClick={() => setShowFilters(!showFilters)}
-            title="Filtros de Análisis"
-          >
-            <Filter size={18} />
-          </button>
-          <button className="action-icon-btn" onClick={loadData} title="Sincronizar Datos">
-            <RefreshCw size={18} className={loading ? "spinning" : ""} />
-          </button>
-          {records.length > 0 && (
-            <button className="premium-btn danger" onClick={clearHistory}>
-              <Trash2 size={16} />
-              Purgar Historial
-            </button>
-          )}
+          <PageHelp content={PAGE_HELP.dns} pageId="dns" />
         </div>
       </header>
 
-      <PageHelp content={PAGE_HELP.dns} />
-
       <div className="view-content">
+        {aiAnalysis && (
+          <div className="ai-analysis-panel glass-card">
+            <div className="ai-panel-header">
+              <Brain size={20} className="ai-icon" />
+              <h3>Análisis de Amenazas DNS (IA)</h3>
+              <button className="close-btn" onClick={() => setAiAnalysis(null)}>
+                ×
+              </button>
+            </div>
+            {aiAnalysis.error ? (
+              <p className="ai-error">{aiAnalysis.error}</p>
+            ) : (
+              <div className="ai-content">
+                {aiAnalysis.status && (
+                  <p className="ai-summary">{aiAnalysis.status}</p>
+                )}
+                {aiAnalysis.threats && aiAnalysis.threats.length > 0 ? (
+                  <div className="threats-list">
+                    {aiAnalysis.threats.map((threat, i) => (
+                      <div
+                        key={i}
+                        className={`threat-item risk-${threat.risk?.toLowerCase() || "medium"}`}
+                      >
+                        <span className="threat-domain">{threat.domain}</span>
+                        <span className="threat-reason">{threat.reason}</span>
+                        <span className="threat-risk">{threat.risk}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="ai-summary">
+                    No se detectaron amenazas significativas en el tráfico DNS
+                    analizado.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="dns-dashboard-grid">
           {/* Main Stats Row */}
+
           <div className="stats-dashboard-grid grid-span-full">
             <div className="stat-panel glass-card">
-              <div className="stat-icon-wrapper"><Activity size={20} /></div>
-              <span className="stat-panel-value">{stats?.total_queries || 0}</span>
+              <div className="stat-icon-wrapper">
+                <Activity size={20} />
+              </div>
+              <span className="stat-panel-value">
+                {stats?.total_queries || 0}
+              </span>
               <span className="stat-panel-label">Resoluciones Totales</span>
             </div>
             <div className="stat-panel glass-card">
-              <div className="stat-icon-wrapper"><Globe size={20} /></div>
-              <span className="stat-panel-value">{stats?.unique_domains || 0}</span>
+              <div className="stat-icon-wrapper">
+                <Globe size={20} />
+              </div>
+              <span className="stat-panel-value">
+                {stats?.unique_domains || 0}
+              </span>
               <span className="stat-panel-label">Dominios Únicos</span>
             </div>
             <div className="stat-panel glass-card">
-              <div className="stat-icon-wrapper"><Shield size={20} /></div>
-              <span className="stat-panel-value">{stats?.queries_per_minute.toFixed(1) || 0}</span>
+              <div className="stat-icon-wrapper">
+                <Shield size={20} />
+              </div>
+              <span className="stat-panel-value">
+                {stats?.queries_per_minute.toFixed(1) || 0}
+              </span>
               <span className="stat-panel-label">Resoluciones/Min</span>
             </div>
             <div className="stat-panel glass-card critical">
-              <div className="stat-icon-wrapper"><AlertTriangle size={20} /></div>
-              <span className="stat-panel-value">{stats?.failed_queries || 0}</span>
+              <div className="stat-icon-wrapper">
+                <AlertTriangle size={20} />
+              </div>
+              <span className="stat-panel-value">
+                {stats?.failed_queries || 0}
+              </span>
               <span className="stat-panel-label">Consultas Fallidas</span>
             </div>
           </div>
@@ -306,9 +335,17 @@ export const DNSPage: React.FC = () => {
             <div className="tunneling-analysis-panel glass-card grid-span-full">
               <div className="analysis-header">
                 <Shield size={20} className="header-icon" />
-                <h3 className="analysis-title">Indicadores de Anomalía (Heurística)</h3>
+                <h3 className="analysis-title">
+                  Indicadores de Anomalía (Heurística)
+                </h3>
                 <div className="analysis-badge">
-                  Análisis de Riesgo: <span className="risk-score" style={{ color: getScoreColor(indicators.score) }}>{indicators.score}%</span>
+                  Análisis de Riesgo:{" "}
+                  <span
+                    className="risk-score"
+                    style={{ color: getScoreColor(indicators.score) }}
+                  >
+                    {indicators.score}%
+                  </span>
                 </div>
               </div>
               <div className="analysis-body">
@@ -318,74 +355,49 @@ export const DNSPage: React.FC = () => {
                     style={{
                       width: `${indicators.score}%`,
                       backgroundColor: getScoreColor(indicators.score),
-                      boxShadow: `0 0 15px ${getScoreColor(indicators.score)}40`
+                      boxShadow: `0 0 15px ${getScoreColor(indicators.score)}40`,
                     }}
                   />
                 </div>
                 <div className="indicators-grid">
                   <div className="indicator-box">
                     <span className="indicator-name">Longitud Excesiva</span>
-                    <span className="indicator-data">{indicators.long_queries}</span>
+                    <span className="indicator-data">
+                      {indicators.long_queries}
+                    </span>
                   </div>
                   <div className="indicator-box">
                     <span className="indicator-name">Alta Entropía</span>
-                    <span className="indicator-data">{indicators.high_entropy_queries}</span>
+                    <span className="indicator-data">
+                      {indicators.high_entropy_queries}
+                    </span>
                   </div>
                   <div className="indicator-box">
-                    <span className="indicator-name">Subdominios Inusuales</span>
-                    <span className="indicator-data">{indicators.many_subdomains}</span>
+                    <span className="indicator-name">
+                      Subdominios Inusuales
+                    </span>
+                    <span className="indicator-data">
+                      {indicators.many_subdomains}
+                    </span>
                   </div>
                   <div className="indicator-box">
-                    <span className="indicator-name">Tipos de Registro Raros</span>
-                    <span className="indicator-data">{indicators.unusual_types}</span>
+                    <span className="indicator-name">
+                      Tipos de Registro Raros
+                    </span>
+                    <span className="indicator-data">
+                      {indicators.unusual_types}
+                    </span>
                   </div>
                   <div className="indicator-box">
                     <span className="indicator-name">Frecuencia Crítica</span>
-                    <span className={`indicator-data ${indicators.high_frequency ? "warning" : ""}`}>
+                    <span
+                      className={`indicator-data ${indicators.high_frequency ? "warning" : ""}`}
+                    >
                       {indicators.high_frequency ? "CRÍTICA" : "NORMAL"}
                     </span>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Filters Overlay */}
-          {showFilters && (
-            <div className="filters-panel glass-card grid-span-full">
-              <div className="filter-field">
-                <label className="field-label">Filtro por Proceso</label>
-                <input
-                  type="text"
-                  className="control-input"
-                  placeholder="Ej: chrome, system..."
-                  value={filter.process_name || ""}
-                  onChange={(e) =>
-                    setFilter({
-                      ...filter,
-                      process_name: e.target.value || undefined,
-                    })
-                  }
-                />
-              </div>
-              <div className="filter-field center">
-                <label className="checkbox-container">
-                  <input
-                    type="checkbox"
-                    checked={filter.suspicious_only}
-                    onChange={(e) =>
-                      setFilter({ ...filter, suspicious_only: e.target.checked })
-                    }
-                  />
-                  <span className="checkbox-label">Solo tráfico sospechoso</span>
-                </label>
-              </div>
-              <button
-                className="filter-clear-btn"
-                onClick={() => setFilter({ suspicious_only: false })}
-              >
-                <X size={14} /> Resetear Filtros
-              </button>
             </div>
           )}
 
@@ -417,7 +429,9 @@ export const DNSPage: React.FC = () => {
           {/* Logs Section */}
           <div className="queries-log-panel glass-card grid-span-full">
             <div className="panel-header">
-              <h3 className="panel-title">Registro de Resoluciones (Real-time)</h3>
+              <h3 className="panel-title">
+                Registro de Resoluciones (Real-time)
+              </h3>
             </div>
             <div className="premium-table-view">
               <table className="premium-table">
@@ -434,12 +448,19 @@ export const DNSPage: React.FC = () => {
                 </thead>
                 <tbody>
                   {loading && records.length === 0 ? (
-                    <tr><td colSpan={7} className="placeholder-row">Sincronizando flujo DNS...</td></tr>
+                    <tr>
+                      <td colSpan={7} className="placeholder-row">
+                        Sincronizando flujo DNS...
+                      </td>
+                    </tr>
                   ) : records.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="placeholder-row">
                         <Globe size={32} className="empty-icon" />
-                        <p>No se han interceptado peticiones DNS en este segmento.</p>
+                        <p>
+                          No se han interceptado peticiones DNS en este
+                          segmento.
+                        </p>
                       </td>
                     </tr>
                   ) : (
@@ -459,14 +480,21 @@ export const DNSPage: React.FC = () => {
                           <td className="cell-time">
                             {formatTimestamp(record.query.timestamp)}
                           </td>
-                          <td className="cell-domain" title={record.query.query_name}>
+                          <td
+                            className="cell-domain"
+                            title={record.query.query_name}
+                          >
                             {record.query.query_name}
                           </td>
                           <td className="cell-type">
-                            <span className="type-chip">{record.query.query_type}</span>
+                            <span className="type-chip">
+                              {record.query.query_type}
+                            </span>
                           </td>
                           <td className="cell-proc">
-                            <span className="proc-chip">{record.query.process_name || "—"}</span>
+                            <span className="proc-chip">
+                              {record.query.process_name || "—"}
+                            </span>
                           </td>
                           <td className="cell-resp">
                             <span className="resp-text">
@@ -477,17 +505,26 @@ export const DNSPage: React.FC = () => {
                           </td>
                           <td className="cell-stat">
                             {record.query.is_suspicious ? (
-                              <span className="status-indicator warning" title={record.query.suspicion_reasons.join(", ")}>
+                              <span
+                                className="status-indicator warning"
+                                title={record.query.suspicion_reasons.join(
+                                  ", ",
+                                )}
+                              >
                                 <AlertTriangle size={12} /> ALERTA
                               </span>
                             ) : record.resolved ? (
-                              <span className="status-indicator success">OK</span>
+                              <span className="status-indicator success">
+                                OK
+                              </span>
                             ) : record.response?.response_code ? (
                               <span className="status-indicator error">
                                 {record.response.response_code}
                               </span>
                             ) : (
-                              <span className="status-indicator pending">PEND</span>
+                              <span className="status-indicator pending">
+                                PEND
+                              </span>
                             )}
                           </td>
                         </tr>
@@ -502,10 +539,13 @@ export const DNSPage: React.FC = () => {
                                 </div>
 
                                 {loadingPackets ? (
-                                  <div className="panel-loading">Analizando correlación...</div>
+                                  <div className="panel-loading">
+                                    Analizando correlación...
+                                  </div>
                                 ) : relatedPackets.length === 0 ? (
                                   <div className="panel-empty">
-                                    No se encontraron tramas de datos vinculadas a esta resolución.
+                                    No se encontraron tramas de datos vinculadas
+                                    a esta resolución.
                                   </div>
                                 ) : (
                                   <div className="traces-list">
@@ -517,12 +557,20 @@ export const DNSPage: React.FC = () => {
                                     </div>
                                     {relatedPackets.map((packet, idx) => (
                                       <div key={idx} className="trace-item">
-                                        <span className="trace-time">{new Date(packet.timestamp).toLocaleTimeString()}</span>
+                                        <span className="trace-time">
+                                          {new Date(
+                                            packet.timestamp,
+                                          ).toLocaleTimeString()}
+                                        </span>
                                         <span className="trace-flow">
                                           {packet.src_ip} → {packet.dst_ip}
                                         </span>
-                                        <span className="trace-prot">{packet.protocol}</span>
-                                        <span className="trace-size">{packet.length} B</span>
+                                        <span className="trace-prot">
+                                          {packet.protocol}
+                                        </span>
+                                        <span className="trace-size">
+                                          {packet.length} B
+                                        </span>
                                       </div>
                                     ))}
                                     <div className="panel-actions">
@@ -536,7 +584,8 @@ export const DNSPage: React.FC = () => {
                                           );
                                         }}
                                       >
-                                        <ExternalLink size={14} /> Abrir en Monitor de Captura
+                                        <ExternalLink size={14} /> Abrir en
+                                        Monitor de Captura
                                       </button>
                                     </div>
                                   </div>

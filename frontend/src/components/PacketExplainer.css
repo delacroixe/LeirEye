@@ -11,8 +11,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999; /* Ensure it's above everything */
   padding: 2rem;
+  overflow-y: auto; /* Allow scrolling of the overlay if modal is too tall */
   animation: overlay-fade 0.3s ease-out;
 }
 
@@ -29,12 +30,16 @@
 .explainer-modal {
   width: 100%;
   max-width: 600px;
+  max-height: 90vh; /* Don't exceed viewport height */
+  overflow-y: auto; /* Scroll inside modal if content is huge */
   background: #0f172a;
   border: 1px solid rgba(6, 182, 212, 0.2);
   border-radius: 1.5rem;
   padding: 3rem;
   position: relative;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px -10px rgba(6, 182, 212, 0.2);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 40px -10px rgba(6, 182, 212, 0.2);
   animation: modal-slide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -82,8 +87,37 @@
   margin-bottom: 2.5rem;
 }
 
-.explainer-icon {
-  font-size: 2rem;
+.ai-icon-container {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a78bfa;
+}
+
+.ai-sparkle-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  color: #fcd34d;
+  animation: sparkle-rotate 3s infinite linear;
+}
+
+@keyframes sparkle-rotate {
+  from {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+  }
+  to {
+    transform: rotate(360deg) scale(1);
+  }
 }
 
 .explainer-header h2 {
@@ -92,6 +126,76 @@
   color: white;
   margin: 0;
   letter-spacing: -0.02em;
+}
+
+/* Loading Effects */
+.explainer-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 3rem 0;
+}
+
+.ai-scan-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8b5cf6, transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-scan-line::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(6, 182, 212, 0.8),
+    transparent
+  );
+  animation: scan-move 1.5s infinite;
+}
+
+@keyframes scan-move {
+  to {
+    left: 100%;
+  }
+}
+
+/* Source Badges */
+.explainer-source {
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 1.5rem;
+}
+
+.ai-source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #a78bfa;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cache-source-badge {
+  color: #fbbf24;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.basic-source-badge {
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 
 /* Modal Content */
@@ -179,7 +283,7 @@
 }
 
 .explainer-details summary::before {
-  content: '▶';
+  content: "▶";
   display: inline-block;
   margin-right: 0.75rem;
   font-size: 0.6rem;

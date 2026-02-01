@@ -32,9 +32,6 @@ const ProfilePage: React.FC = () => {
           <h1 className="view-title">
             <span className="title-icon">👤</span> Identidad de Operador
           </h1>
-          <p className="view-subtitle">
-            Gestión de credenciales, nivel de acceso y parámetros de sesión.
-          </p>
         </div>
       </header>
 
@@ -45,7 +42,11 @@ const ProfilePage: React.FC = () => {
             <div className="identity-card glass-card">
               <div className="avatar-preview">
                 {user.avatar_url ? (
-                  <img src={user.avatar_url} alt={user.username} className="avatar-img" />
+                  <img
+                    src={user.avatar_url}
+                    alt={user.username}
+                    className="avatar-img"
+                  />
                 ) : (
                   <div className="avatar-placeholder">
                     {user.username.charAt(0).toUpperCase()}
@@ -54,7 +55,9 @@ const ProfilePage: React.FC = () => {
                 <div className="status-indicator online"></div>
               </div>
               <div className="identity-text">
-                <h3 className="operator-name">{user.full_name || user.username}</h3>
+                <h3 className="operator-name">
+                  {user.full_name || user.username}
+                </h3>
                 <span className="operator-role">{user.role}</span>
               </div>
               <div className="identity-stats">
@@ -64,7 +67,9 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <div className="mini-stat">
                   <span className="m-label">ID</span>
-                  <span className="m-val">#{user.username.substring(0, 4)}</span>
+                  <span className="m-val">
+                    #{user.username.substring(0, 4)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -88,7 +93,9 @@ const ProfilePage: React.FC = () => {
 
                 <div className="card-body">
                   <div className="form-field">
-                    <label className="field-label">Identificador de Acceso</label>
+                    <label className="field-label">
+                      Identificador de Acceso
+                    </label>
                     <span className="field-readonly">{user.username}</span>
                   </div>
 
@@ -100,16 +107,23 @@ const ProfilePage: React.FC = () => {
                         className="cyber-input"
                         value={formData.full_name}
                         onChange={(e) =>
-                          setFormData({ ...formData, full_name: e.target.value })
+                          setFormData({
+                            ...formData,
+                            full_name: e.target.value,
+                          })
                         }
                       />
                     ) : (
-                      <span className="field-value">{user.full_name || "— No definido —"}</span>
+                      <span className="field-value">
+                        {user.full_name || "— No definido —"}
+                      </span>
                     )}
                   </div>
 
                   <div className="form-field">
-                    <label className="field-label">Capa de Comunicación (Email)</label>
+                    <label className="field-label">
+                      Capa de Comunicación (Email)
+                    </label>
                     {isEditing ? (
                       <input
                         type="email"
@@ -120,13 +134,18 @@ const ProfilePage: React.FC = () => {
                         }
                       />
                     ) : (
-                      <span className="field-value">{user.email || "— No definido —"}</span>
+                      <span className="field-value">
+                        {user.email || "— No definido —"}
+                      </span>
                     )}
                   </div>
 
                   {isEditing && (
                     <div className="form-actions">
-                      <button className="premium-btn primary" onClick={handleSave}>
+                      <button
+                        className="premium-btn primary"
+                        onClick={handleSave}
+                      >
                         <Save size={16} />
                         Guardar Configuración
                       </button>
@@ -151,7 +170,9 @@ const ProfilePage: React.FC = () => {
                         </div>
                       ))
                     ) : (
-                      <span className="matrix-placeholder">Nivel de acceso básico (Consultor)</span>
+                      <span className="matrix-placeholder">
+                        Nivel de acceso básico (Consultor)
+                      </span>
                     )}
                   </div>
                 </div>

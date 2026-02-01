@@ -241,3 +241,36 @@
   font-size: 3rem;
   opacity: 0.2;
 }
+
+/* Vis-Network Custom Tooltip Style */
+.vis-tooltip {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+  font-family: "Outfit", sans-serif !important;
+  color: #f8fafc !important;
+}
+
+.vis-tooltip-custom .tooltip-header {
+  font-size: 13px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 4px;
+  font-weight: 800;
+}
+
+.vis-tooltip-custom .tooltip-row {
+  font-size: 11px;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.vis-tooltip-custom .tooltip-row span {
+  color: #64748b;
+  font-weight: 600;
+}

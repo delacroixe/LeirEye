@@ -1,0 +1,16 @@
+/**
+ * MainContent - Estilos para el wrapper de contenido adaptable
+ */
+
+.main-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+}
+
+/* Ajustar el overlay del filtro global */
+.main-content-area .global-filter-overlay {
+  transition: right 0.2s ease-out;
+}

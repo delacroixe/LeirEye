@@ -1,12 +1,10 @@
 import {
   AlertTriangle,
-  ArrowRight,
   Globe,
   Layers,
   Network,
   RefreshCw,
-  Sparkles,
-  Zap
+  Zap,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import PageHelp, { PAGE_HELP } from "../components/PageHelp";
@@ -56,17 +54,17 @@ const PacketBuilderPage: React.FC = () => {
     color: string;
     icon: React.ReactNode;
   }[] = [
-      { id: "TCP", name: "TCP", color: "#64c8ff", icon: <Network size={20} /> },
-      { id: "UDP", name: "UDP", color: "#a78bfa", icon: <Zap size={20} /> },
-      {
-        id: "ICMP",
-        name: "ICMP",
-        color: "#fbbf24",
-        icon: <RefreshCw size={20} />,
-      },
-      { id: "DNS", name: "DNS", color: "#34d399", icon: <Globe size={20} /> },
-      { id: "HTTP", name: "HTTP", color: "#f472b6", icon: <Layers size={20} /> },
-    ];
+    { id: "TCP", name: "TCP", color: "#64c8ff", icon: <Network size={20} /> },
+    { id: "UDP", name: "UDP", color: "#a78bfa", icon: <Zap size={20} /> },
+    {
+      id: "ICMP",
+      name: "ICMP",
+      color: "#fbbf24",
+      icon: <RefreshCw size={20} />,
+    },
+    { id: "DNS", name: "DNS", color: "#34d399", icon: <Globe size={20} /> },
+    { id: "HTTP", name: "HTTP", color: "#f472b6", icon: <Layers size={20} /> },
+  ];
 
   // Plantillas predefinidas
   const templates = [
@@ -142,23 +140,29 @@ const PacketBuilderPage: React.FC = () => {
   const askAI = async (query: string) => {
     setIsAiLoading(true);
     try {
-      // Llamar al servicio de IA para obtener sugerencias
-      const response = await apiService.getAIPacketSuggestion({
-        protocol,
-        srcIp,
-        dstIp,
-        srcPort,
-        dstPort,
-        query,
-      });
+      // Llamar al servicio de IA avanzado (Ollama)
+      const response = await apiService.getCraftingHelpWithAI(query, protocol);
+
+      if (response.error) throw new Error(response.error);
 
       setAiAssistant({
         suggestion: response.suggestion || "Configuración sugerida lista",
-        explanation:
-          response.explanation ||
-          "Esta configuración es válida para tu propósito.",
-        securityTip: response.securityTip,
+        explanation: "Análisis generado por el motor de IA local.",
+        securityTip: "⚠️ Valida siempre los campos antes de la inyección.",
       });
+
+      // Si la IA devolvió campos específicos, aplicarlos
+      if (response.fields) {
+        if (response.fields.dst_port) setDstPort(response.fields.dst_port);
+        if (response.fields.payload) setPayload(response.fields.payload);
+        if (response.fields.flags) {
+          const newFlags = { ...tcpFlags };
+          Object.keys(response.fields.flags).forEach((f) => {
+            if (f in newFlags) (newFlags as any)[f] = response.fields.flags[f];
+          });
+          setTcpFlags(newFlags);
+        }
+      }
     } catch (error) {
       // Fallback con sugerencias locales si no hay IA disponible
       const suggestions = getLocalSuggestions(query);
@@ -320,28 +324,28 @@ const PacketBuilderPage: React.FC = () => {
     <div className="view-container builder-view full-width-layout">
       <header className="view-header">
         <div className="header-text">
-          <h1 className="view-title">
-            <span className="title-icon">🛠️</span> Arquitecto de Protocolos
-          </h1>
-          <p className="view-subtitle">
-            Constructor de tramas de bajo nivel con modelado inteligente de capas de red (L3/L4/L7).
-          </p>
+          <h1 className="view-title">Arquitecto de Protocolos</h1>
         </div>
         <div className="header-actions">
-          <button
-            className="premium-btn magic"
-            onClick={generateWithAI}
-            disabled={isAiLoading}
-          >
-            <Sparkles size={18} />
-            <span>{isAiLoading ? "Desarrollando..." : "Asistente IA"}</span>
-          </button>
-          <PageHelp content={PAGE_HELP.packetBuilder} />
+          <PageHelp content={PAGE_HELP.packetBuilder} pageId="packetBuilder" />
         </div>
       </header>
 
       <div className="view-content">
         <div className="builder-layout-grid">
+          {/* Quick Presets - Horizontal List */}
+          <div className="presets-horizontal-row">
+            {templates.map((t, idx) => (
+              <button
+                key={idx}
+                className="preset-chip"
+                onClick={() => applyTemplate(t)}
+              >
+                <span className="preset-name">{t.name}</span>
+              </button>
+            ))}
+          </div>
+
           {/* Main Configuration Area */}
           <div className="builder-config-column">
             {/* Protocol Selection Header */}
@@ -363,7 +367,9 @@ const PacketBuilderPage: React.FC = () => {
             </div>
 
             {/* Visual Packet Builder Stack */}
-            <div className={`packet-construction-stack ${animatePacket ? "stack-pulse" : ""}`}>
+            <div
+              className={`packet-construction-stack ${animatePacket ? "stack-pulse" : ""}`}
+            >
               {/* L3 - Network Layer */}
               <div className="construction-layer layer-l3">
                 <div className="layer-header">
@@ -381,7 +387,6 @@ const PacketBuilderPage: React.FC = () => {
                       placeholder="IP del emisor"
                     />
                   </div>
-                  <div className="mid-arrow">→</div>
                   <div className="input-group">
                     <label>IP Destino</label>
                     <input
@@ -407,14 +412,20 @@ const PacketBuilderPage: React.FC = () => {
               {/* L4 - Transport Layer */}
               <div
                 className="construction-layer layer-l4"
-                style={{ "--layer-accent": currentProtocol?.color } as React.CSSProperties}
+                style={
+                  {
+                    "--layer-accent": currentProtocol?.color,
+                  } as React.CSSProperties
+                }
               >
                 <div className="layer-header">
                   <span className="layer-id">CAPA 4</span>
                   <span className="layer-name">TRANSPORTE / {protocol}</span>
                 </div>
                 <div className="layer-body">
-                  {(["TCP", "UDP", "DNS", "HTTP"] as Protocol[]).includes(protocol) && (
+                  {(["TCP", "UDP", "DNS", "HTTP"] as Protocol[]).includes(
+                    protocol,
+                  ) && (
                     <>
                       <div className="input-group">
                         <label>Puerto Origen</label>
@@ -422,17 +433,20 @@ const PacketBuilderPage: React.FC = () => {
                           type="number"
                           className="construct-input"
                           value={srcPort}
-                          onChange={(e) => setSrcPort(parseInt(e.target.value) || 0)}
+                          onChange={(e) =>
+                            setSrcPort(parseInt(e.target.value) || 0)
+                          }
                         />
                       </div>
-                      <div className="mid-arrow">→</div>
                       <div className="input-group">
                         <label>Puerto Destino</label>
                         <input
                           type="number"
                           className="construct-input"
                           value={dstPort}
-                          onChange={(e) => setDstPort(parseInt(e.target.value) || 0)}
+                          onChange={(e) =>
+                            setDstPort(parseInt(e.target.value) || 0)
+                          }
                         />
                       </div>
                     </>
@@ -460,13 +474,19 @@ const PacketBuilderPage: React.FC = () => {
                     <label className="sub-label">Flags de Control</label>
                     <div className="flags-grid">
                       {Object.entries(tcpFlags).map(([flag, value]) => (
-                        <label key={flag} className={`flag-check ${value ? "active" : ""}`}>
+                        <label
+                          key={flag}
+                          className={`flag-check ${value ? "active" : ""}`}
+                        >
                           <input
                             type="checkbox"
                             className="hidden-input"
                             checked={value}
                             onChange={(e) =>
-                              setTcpFlags((prev) => ({ ...prev, [flag]: e.target.checked }))
+                              setTcpFlags((prev) => ({
+                                ...prev,
+                                [flag]: e.target.checked,
+                              }))
                             }
                           />
                           {flag.toUpperCase()}
@@ -501,10 +521,14 @@ const PacketBuilderPage: React.FC = () => {
             {/* Binary Preview & Action Footer */}
             <div className="builder-finalization glass-card">
               <div className="binary-preview">
-                <div className="preview-label">BINARIO DE SALIDA (RAW PREVIEW)</div>
+                <div className="preview-label">
+                  BINARIO DE SALIDA (RAW PREVIEW)
+                </div>
                 <div className="preview-content">
                   <code>{previewHex || "Esperando parámetros..."}</code>
-                  <span className="byte-count">{Math.ceil(previewHex.replace(/\s/g, "").length / 2)} BYTES</span>
+                  <span className="byte-count">
+                    {Math.ceil(previewHex.replace(/\s/g, "").length / 2)} BYTES
+                  </span>
                 </div>
               </div>
               <div className="action-row">
@@ -514,75 +538,23 @@ const PacketBuilderPage: React.FC = () => {
                   disabled={isSending || !dstIp}
                 >
                   <Zap size={18} className={isSending ? "pulse" : ""} />
-                  <span>{isSending ? "INYECTANDO TRÁFICO..." : "INYECTAR EN RED"}</span>
+                  <span>
+                    {isSending ? "INYECTANDO TRÁFICO..." : "INYECTAR EN RED"}
+                  </span>
                 </button>
 
                 {sendResult && (
-                  <div className={`inject-feedback ${sendResult.success ? "success" : "error"}`}>
-                    {sendResult.success ? <Zap size={14} /> : <AlertTriangle size={14} />}
+                  <div
+                    className={`inject-feedback ${sendResult.success ? "success" : "error"}`}
+                  >
+                    {sendResult.success ? (
+                      <Zap size={14} />
+                    ) : (
+                      <AlertTriangle size={14} />
+                    )}
                     {sendResult.message}
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar Area - Insights & Presets */}
-          <div className="builder-info-column">
-            {/* AI Assistant Insight */}
-            <div className="info-card intelligence glass-card">
-              <div className="info-card-header">
-                <Sparkles size={18} className="icon-ai" />
-                <h4>Asistente Inteligente</h4>
-              </div>
-              <div className="info-card-body">
-                <div className="intent-box">
-                  <input
-                    type="text"
-                    className="intent-input"
-                    placeholder="Describe tu intención..."
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        askAI((e.target as HTMLInputElement).value);
-                      }
-                    }}
-                  />
-                </div>
-                {aiAssistant ? (
-                  <div className="ai-response-stack">
-                    <div className="ai-block">
-                      <div className="ai-block-label">Configuración AI</div>
-                      <p>{aiAssistant.suggestion}</p>
-                    </div>
-                    <div className="ai-block">
-                      <div className="ai-block-label">Análisis Técnico</div>
-                      <p>{aiAssistant.explanation}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="ai-placeholder">
-                    Ingresa una intención (ej: "ping a gateway") para asistencia.
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Presets List */}
-            <div className="info-card presets glass-card">
-              <div className="info-card-header">
-                <Layers size={18} />
-                <h4>Plantillas Rápidas</h4>
-              </div>
-              <div className="presets-list">
-                {templates.map((t, idx) => (
-                  <button key={idx} className="preset-item" onClick={() => applyTemplate(t)}>
-                    <div className="preset-info">
-                      <div className="preset-name">{t.name}</div>
-                      <div className="preset-meta">{t.protocol}</div>
-                    </div>
-                    <ArrowRight size={14} className="preset-arrow" />
-                  </button>
-                ))}
               </div>
             </div>
           </div>

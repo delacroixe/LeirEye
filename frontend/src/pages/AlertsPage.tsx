@@ -1,17 +1,18 @@
 import {
   AlertOctagon,
   AlertTriangle,
+  Brain,
   Check,
   CheckCircle,
-  Filter,
   Info,
-  RefreshCw,
+  Sparkles,
   Trash2,
-  X
+  X,
 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 import PageHelp, { PAGE_HELP } from "../components/PageHelp";
 import { API_BASE_URL } from "../config";
+import { useAI } from "../contexts/AIContext";
 import "./AlertsPage.css";
 
 interface AlertSource {
@@ -56,6 +57,7 @@ const severityConfig: Record<
 };
 
 export const AlertsPage: React.FC = () => {
+  const { status: aiStatus } = useAI();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [stats, setStats] = useState<AlertStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -65,7 +67,48 @@ export const AlertsPage: React.FC = () => {
     type?: string;
     acknowledged?: boolean;
   }>({});
-  const [showFilters, setShowFilters] = useState(false);
+
+  // AI Explain State
+  const [explainingId, setExplainingId] = useState<string | null>(null);
+  const [aiExplanations, setAiExplanations] = useState<Record<string, any>>({});
+
+  const handleExplain = async (alert: Alert) => {
+    if (aiExplanations[alert.id]) {
+      setExplainingId(explainingId === alert.id ? null : alert.id);
+      return;
+    }
+
+    setExplainingId(alert.id);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/ai/explain-alert`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          alert_type: alert.type,
+          context: {
+            title: alert.title,
+            description: alert.description,
+            severity: alert.severity,
+            source: alert.source,
+            metadata: alert.metadata,
+          },
+        }),
+      });
+
+      if (!response.ok) throw new Error("Error en explicación IA");
+      const data = await response.json();
+      setAiExplanations((prev) => ({ ...prev, [alert.id]: data }));
+    } catch (err) {
+      console.error(err);
+      setAiExplanations((prev) => ({
+        ...prev,
+        [alert.id]: {
+          title: "Error IA",
+          explanation: "No se pudo obtener la explicación del motor local.",
+        },
+      }));
+    }
+  };
 
   const fetchAlerts = useCallback(async () => {
     try {
@@ -209,40 +252,18 @@ export const AlertsPage: React.FC = () => {
     <div className="view-container alerts-view">
       <header className="view-header">
         <div className="header-text">
-          <h1 className="view-title">
-            <span className="title-icon">🔔</span> Centro de Control de Alertas
-          </h1>
-          <p className="view-subtitle">
-            Gestión y análisis de incidentes de seguridad detectados por el motor de inteligencia.
-          </p>
+          <h1 className="view-title">Centro de Control de Alertas</h1>
         </div>
         <div className="header-actions">
-          <button
-            className={`action-icon-btn ${showFilters ? "active" : ""}`}
-            onClick={() => setShowFilters(!showFilters)}
-            title="Sistemas de Filtrado"
-          >
-            <Filter size={18} />
-          </button>
-          <button className="action-icon-btn" onClick={loadData} title="Refrescar Datos">
-            <RefreshCw size={18} className={loading ? "spinning" : ""} />
-          </button>
           {stats && stats.unacknowledged > 0 && (
             <button className="premium-btn secondary" onClick={acknowledgeAll}>
               <Check size={16} />
               Reconocer Todo
             </button>
           )}
-          {alerts.length > 0 && (
-            <button className="premium-btn danger" onClick={clearAllAlerts}>
-              <Trash2 size={16} />
-              Purgar Registros
-            </button>
-          )}
+          <PageHelp content={PAGE_HELP.alerts} pageId="alerts" />
         </div>
       </header>
-
-      <PageHelp content={PAGE_HELP.alerts} />
 
       <div className="view-content">
         {stats && (
@@ -258,7 +279,9 @@ export const AlertsPage: React.FC = () => {
               <span className="stat-panel-label">Estado Crítico</span>
             </div>
             <div className="stat-panel glass-card warning">
-              <span className="stat-panel-value">{stats.by_severity?.high || 0}</span>
+              <span className="stat-panel-value">
+                {stats.by_severity?.high || 0}
+              </span>
               <span className="stat-panel-label">Alta Prioridad</span>
             </div>
             <div className="stat-panel glass-card info">
@@ -268,54 +291,55 @@ export const AlertsPage: React.FC = () => {
           </div>
         )}
 
-        {showFilters && (
-          <div className="filters-panel glass-card">
-            <div className="filter-field">
-              <label className="field-label">Nivel de Severidad</label>
-              <select
-                className="control-select"
-                value={filter.severity || ""}
-                onChange={(e) =>
-                  setFilter({ ...filter, severity: e.target.value || undefined })
-                }
-              >
-                <option value="">Todos los niveles</option>
-                <option value="critical">Crítica</option>
-                <option value="high">Alta</option>
-                <option value="medium">Media</option>
-                <option value="low">Baja</option>
-                <option value="info">Información</option>
-              </select>
-            </div>
-            <div className="filter-field">
-              <label className="field-label">Estado de Confirmación</label>
-              <select
-                className="control-select"
-                value={
-                  filter.acknowledged === undefined
-                    ? ""
-                    : String(filter.acknowledged)
-                }
-                onChange={(e) =>
-                  setFilter({
-                    ...filter,
-                    acknowledged:
-                      e.target.value === ""
-                        ? undefined
-                        : e.target.value === "true",
-                  })
-                }
-              >
-                <option value="">Todos los estados</option>
-                <option value="false">Pendientes</option>
-                <option value="true">Reconocidas</option>
-              </select>
-            </div>
-            <button className="filter-clear-btn" onClick={() => setFilter({})}>
-              <X size={14} /> Resetear Filtros
-            </button>
+        <div className="filters-panel glass-card">
+          <div className="filter-field">
+            <label className="field-label">Nivel de Severidad</label>
+            <select
+              className="control-select"
+              value={filter.severity || ""}
+              onChange={(e) =>
+                setFilter({
+                  ...filter,
+                  severity: e.target.value || undefined,
+                })
+              }
+            >
+              <option value="">Todos los niveles</option>
+              <option value="critical">Crítica</option>
+              <option value="high">Alta</option>
+              <option value="medium">Media</option>
+              <option value="low">Baja</option>
+              <option value="info">Información</option>
+            </select>
           </div>
-        )}
+          <div className="filter-field">
+            <label className="field-label">Estado de Confirmación</label>
+            <select
+              className="control-select"
+              value={
+                filter.acknowledged === undefined
+                  ? ""
+                  : String(filter.acknowledged)
+              }
+              onChange={(e) =>
+                setFilter({
+                  ...filter,
+                  acknowledged:
+                    e.target.value === ""
+                      ? undefined
+                      : e.target.value === "true",
+                })
+              }
+            >
+              <option value="">Todos los estados</option>
+              <option value="false">Pendientes</option>
+              <option value="true">Reconocidas</option>
+            </select>
+          </div>
+          <button className="filter-clear-btn" onClick={() => setFilter({})}>
+            <X size={14} /> Resetear Filtros
+          </button>
+        </div>
 
         {error && (
           <div className="system-error glass-card">
@@ -326,7 +350,9 @@ export const AlertsPage: React.FC = () => {
 
         <div className="alerts-feed">
           {loading && alerts.length === 0 ? (
-            <div className="loading-placeholder">Estableciendo conexión con el registro...</div>
+            <div className="loading-placeholder">
+              Estableciendo conexión con el registro...
+            </div>
           ) : alerts.length === 0 ? (
             <div className="empty-feed glass-card">
               <CheckCircle size={48} className="success-icon" />
@@ -336,31 +362,32 @@ export const AlertsPage: React.FC = () => {
           ) : (
             <div className="feed-items">
               {alerts.map((alert) => (
-                <div
-                  key={alert.id}
-                  className={`feed-item glass-card ${alert.acknowledged ? "acknowledged" : "unread"} ${alert.severity.toLowerCase()}`}
-                >
-                  <div className="item-main">
-                    <div className="item-meta">
-                      {getSeverityDisplay(alert.severity)}
-                      <span className="item-type">
-                        {getTypeDisplay(alert.type)}
-                      </span>
-                      <span className="item-time">
-                        {formatTimestamp(alert.timestamp)}
-                      </span>
-                    </div>
-                    <h3 className="item-title">{alert.title}</h3>
-                    <p className="item-description">{alert.description}</p>
+                <React.Fragment key={alert.id}>
+                  <div
+                    className={`feed-item glass-card ${alert.acknowledged ? "acknowledged" : "unread"} ${alert.severity.toLowerCase()}`}
+                  >
+                    <div className="item-main">
+                      <div className="item-meta">
+                        {getSeverityDisplay(alert.severity)}
+                        <span className="item-type">
+                          {getTypeDisplay(alert.type)}
+                        </span>
+                        <span className="item-time">
+                          {formatTimestamp(alert.timestamp)}
+                        </span>
+                      </div>
+                      <h3 className="item-title">{alert.title}</h3>
+                      <p className="item-description">{alert.description}</p>
 
-                    {(alert.source.process_name ||
-                      alert.source.src_ip ||
-                      alert.source.domain) && (
+                      {(alert.source.process_name ||
+                        alert.source.src_ip ||
+                        alert.source.domain) && (
                         <div className="item-origin">
                           {alert.source.process_name && (
                             <span className="origin-tag">
                               📦 {alert.source.process_name}
-                              {alert.source.pid && ` [PID: ${alert.source.pid}]`}
+                              {alert.source.pid &&
+                                ` [PID: ${alert.source.pid}]`}
                             </span>
                           )}
                           {alert.source.src_ip && (
@@ -375,27 +402,78 @@ export const AlertsPage: React.FC = () => {
                           )}
                         </div>
                       )}
-                  </div>
+                    </div>
 
-                  <div className="item-actions">
-                    {!alert.acknowledged && (
+                    <div className="item-actions">
+                      {aiStatus?.available && (
+                        <button
+                          className={`action-btn-circle ai-btn ${explainingId === alert.id ? "active" : ""}`}
+                          onClick={() => handleExplain(alert)}
+                          title="Explicación con IA"
+                          disabled={
+                            explainingId === alert.id &&
+                            !aiExplanations[alert.id]
+                          }
+                        >
+                          <Brain
+                            size={16}
+                            className={
+                              explainingId === alert.id &&
+                              !aiExplanations[alert.id]
+                                ? "spinning"
+                                : ""
+                            }
+                          />
+                        </button>
+                      )}
+                      {!alert.acknowledged && (
+                        <button
+                          className="action-btn-circle success"
+                          onClick={() => acknowledgeAlert(alert.id)}
+                          title="Reconocer Evento"
+                        >
+                          <Check size={16} />
+                        </button>
+                      )}
                       <button
-                        className="action-btn-circle success"
-                        onClick={() => acknowledgeAlert(alert.id)}
-                        title="Reconocer Evento"
+                        className="action-btn-circle danger"
+                        onClick={() => deleteAlert(alert.id)}
+                        title="Eliminar Registro"
                       >
-                        <Check size={16} />
+                        <Trash2 size={16} />
                       </button>
-                    )}
-                    <button
-                      className="action-btn-circle danger"
-                      onClick={() => deleteAlert(alert.id)}
-                      title="Eliminar Registro"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    </div>
                   </div>
-                </div>
+                  {explainingId === alert.id && aiExplanations[alert.id] && (
+                    <div className="ai-explanation-box">
+                      <div className="ai-exp-header">
+                        <Sparkles size={14} />
+                        Análisis de Inteligencia Local (Ollama)
+                      </div>
+                      <div className="ai-exp-content">
+                        <p className="ai-exp-text">
+                          {aiExplanations[alert.id].explanation}
+                        </p>
+                        <div className="ai-exp-meta">
+                          <div className="ai-meta-item">
+                            <span className="ai-meta-label">Riesgo</span>
+                            <span className="ai-meta-val">
+                              {aiExplanations[alert.id].risk}
+                            </span>
+                          </div>
+                          <div className="ai-meta-item">
+                            <span className="ai-meta-label">
+                              Acción Recomendada
+                            </span>
+                            <span className="ai-meta-val">
+                              {aiExplanations[alert.id].action}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </React.Fragment>
               ))}
             </div>
           )}

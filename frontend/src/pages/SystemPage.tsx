@@ -11,12 +11,9 @@ const SystemPage: React.FC = () => {
           <h1 className="view-title">
             <span className="title-icon">🖥️</span> Terminal del Sistema
           </h1>
-          <p className="view-subtitle">
-            Monitoreo de recursos de hardware, interfaces físicas y tabla de sockets del kernel.
-          </p>
         </div>
         <div className="header-actions">
-          <PageHelp content={PAGE_HELP.system} />
+          <PageHelp content={PAGE_HELP.system} pageId="system" />
         </div>
       </header>
 

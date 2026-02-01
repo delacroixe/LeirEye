@@ -8,6 +8,7 @@
  * - Estadísticas de procesos
  */
 import React, { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../config";
 import apiService, { StatsData } from "../../services/api";
 import ProcessPacketStats from "../ProcessPacketStats";
 import "./Statistics.css";
@@ -23,20 +24,63 @@ interface StatisticsProps {
 
 const Statistics: React.FC<StatisticsProps> = ({
   refreshTrigger = 0,
-  packets = [],
-  processes = [],
+  packets: initialPackets = [],
+  processes: initialProcesses = [],
 }) => {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [prevStats, setPrevStats] = useState<StatsData | null>(null);
+  const [packets, setPackets] = useState<any[]>(initialPackets);
+  const [processes, setProcesses] = useState<any[]>(initialProcesses);
   const [loading, setLoading] = useState(false);
 
+  // Actualizar packets si cambian las props
   useEffect(() => {
-    const fetchStats = async () => {
+    if (initialPackets && initialPackets.length > 0) {
+      setPackets(initialPackets);
+    }
+  }, [initialPackets]);
+
+  useEffect(() => {
+    // Obtener intervalo de refresco de la configuración
+    const getRefreshInterval = () => {
+      const savedSettings = localStorage.getItem("netmentor_settings");
+      if (savedSettings) {
+        try {
+          const settings = JSON.parse(savedSettings);
+          if (settings.autoRefresh === false) return null;
+          return (settings.refreshInterval || 5) * 1000;
+        } catch (e) {
+          console.error("Error parsing settings:", e);
+        }
+      }
+      return 5000; // Default 5s
+    };
+
+    const fetchAllData = async () => {
       try {
         setLoading(true);
-        const data = await apiService.getStatsSummary();
+        const [statsData, packetsRes, processesData] = await Promise.all([
+          apiService.getStatsSummary(),
+          initialPackets.length === 0
+            ? apiService.getPackets(100)
+            : Promise.resolve(null),
+          initialProcesses.length === 0
+            ? fetch(`${API_BASE_URL}/system/processes-with-connections`)
+                .then((r) => r.json())
+                .catch(() => [])
+            : Promise.resolve(null),
+        ]);
+
         setPrevStats(stats);
-        setStats(data);
+        setStats(statsData);
+
+        if (packetsRes && packetsRes.packets) {
+          setPackets(packetsRes.packets);
+        }
+
+        if (processesData) {
+          setProcesses(processesData);
+        }
       } catch (error) {
         console.error("Error cargando estadísticas:", error);
       } finally {
@@ -44,11 +88,14 @@ const Statistics: React.FC<StatisticsProps> = ({
       }
     };
 
-    fetchStats();
-    const interval = setInterval(fetchStats, 5000);
+    fetchAllData();
 
-    return () => clearInterval(interval);
-  }, [refreshTrigger, stats]);
+    const intervalMs = getRefreshInterval();
+    if (intervalMs) {
+      const interval = setInterval(fetchAllData, intervalMs);
+      return () => clearInterval(interval);
+    }
+  }, [refreshTrigger, initialPackets.length, initialProcesses.length]);
 
   if (loading && !stats) {
     return <div className="loading">Cargando estadísticas...</div>;
@@ -69,9 +116,7 @@ const Statistics: React.FC<StatisticsProps> = ({
       <StatsCards stats={stats} prevStats={prevStats} />
 
       <div className="charts-grid">
-        {(packets.length > 0 || processes.length > 0) && (
-          <ProcessPacketStats packets={packets} processes={processes} />
-        )}
+        <ProcessPacketStats packets={packets} processes={processes} />
 
         <TopIPsTable stats={stats} />
 

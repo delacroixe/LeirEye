@@ -3,12 +3,15 @@ Rutas API para el servicio de IA explicativa.
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
+from ..schemas.chat import ChatRequest, ChatResponse
 from ..services.ai_explainer import ai_service
+from ..services.ai_explainer.chat_service import chat_service
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -25,6 +28,16 @@ class PacketExplainRequest(BaseModel):
     flags: Optional[str] = None
     length: int = 0
     use_ai: bool = True
+
+
+class WiFiAnalysisRequest(BaseModel):
+    """Solicitud para analizar el entorno WiFi."""
+    networks: List[Dict[str, Any]]
+
+
+class DNSAnalysisRequest(BaseModel):
+    """Solicitud para analizar amenazas DNS."""
+    logs: List[Dict[str, Any]]
 
 
 class AlertExplainRequest(BaseModel):
@@ -285,4 +298,105 @@ async def generate_packet_config(request: GeneratePacketRequest):
     except Exception as e:
         logger.error(f"Error generando paquete: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+@router.post("/analyze-wifi")
+async def analyze_wifi(request: WiFiAnalysisRequest):
+    """Analiza el entorno WiFi detectado."""
+    try:
+        analysis = await ai_service.analyze_wifi_environment(request.networks)
+        return analysis
+    except Exception as e:
+        logger.error(f"Error analizando WiFi: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/analyze-dns")
+async def analyze_dns(request: DNSAnalysisRequest):
+    """Analiza logs de DNS en busca de amenazas."""
+    try:
+        analysis = await ai_service.analyze_dns_threats(request.logs)
+        return analysis
+    except Exception as e:
+        logger.error(f"Error analizando DNS: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/crafting-help")
+async def packet_crafting_help(request: GeneratePacketRequest):
+    """Obtiene ayuda avanzada para construir un paquete."""
+    try:
+        help_data = await ai_service.get_packet_crafting_help(
+            intent=request.intent, protocol=request.protocol
+        )
+        return help_data
+    except Exception as e:
+        logger.error(f"Error en ayuda de construcción: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/analyze-stats")
+async def analyze_stats(request: Dict[str, Any]):
+    """Analiza estadísticas de tráfico."""
+    try:
+        analysis = await ai_service.analyze_traffic_stats(request)
+        return analysis
+    except Exception as e:
+        logger.error(f"Error analizando estadísticas: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/analyze-map")
+async def analyze_map(request: Dict[str, Any]):
+    """Analiza el mapa de red."""
+    try:
+        analysis = await ai_service.analyze_network_map(request)
+        return analysis
+    except Exception as e:
+        logger.error(f"Error analizando mapa: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/chat")
+async def chat_with_context(request: ChatRequest):
+    """
+    Chat contextual con IA.
+    
+    Soporta streaming via HTTP POST + chunked response.
+    El frontend debe usar fetch() con response.body.getReader() para leer el stream.
+    
+    Args:
+        request: ChatRequest con mensaje, contexto de página e historial
+        
+    Returns:
+        StreamingResponse con chunks de texto (si stream=True)
+        ChatResponse con respuesta completa (si stream=False)
+    """
+    try:
+        if request.stream:
+            async def generate():
+                async for chunk in chat_service.chat_stream(
+                    message=request.message,
+                    context=request.context,
+                    history=request.history,
+                ):
+                    yield chunk.encode("utf-8")
+            
+            return StreamingResponse(
+                generate(),
+                media_type="text/plain; charset=utf-8",
+                headers={
+                    "Cache-Control": "no-cache",
+                    "X-Accel-Buffering": "no",
+                },
+            )
+        else:
+            content = await chat_service.chat_complete(
+                message=request.message,
+                context=request.context,
+                history=request.history,
+            )
+            return ChatResponse(content=content)
+            
+    except Exception as e:
+        logger.error(f"Error en chat: {e}")
         raise HTTPException(status_code=500, detail=str(e))

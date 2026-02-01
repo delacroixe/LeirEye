@@ -6,16 +6,23 @@
 
 /* Layout Grid System */
 .builder-layout-grid {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 2.5rem;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
 }
 
-@media (max-width: 1200px) {
-  .builder-layout-grid {
-    grid-template-columns: 1fr;
-  }
+.builder-config-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Sidebar Area converted to top rows */
+.builder-info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 /* 1. Protocol Selector Card */
@@ -88,23 +95,36 @@
 }
 
 /* 2. Packet Construction Stack (Visual Layers) */
+.presets-horizontal-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.preset-chip {
+  padding: 0.5rem 1rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 2rem;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset-chip:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 .packet-construction-stack {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   position: relative;
-}
-
-/* Vertical line connecting layers */
-.packet-construction-stack::before {
-  content: '';
-  position: absolute;
-  left: 24px;
-  top: 40px;
-  bottom: 40px;
-  width: 2px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), rgba(6, 182, 212, 0.1), rgba(255, 255, 255, 0.05));
-  z-index: 0;
 }
 
 .construction-layer {
@@ -288,7 +308,7 @@
 
 .preview-content code {
   color: #64748b;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.8125rem;
   line-height: 1.6;
   max-width: 80%;
@@ -360,14 +380,33 @@
 }
 
 .info-card {
-  padding: 1.5rem 2rem !important;
+  padding: 1.25rem 1.75rem !important;
+}
+
+.intelligence {
+  border: 1px dashed rgba(167, 139, 250, 0.3) !important;
+  margin-bottom: 0.5rem;
+}
+
+.ai-response-stack.compact {
+  display: block;
+  background: rgba(167, 139, 250, 0.03);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border-left: 3px solid #a78bfa;
+}
+
+.ai-explanation {
+  margin-top: 0.5rem !important;
+  opacity: 0.8;
+  font-style: italic;
 }
 
 .info-card-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .info-card-header h4 {
@@ -383,17 +422,24 @@
 
 /* AI Assistant Styles */
 .intent-box {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .intent-input {
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
   border-radius: 0.6rem;
-  padding: 0.75rem 1rem;
+  padding: 1rem 1.25rem;
   color: white;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.intent-input:focus {
+  border-color: #a78bfa !important;
+  box-shadow: 0 0 20px -10px #a78bfa;
 }
 
 .ai-response-stack {
@@ -423,53 +469,6 @@
   font-style: italic;
   text-align: center;
   padding: 1rem 0;
-}
-
-/* Presets Styles */
-.presets-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.preset-item {
-  background: rgba(30, 41, 59, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  border-radius: 0.75rem;
-  padding: 1rem 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
-  text-align: left;
-}
-
-.preset-item:hover {
-  background: rgba(30, 41, 59, 0.6);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.preset-name {
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: #cbd5e1;
-}
-
-.preset-meta {
-  font-size: 0.6rem;
-  font-weight: 800;
-  color: #475569;
-  text-transform: uppercase;
-}
-
-.preset-arrow {
-  color: #334155;
-}
-
-.preset-item:hover .preset-arrow {
-  color: var(--color-primary);
 }
 
 /* Animation Utils */

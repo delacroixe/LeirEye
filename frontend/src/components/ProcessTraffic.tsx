@@ -38,9 +38,9 @@ export const ProcessTraffic: React.FC<ProcessTrafficProps> = ({
 
   useEffect(() => {
     fetchProcessTraffic();
-    const interval = setInterval(fetchProcessTraffic, 2000);
+    const interval = setInterval(fetchProcessTraffic, 5000);
     return () => clearInterval(interval);
-  }, [refreshTrigger]);
+  }, []);
 
   const formatBytes = (bytes: number): string => {
     if (bytes === 0) return "0 B";
@@ -67,28 +67,38 @@ export const ProcessTraffic: React.FC<ProcessTrafficProps> = ({
     ([, a], [, b]) => b.count - a.count,
   );
 
+  const getDisplayName = (name: string) => {
+    if (name === "Unknown" || name.toLowerCase() === "unknown") {
+      return "Otras Aplicaciones / Sistema";
+    }
+    return name;
+  };
+
   return (
     <div className="process-monitor glass-card">
       <div className="monitor-header">
-        <h3 className="monitor-title">📊 Flujo por Entidad</h3>
+        <h3 className="monitor-title">🛰️ Tráfico por Aplicación</h3>
         <button
           onClick={fetchProcessTraffic}
           disabled={loading}
           className="refresh-control"
-          title="Sincronizar entidades"
+          title="Sincronizar procesos"
         >
-          {loading ? "..." : "Sincronizar"}
+          {loading ? "..." : "Refrescar"}
         </button>
       </div>
 
       {sortedProcesses.length === 0 ? (
         <div className="monitor-empty">
-          <p>Esperando telemetría de procesos activos...</p>
+          <p>Esperando datos de aplicaciones activas...</p>
         </div>
       ) : (
         <div className="entities-list">
           {sortedProcesses.map(([processName, stats]) => (
-            <div key={processName} className={`entity-item ${expandedProcess === processName ? "expanded" : ""}`}>
+            <div
+              key={processName}
+              className={`entity-item ${expandedProcess === processName ? "expanded" : ""}`}
+            >
               <div
                 className="entity-header"
                 onClick={() =>
@@ -99,14 +109,18 @@ export const ProcessTraffic: React.FC<ProcessTrafficProps> = ({
               >
                 <div className="entity-main-info">
                   <span className="entity-name">
-                    {processName}
+                    {getDisplayName(processName)}
                   </span>
                   <div className="entity-metrics">
                     <span className="metric-tag">{stats.count} PKTS</span>
-                    <span className="metric-tag secondary">{formatBytes(stats.bytes)}</span>
+                    <span className="metric-tag secondary">
+                      {formatBytes(stats.bytes)}
+                    </span>
                   </div>
                 </div>
-                <span className="expand-icon">{expandedProcess === processName ? "−" : "+"}</span>
+                <span className="expand-icon">
+                  {expandedProcess === processName ? "−" : "+"}
+                </span>
               </div>
 
               {expandedProcess === processName && (
@@ -119,9 +133,13 @@ export const ProcessTraffic: React.FC<ProcessTrafficProps> = ({
                           <div key={protocol} className="protocol-mini-chip">
                             <span
                               className="chip-dot"
-                              style={{ backgroundColor: getProtocolColor(protocol) }}
+                              style={{
+                                backgroundColor: getProtocolColor(protocol),
+                              }}
                             />
-                            <span className="chip-label">{protocol}: {count}</span>
+                            <span className="chip-label">
+                              {protocol}: {count}
+                            </span>
                           </div>
                         ),
                       )}
@@ -129,7 +147,9 @@ export const ProcessTraffic: React.FC<ProcessTrafficProps> = ({
                   </div>
 
                   <div className="detail-row">
-                    <span className="detail-label">Puertos Interactivos ({stats.ports.length}):</span>
+                    <span className="detail-label">
+                      Puertos Interactivos ({stats.ports.length}):
+                    </span>
                     <div className="chip-group">
                       {stats.ports.slice(0, 8).map((port) => (
                         <span key={port} className="port-mini-chip">
@@ -145,7 +165,9 @@ export const ProcessTraffic: React.FC<ProcessTrafficProps> = ({
                   </div>
 
                   <div className="detail-row">
-                    <span className="detail-label">IPs de Comunicación ({stats.ips.length}):</span>
+                    <span className="detail-label">
+                      IPs de Comunicación ({stats.ips.length}):
+                    </span>
                     <div className="chip-group">
                       {stats.ips.slice(0, 3).map((ip) => (
                         <span key={ip} className="ip-mini-chip">

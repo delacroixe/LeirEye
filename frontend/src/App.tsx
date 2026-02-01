@@ -9,10 +9,13 @@ import "./App.css";
 import AlertToast from "./components/AlertToast";
 import { CaptureBar } from "./components/CaptureBar";
 import GlobalFilterBadge from "./components/GlobalFilterBadge";
+import MainContent from "./components/MainContent";
 import { Sidebar } from "./components/Sidebar";
+import { AIProvider } from "./contexts/AIContext";
 import { AlertsProvider } from "./contexts/AlertsContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { CaptureProvider } from "./contexts/CaptureContext";
+import { ChatProvider } from "./contexts/ChatContext";
 import { SyncProvider } from "./contexts/SyncContext";
 import useDevAutoLogin from "./hooks/useDevAutoLogin";
 import AlertsPage from "./pages/AlertsPage";
@@ -66,111 +69,121 @@ function AppContent() {
 
   return (
     <SyncProvider>
-      <div className="app-container">
-        {/* Background Atmosphere */}
-        <div className="bg-blur-glow bg-blur-1" />
-        <div className="bg-blur-glow bg-blur-2" />
+      <ChatProvider>
+        <div className="app-container">
+          {/* Background Atmosphere */}
+          <div className="bg-blur-glow bg-blur-1" />
+          <div className="bg-blur-glow bg-blur-2" />
 
-        <div className="app-layout">
-          <Sidebar />
+          <div className="app-layout">
+            <Sidebar />
 
-          <div className="app-content-wrapper">
-            <CaptureBar />
+            <MainContent>
+              <div className="app-content-wrapper">
+                <CaptureBar />
 
-            <div className="global-filter-overlay">
-              <GlobalFilterBadge />
-            </div>
+                <div className="global-filter-overlay">
+                  <GlobalFilterBadge />
+                </div>
 
-            <main className="app-main-view">
-              <AlertToast />
-              <Routes>
-                <Route
-                  path="/capture"
-                  element={
-                    <ProtectedRoute>
-                      <CapturePage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/statistics"
-                  element={
-                    <ProtectedRoute>
-                      <StatisticsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/network-map"
-                  element={
-                    <ProtectedRoute>
-                      <NetworkMapPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/alerts"
-                  element={
-                    <ProtectedRoute>
-                      <AlertsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/dns"
-                  element={
-                    <ProtectedRoute>
-                      <DNSPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/wifi"
-                  element={
-                    <ProtectedRoute>
-                      <WiFiPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/packet-builder"
-                  element={
-                    <ProtectedRoute>
-                      <PacketBuilderPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/system"
-                  element={
-                    <ProtectedRoute>
-                      <SystemPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <ProfilePage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/settings"
-                  element={
-                    <ProtectedRoute>
-                      <SettingsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/" element={<Navigate to="/capture" replace />} />
-                <Route path="*" element={<Navigate to="/capture" replace />} />
-              </Routes>
-            </main>
+                <main className="app-main-view">
+                  <AlertToast />
+                  <Routes>
+                    <Route
+                      path="/capture"
+                      element={
+                        <ProtectedRoute>
+                          <CapturePage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/statistics"
+                      element={
+                        <ProtectedRoute>
+                          <StatisticsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/network-map"
+                      element={
+                        <ProtectedRoute>
+                          <NetworkMapPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/alerts"
+                      element={
+                        <ProtectedRoute>
+                          <AlertsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/dns"
+                      element={
+                        <ProtectedRoute>
+                          <DNSPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/wifi"
+                      element={
+                        <ProtectedRoute>
+                          <WiFiPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/packet-builder"
+                      element={
+                        <ProtectedRoute>
+                          <PacketBuilderPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/system"
+                      element={
+                        <ProtectedRoute>
+                          <SystemPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <ProtectedRoute>
+                          <ProfilePage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/settings"
+                      element={
+                        <ProtectedRoute>
+                          <SettingsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/"
+                      element={<Navigate to="/capture" replace />}
+                    />
+                    <Route
+                      path="*"
+                      element={<Navigate to="/capture" replace />}
+                    />
+                  </Routes>
+                </main>
+              </div>
+            </MainContent>
           </div>
         </div>
-      </div>
+      </ChatProvider>
     </SyncProvider>
   );
 }
@@ -181,7 +194,9 @@ function App() {
       <AuthProvider>
         <CaptureProvider>
           <AlertsProvider>
-            <AppContent />
+            <AIProvider>
+              <AppContent />
+            </AIProvider>
           </AlertsProvider>
         </CaptureProvider>
       </AuthProvider>
