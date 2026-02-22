@@ -63,18 +63,15 @@ export function TerminalProvider({ children }: TerminalProviderProps) {
   const lineIdRef = useRef(0);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const addLine = useCallback(
-    (type: TerminalLine["type"], content: string) => {
-      const newLine: TerminalLine = {
-        id: lineIdRef.current++,
-        type,
-        content,
-        timestamp: new Date(),
-      };
-      setLines((prev) => [...prev.slice(-500), newLine]); // Mantener últimas 500 líneas
-    },
-    []
-  );
+  const addLine = useCallback((type: TerminalLine["type"], content: string) => {
+    const newLine: TerminalLine = {
+      id: lineIdRef.current++,
+      type,
+      content,
+      timestamp: new Date(),
+    };
+    setLines((prev) => [...prev.slice(-500), newLine]); // Mantener últimas 500 líneas
+  }, []);
 
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -82,7 +79,7 @@ export function TerminalProvider({ children }: TerminalProviderProps) {
     }
 
     const wsUrl = WS_TERMINAL_URL;
-    
+
     try {
       wsRef.current = new WebSocket(wsUrl);
 
@@ -94,7 +91,7 @@ export function TerminalProvider({ children }: TerminalProviderProps) {
       wsRef.current.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          
+
           switch (data.type) {
             case "connected":
               if (data.cwd) {
@@ -132,7 +129,7 @@ export function TerminalProvider({ children }: TerminalProviderProps) {
       wsRef.current.onclose = () => {
         setIsConnected(false);
         addLine("system", "⚠ Terminal desconectada");
-        
+
         // Reconectar después de 3 segundos si está abierta
         if (isOpen && !isMinimized) {
           reconnectTimeoutRef.current = setTimeout(() => {
@@ -204,10 +201,10 @@ export function TerminalProvider({ children }: TerminalProviderProps) {
         JSON.stringify({
           type: "command",
           command,
-        })
+        }),
       );
     },
-    [isConnected, currentDirectory, addLine]
+    [isConnected, currentDirectory, addLine],
   );
 
   const interrupt = useCallback(() => {

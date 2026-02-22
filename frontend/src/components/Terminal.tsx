@@ -52,11 +52,11 @@ export default function Terminal() {
 
   // Detectar si el sidebar está colapsado
   useEffect(() => {
-    const sidebar = document.querySelector('.app-sidebar');
+    const sidebar = document.querySelector(".app-sidebar");
     if (!sidebar) return;
 
     const checkCollapsed = () => {
-      setIsSidebarCollapsed(sidebar.classList.contains('collapsed'));
+      setIsSidebarCollapsed(sidebar.classList.contains("collapsed"));
     };
 
     // Verificar inmediatamente
@@ -64,7 +64,7 @@ export default function Terminal() {
 
     // Observer para cambios de clase
     const observer = new MutationObserver(checkCollapsed);
-    observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(sidebar, { attributes: true, attributeFilter: ["class"] });
 
     return () => observer.disconnect();
   }, [isOpen]);
@@ -92,9 +92,12 @@ export default function Terminal() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing) return;
-      
+
       const newHeight = window.innerHeight - e.clientY;
-      const clampedHeight = Math.max(150, Math.min(newHeight, window.innerHeight - 100));
+      const clampedHeight = Math.max(
+        150,
+        Math.min(newHeight, window.innerHeight - 100),
+      );
       setPanelHeight(clampedHeight);
     };
 
@@ -201,13 +204,12 @@ export default function Terminal() {
     "terminal-panel",
     isMinimized && "terminal-minimized",
     isSidebarCollapsed && "sidebar-collapsed",
-  ].filter(Boolean).join(" ");
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div
-      className={panelClasses}
-      style={terminalStyle}
-    >
+    <div className={panelClasses} style={terminalStyle}>
       {/* Resize handle */}
       {!isMinimized && (
         <div
@@ -224,7 +226,9 @@ export default function Terminal() {
           <span className="terminal-title">Terminal</span>
           <span
             className={`terminal-status ${
-              isConnected ? "terminal-status-connected" : "terminal-status-disconnected"
+              isConnected
+                ? "terminal-status-connected"
+                : "terminal-status-disconnected"
             }`}
           >
             {isConnected ? "●" : "○"}
@@ -248,10 +252,18 @@ export default function Terminal() {
           </button>
           <button
             className="terminal-action-btn"
-            onClick={() => setPanelHeight(isMinimized ? 300 : panelHeight === 300 ? 500 : 300)}
+            onClick={() =>
+              setPanelHeight(
+                isMinimized ? 300 : panelHeight === 300 ? 500 : 300,
+              )
+            }
             title="Cambiar tamaño"
           >
-            {panelHeight > 300 ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+            {panelHeight > 300 ? (
+              <Minimize2 size={14} />
+            ) : (
+              <Maximize2 size={14} />
+            )}
           </button>
           <button
             className="terminal-action-btn terminal-close-btn"

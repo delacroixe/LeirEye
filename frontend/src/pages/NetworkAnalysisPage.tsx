@@ -48,7 +48,7 @@ const NetworkAnalysisPage: React.FC = () => {
   const fetchDevices = async (force = false) => {
     setLoading(true);
     setScanProgress("Iniciando escaneo de red...");
-    
+
     // Simular progreso mientras esperamos
     const progressMessages = [
       "Descubriendo dispositivos en la red...",
@@ -57,15 +57,15 @@ const NetworkAnalysisPage: React.FC = () => {
       "Escaneando puertos abiertos...",
       "Identificando servicios...",
       "Evaluando vulnerabilidades...",
-      "Finalizando análisis..."
+      "Finalizando análisis...",
     ];
-    
+
     let progressIndex = 0;
     const progressInterval = setInterval(() => {
       progressIndex = (progressIndex + 1) % progressMessages.length;
       setScanProgress(progressMessages[progressIndex]);
     }, 3000);
-    
+
     try {
       const response = await fetch(
         `${API_BASE_URL}/analysis/scan${force ? "?force=true" : ""}`,
@@ -162,7 +162,8 @@ const NetworkAnalysisPage: React.FC = () => {
             <h3>Escaneando Red</h3>
             <p className="scan-status">{scanProgress}</p>
             <div className="scan-hint">
-              Este proceso puede tomar entre 30 segundos y varios minutos dependiendo del tamaño de la red
+              Este proceso puede tomar entre 30 segundos y varios minutos
+              dependiendo del tamaño de la red
             </div>
           </div>
         </div>

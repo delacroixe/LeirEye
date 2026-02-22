@@ -10,12 +10,14 @@
   display: flex;
   flex-direction: column;
   z-index: 100;
-  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.6), 
-              0 -1px 0 rgba(99, 102, 241, 0.1) inset;
+  box-shadow:
+    0 -4px 30px rgba(0, 0, 0, 0.6),
+    0 -1px 0 rgba(99, 102, 241, 0.1) inset;
   /* Misma transición que el sidebar para sincronizar */
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              right 0.2s ease-out,
-              height 0.15s ease-out;
+  transition:
+    left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    right 0.2s ease-out,
+    height 0.15s ease-out;
 }
 
 /* Cuando el sidebar está colapsado */
@@ -124,8 +126,9 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  font-family: "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Monaco,
-    "Courier New", monospace;
+  font-family:
+    "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Monaco, "Courier New",
+    monospace;
   font-size: 0.8125rem;
   line-height: 1.5;
 }

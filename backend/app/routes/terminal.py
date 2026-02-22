@@ -3,17 +3,18 @@ Rutas WebSocket para terminal interactiva
 Permite ejecutar comandos shell en el servidor
 """
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from typing import Optional
 import asyncio
+import fcntl
 import logging
 import os
-import signal
 import pty
 import select
-import termios
+import signal
 import struct
-import fcntl
+import termios
+from typing import Optional
+
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/terminal", tags=["terminal"])
@@ -298,4 +299,5 @@ async def simple_terminal_websocket(websocket: WebSocket):
         logger.error(f"Error en terminal simple WebSocket: {e}")
     finally:
         if current_process:
+            current_process.terminate()
             current_process.terminate()

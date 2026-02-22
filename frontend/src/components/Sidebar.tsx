@@ -206,9 +206,7 @@ export const Sidebar: React.FC = () => {
                 {isConnected && <span className="terminal-connected-dot" />}
               </span>
               {!isCollapsed && <span className="nav-label">Terminal</span>}
-              {!isCollapsed && (
-                <span className="nav-shortcut">Ctrl+`</span>
-              )}
+              {!isCollapsed && <span className="nav-shortcut">Ctrl+`</span>}
             </button>
           </div>
         </nav>

@@ -98,106 +98,106 @@ function AppContent() {
                         element={
                           <ProtectedRoute>
                             <CapturePage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/statistics"
-                      element={
-                        <ProtectedRoute>
-                          <StatisticsPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/network-map"
-                      element={
-                        <ProtectedRoute>
-                          <NetworkMapPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/analysis"
-                      element={
-                        <ProtectedRoute>
-                          <NetworkAnalysisPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/alerts"
-                      element={
-                        <ProtectedRoute>
-                          <AlertsPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/dns"
-                      element={
-                        <ProtectedRoute>
-                          <DNSPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/wifi"
-                      element={
-                        <ProtectedRoute>
-                          <WiFiPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/packet-builder"
-                      element={
-                        <ProtectedRoute>
-                          <PacketBuilderPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/system"
-                      element={
-                        <ProtectedRoute>
-                          <SystemPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/profile"
-                      element={
-                        <ProtectedRoute>
-                          <ProfilePage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/settings"
-                      element={
-                        <ProtectedRoute>
-                          <SettingsPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/"
-                      element={<Navigate to="/capture" replace />}
-                    />
-                    <Route
-                      path="*"
-                      element={<Navigate to="/capture" replace />}
-                    />
-                  </Routes>
-                </main>
-              </div>
-            </MainContent>
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/statistics"
+                        element={
+                          <ProtectedRoute>
+                            <StatisticsPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/network-map"
+                        element={
+                          <ProtectedRoute>
+                            <NetworkMapPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/analysis"
+                        element={
+                          <ProtectedRoute>
+                            <NetworkAnalysisPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/alerts"
+                        element={
+                          <ProtectedRoute>
+                            <AlertsPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/dns"
+                        element={
+                          <ProtectedRoute>
+                            <DNSPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/wifi"
+                        element={
+                          <ProtectedRoute>
+                            <WiFiPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/packet-builder"
+                        element={
+                          <ProtectedRoute>
+                            <PacketBuilderPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/system"
+                        element={
+                          <ProtectedRoute>
+                            <SystemPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/profile"
+                        element={
+                          <ProtectedRoute>
+                            <ProfilePage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/settings"
+                        element={
+                          <ProtectedRoute>
+                            <SettingsPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/"
+                        element={<Navigate to="/capture" replace />}
+                      />
+                      <Route
+                        path="*"
+                        element={<Navigate to="/capture" replace />}
+                      />
+                    </Routes>
+                  </main>
+                </div>
+              </MainContent>
 
-            {/* Terminal integrada */}
-            <Terminal />
+              {/* Terminal integrada */}
+              <Terminal />
+            </div>
           </div>
-        </div>
         </TerminalProvider>
       </ChatProvider>
     </SyncProvider>

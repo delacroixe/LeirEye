@@ -28,7 +28,8 @@ export default function MainContent({ children }: MainContentProps) {
         style={{
           marginRight: isChatOpen ? panelWidth : 0,
           paddingBottom: bottomPadding,
-          transition: "margin-right 0.2s ease-out, padding-bottom 0.15s ease-out",
+          transition:
+            "margin-right 0.2s ease-out, padding-bottom 0.15s ease-out",
         }}
       >
         {children}

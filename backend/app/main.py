@@ -9,7 +9,18 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import get_settings
 from .core.database import close_db, init_db
-from .routes import ai, alerts, analysis, auth, capture, dns, stats, system, terminal, wifi
+from .routes import (
+    ai,
+    alerts,
+    analysis,
+    auth,
+    capture,
+    dns,
+    stats,
+    system,
+    terminal,
+    wifi,
+)
 
 # Configurar logging con más detalle
 logging.basicConfig(
@@ -113,6 +124,17 @@ async def root():
 async def health_check():
     """Health check endpoint"""
     from .core.database import engine
+
+    db_status = "unknown"
+    try:
+        async with engine.connect() as conn:
+            await conn.execute("SELECT 1")
+            db_status = "connected"
+    except Exception:
+        db_status = "disconnected"
+
+    return {"status": "healthy", "version": "2.0.0", "database": db_status}
+    return {"status": "healthy", "version": "2.0.0", "database": db_status}
 
     db_status = "unknown"
     try:
