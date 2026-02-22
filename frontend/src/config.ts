@@ -26,3 +26,12 @@ export const APP_VERSION = "2.0.0";
 
 // URLs derivadas
 export const WS_CAPTURE_URL = `${WS_BASE_URL}/capture/ws`;
+export const WS_TERMINAL_URL = `${WS_BASE_URL}/terminal/ws/simple`;
+
+// Objeto de configuración para acceso unificado
+export const API_CONFIG = {
+  BASE_URL: API_BASE_URL,
+  WS_URL: WS_BASE_URL,
+  WS_CAPTURE: WS_CAPTURE_URL,
+  WS_TERMINAL: WS_TERMINAL_URL,
+};

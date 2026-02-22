@@ -84,6 +84,7 @@ const ProcessPacketStats: React.FC<ProcessPacketStatsProps> = ({
         pid: stats.pid,
         fullName: name,
       }))
+      .filter((item) => item.packets > 0)
       .sort((a, b) => b.packets - a.packets)
       .slice(0, 10);
 

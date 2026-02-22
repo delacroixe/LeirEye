@@ -11,17 +11,20 @@ import { CaptureBar } from "./components/CaptureBar";
 import GlobalFilterBadge from "./components/GlobalFilterBadge";
 import MainContent from "./components/MainContent";
 import { Sidebar } from "./components/Sidebar";
+import Terminal from "./components/Terminal";
 import { AIProvider } from "./contexts/AIContext";
 import { AlertsProvider } from "./contexts/AlertsContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { CaptureProvider } from "./contexts/CaptureContext";
 import { ChatProvider } from "./contexts/ChatContext";
 import { SyncProvider } from "./contexts/SyncContext";
+import { TerminalProvider } from "./contexts/TerminalContext";
 import useDevAutoLogin from "./hooks/useDevAutoLogin";
 import AlertsPage from "./pages/AlertsPage";
 import CapturePage from "./pages/CapturePage";
 import DNSPage from "./pages/DNSPage";
 import { Login } from "./pages/Login";
+import NetworkAnalysisPage from "./pages/NetworkAnalysisPage";
 import NetworkMapPage from "./pages/NetworkMapPage";
 import PacketBuilderPage from "./pages/PacketBuilderPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -70,30 +73,31 @@ function AppContent() {
   return (
     <SyncProvider>
       <ChatProvider>
-        <div className="app-container">
-          {/* Background Atmosphere */}
-          <div className="bg-blur-glow bg-blur-1" />
-          <div className="bg-blur-glow bg-blur-2" />
+        <TerminalProvider>
+          <div className="app-container">
+            {/* Background Atmosphere */}
+            <div className="bg-blur-glow bg-blur-1" />
+            <div className="bg-blur-glow bg-blur-2" />
 
-          <div className="app-layout">
-            <Sidebar />
+            <div className="app-layout">
+              <Sidebar />
 
-            <MainContent>
-              <div className="app-content-wrapper">
-                <CaptureBar />
+              <MainContent>
+                <div className="app-content-wrapper">
+                  <CaptureBar />
 
-                <div className="global-filter-overlay">
-                  <GlobalFilterBadge />
-                </div>
+                  <div className="global-filter-overlay">
+                    <GlobalFilterBadge />
+                  </div>
 
-                <main className="app-main-view">
-                  <AlertToast />
-                  <Routes>
-                    <Route
-                      path="/capture"
-                      element={
-                        <ProtectedRoute>
-                          <CapturePage />
+                  <main className="app-main-view">
+                    <AlertToast />
+                    <Routes>
+                      <Route
+                        path="/capture"
+                        element={
+                          <ProtectedRoute>
+                            <CapturePage />
                         </ProtectedRoute>
                       }
                     />
@@ -110,6 +114,14 @@ function AppContent() {
                       element={
                         <ProtectedRoute>
                           <NetworkMapPage />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/analysis"
+                      element={
+                        <ProtectedRoute>
+                          <NetworkAnalysisPage />
                         </ProtectedRoute>
                       }
                     />
@@ -181,8 +193,12 @@ function AppContent() {
                 </main>
               </div>
             </MainContent>
+
+            {/* Terminal integrada */}
+            <Terminal />
           </div>
         </div>
+        </TerminalProvider>
       </ChatProvider>
     </SyncProvider>
   );

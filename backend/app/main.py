@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import get_settings
 from .core.database import close_db, init_db
-from .routes import ai, alerts, auth, capture, dns, stats, system, wifi
+from .routes import ai, alerts, analysis, auth, capture, dns, stats, system, terminal, wifi
 
 # Configurar logging con más detalle
 logging.basicConfig(
@@ -85,9 +85,11 @@ app.include_router(capture.router)
 app.include_router(stats.router)
 app.include_router(ai.router, prefix="/api/ai", tags=["AI"])
 app.include_router(system.router)
+app.include_router(analysis.router, prefix="/api", tags=["Análisis de Red"])
 app.include_router(alerts.router, prefix="/api", tags=["Alertas"])
 app.include_router(dns.router, prefix="/api", tags=["DNS"])
 app.include_router(wifi.router, prefix="/api/wifi", tags=["wifi"])
+app.include_router(terminal.router)
 
 
 @app.get("/")

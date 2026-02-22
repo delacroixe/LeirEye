@@ -14,8 +14,10 @@ import {
   Menu,
   Network,
   Radio,
+  Scan,
   Send,
   Settings,
+  Terminal,
   User,
   Wifi,
   X,
@@ -25,6 +27,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAlerts } from "../contexts/AlertsContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useCaptureContext } from "../contexts/CaptureContext";
+import { useTerminal } from "../contexts/TerminalContext";
 import "./Sidebar.css";
 
 interface MenuItem {
@@ -40,6 +43,7 @@ export const Sidebar: React.FC = () => {
   const { user, logout, hasPermission } = useAuth();
   const { isCapturing } = useCaptureContext();
   const { unreadCount } = useAlerts();
+  const { isOpen: isTerminalOpen, toggleTerminal, isConnected } = useTerminal();
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -60,6 +64,12 @@ export const Sidebar: React.FC = () => {
       label: "Mapa de Red",
       path: "/network-map",
       icon: <Network size={20} />,
+      requiredPermission: "sessions:read",
+    },
+    {
+      label: "Análisis de Red",
+      path: "/analysis",
+      icon: <Scan size={20} />,
       requiredPermission: "sessions:read",
     },
     {
@@ -124,7 +134,9 @@ export const Sidebar: React.FC = () => {
       </button>
 
       {/* Sidebar Container */}
-      <aside className={`app-sidebar ${isOpen ? "mobile-open" : ""} ${isCollapsed ? "collapsed" : ""}`}>
+      <aside
+        className={`app-sidebar ${isOpen ? "mobile-open" : ""} ${isCollapsed ? "collapsed" : ""}`}
+      >
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <div className={`logo-icon ${isCapturing ? "capturing" : ""}`}>
@@ -146,7 +158,12 @@ export const Sidebar: React.FC = () => {
             onClick={() => setIsCollapsed(!isCollapsed)}
             title={isCollapsed ? "Expandir" : "Contraer"}
           >
-            <ChevronDown size={14} style={{ transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(90deg)' }} />
+            <ChevronDown
+              size={14}
+              style={{
+                transform: isCollapsed ? "rotate(-90deg)" : "rotate(90deg)",
+              }}
+            />
           </button>
         </div>
 
@@ -162,7 +179,9 @@ export const Sidebar: React.FC = () => {
                     title={isCollapsed ? item.label : ""}
                   >
                     <span className="nav-icon">{item.icon}</span>
-                    {!isCollapsed && <span className="nav-label">{item.label}</span>}
+                    {!isCollapsed && (
+                      <span className="nav-label">{item.label}</span>
+                    )}
                     {item.path === "/alerts" && unreadCount > 0 && (
                       <span className="nav-badge">
                         {unreadCount > 99 ? "99+" : unreadCount}
@@ -172,6 +191,25 @@ export const Sidebar: React.FC = () => {
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* Terminal Toggle */}
+          <div className="nav-group nav-group-terminal">
+            {!isCollapsed && <h3 className="nav-group-title">Herramientas</h3>}
+            <button
+              className={`nav-link terminal-nav-btn ${isTerminalOpen ? "active" : ""}`}
+              onClick={toggleTerminal}
+              title={isCollapsed ? "Terminal (Ctrl+`)" : ""}
+            >
+              <span className="nav-icon">
+                <Terminal size={20} />
+                {isConnected && <span className="terminal-connected-dot" />}
+              </span>
+              {!isCollapsed && <span className="nav-label">Terminal</span>}
+              {!isCollapsed && (
+                <span className="nav-shortcut">Ctrl+`</span>
+              )}
+            </button>
           </div>
         </nav>
 
@@ -190,7 +228,9 @@ export const Sidebar: React.FC = () => {
                   {!isCollapsed && (
                     <>
                       <div className="user-details">
-                        <span className="user-name">{user.full_name || user.username}</span>
+                        <span className="user-name">
+                          {user.full_name || user.username}
+                        </span>
                         <span className="user-role">{user.role}</span>
                       </div>
                       <ChevronDown size={14} className="user-chevron" />
@@ -198,7 +238,10 @@ export const Sidebar: React.FC = () => {
                   )}
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="user-dropdown-content">
+              <DropdownMenuContent
+                align="end"
+                className="user-dropdown-content"
+              >
                 <DropdownMenuItem onClick={() => handleNavigation("/profile")}>
                   <User size={16} />
                   <span>Perfil de Analista</span>
@@ -208,7 +251,10 @@ export const Sidebar: React.FC = () => {
                   <span>Configuración</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="logout-item" onClick={handleLogout}>
+                <DropdownMenuItem
+                  className="logout-item"
+                  onClick={handleLogout}
+                >
                   <LogOut size={16} />
                   <span>Cerrar Sesión</span>
                 </DropdownMenuItem>
@@ -219,7 +265,9 @@ export const Sidebar: React.FC = () => {
       </aside>
 
       {/* Mobile Overlay */}
-      {isOpen && <div className="sidebar-overlay" onClick={() => setIsOpen(false)} />}
+      {isOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsOpen(false)} />
+      )}
     </>
   );
 };

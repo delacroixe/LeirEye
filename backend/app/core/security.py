@@ -2,19 +2,17 @@
 Funciones de seguridad: hashing de passwords y JWT
 """
 
-from datetime import datetime, timedelta
-from typing import Optional, Any
-from jose import jwt, JWTError
-from passlib.context import CryptContext
-import logging
 import hashlib
+import logging
+from datetime import datetime, timedelta
+from typing import Any, Optional
+
+import bcrypt
+from jose import JWTError, jwt
 
 from .config import settings
 
 logger = logging.getLogger(__name__)
-
-# Contexto para hashing de passwords
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 # ==================== PASSWORD ====================
@@ -34,6 +32,20 @@ def _normalize_password(password: str) -> str:
     return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 
+def _bcrypt_verify(password: str, hashed: str) -> bool:
+    """Verificar password con bcrypt directamente"""
+    try:
+        return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+    except Exception:
+        return False
+
+
+def _bcrypt_hash(password: str) -> str:
+    """Generar hash bcrypt directamente"""
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     Verificar password contra hash bcrypt.
@@ -47,31 +59,20 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     try:
         # Estrategia 1: Verificar con SHA-256 normalizado (nuevo método)
         normalized = _normalize_password(plain_password)
-        try:
-            if pwd_context.verify(normalized, hashed_password):
-                return True
-        except ValueError:
-            # El hash no es compatible con SHA-256, intentar otros métodos
-            pass
+        if _bcrypt_verify(normalized, hashed_password):
+            return True
         
         # Estrategia 2: Verificar directamente (hashes antiguos <72 bytes)
-        try:
-            if len(plain_password.encode('utf-8')) <= 72:
-                if pwd_context.verify(plain_password, hashed_password):
-                    logger.debug("✓ Password verificado con método antiguo (compatibilidad <72 bytes)")
-                    return True
-        except ValueError:
-            pass
+        if len(plain_password.encode('utf-8')) <= 72:
+            if _bcrypt_verify(plain_password, hashed_password):
+                logger.debug("✓ Password verificado con método antiguo (compatibilidad <72 bytes)")
+                return True
         
         # Estrategia 3: Truncar a 72 bytes (hashes antiguos >72 bytes truncados)
-        # Algunos sistemas antigos truncaban passwords a 72 bytes automáticamente
-        try:
-            truncated = plain_password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
-            if pwd_context.verify(truncated, hashed_password):
-                logger.debug("✓ Password verificado con método antiguo (compatibilidad truncado)")
-                return True
-        except (ValueError, UnicodeDecodeError):
-            pass
+        truncated = plain_password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
+        if _bcrypt_verify(truncated, hashed_password):
+            logger.debug("✓ Password verificado con método antiguo (compatibilidad truncado)")
+            return True
         
         # Todas las estrategias fallaron
         return False
@@ -87,14 +88,8 @@ def get_password_hash(password: str) -> str:
     Normaliza la contraseña con SHA-256 antes de hashear con bcrypt.
     Esto asegura que bcrypt nunca reciba >72 bytes.
     """
-    try:
-        normalized = _normalize_password(password)
-        return pwd_context.hash(normalized)
-    except ValueError as e:
-        logger.error(f"Error al hashear password: {e}")
-        # Fallback: truncar a 72 bytes como último recurso
-        truncated = password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
-        return pwd_context.hash(truncated)
+    normalized = _normalize_password(password)
+    return _bcrypt_hash(normalized)
 
 
 # ==================== JWT TOKENS ====================
@@ -164,16 +159,16 @@ def decode_token(token: str) -> Optional[dict]:
         return None
 
 
-def verify_token(token: str, token_type: str = "access") -> Optional[str]:
+def verify_token(token: str, token_type: str = "access") -> Optional[dict]:
     """
-    Verificar token y retornar subject (user_id)
+    Verificar token y retornar payload completo
 
     Args:
         token: Token JWT
         token_type: Tipo esperado ("access" o "refresh")
 
     Returns:
-        Subject del token (user_id) o None si es inválido
+        Payload completo del token o None si es inválido
     """
     payload = decode_token(token)
 
@@ -187,4 +182,5 @@ def verify_token(token: str, token_type: str = "access") -> Optional[str]:
         )
         return None
 
-    return payload.get("sub")
+    return payload
+    return payload
