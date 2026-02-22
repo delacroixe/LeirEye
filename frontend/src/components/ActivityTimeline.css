@@ -1,16 +1,114 @@
-.activity-timeline {
-  background: linear-gradient(135deg, #1a1f3a 0%, #0f1a2e 100%);
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 30px;
-  color: white;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(100, 200, 255, 0.1);
+/* Activity Timeline - Professional Cyber Intelligence Theme */
+
+.activity-view {
+  padding: 2.5rem !important;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  border: 1px solid rgba(6, 182, 212, 0.1) !important;
 }
 
-.activity-timeline h3 {
-  margin: 0 0 15px 0;
-  color: #64c8ff;
-  font-size: 1.2rem;
+.activity-view .view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 0;
+  border-bottom: none;
+}
+
+.title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.activity-view .view-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.view-unit {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #475569;
+  letter-spacing: 0.1em;
+}
+
+.view-status {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.25rem 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 2rem;
+  color: #475569;
+}
+
+.legend {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.legend-item {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-item::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-item.tcp::before {
+  background: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
+}
+
+.legend-item.udp::before {
+  background: var(--color-warning);
+  box-shadow: 0 0 10px var(--color-warning);
+}
+
+.legend-item.icmp::before {
+  background: var(--color-error);
+  box-shadow: 0 0 10px var(--color-error);
+}
+
+.legend-item.other::before {
+  background: #94a3b8;
+}
+
+.chart-container {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.empty-state {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  border: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.empty-state p {
+  font-size: 0.8125rem;
+  color: #475569;
   font-weight: 600;
+  letter-spacing: 0.05em;
 }

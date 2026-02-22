@@ -5,8 +5,8 @@
 ## Paso 1: Clonar el Repositorio
 
 ```bash
-git clone https://github.com/yourusername/leireye.git
-cd leireye
+git clone https://github.com/delacroixe/LeirEye.git
+cd LeirEye
 ```
 
 ## Paso 2: Iniciar los Servicios con Docker

@@ -2,11 +2,11 @@
 Servicio de Geolocalización de IPs
 Usa ip-api.com (gratis, 45 req/min)
 """
-import httpx
-import asyncio
-from typing import Optional, Dict
-from functools import lru_cache
+
 import ipaddress
+from typing import Dict, Optional
+
+import httpx
 
 # Cache de geolocalización
 geo_cache: Dict[str, dict] = {}
@@ -39,20 +39,20 @@ async def get_ip_location(ip: str) -> Optional[dict]:
             "lat": 0,
             "lon": 0,
             "isp": "Local Network",
-            "is_local": True
+            "is_local": True,
         }
-    
+
     # Revisar cache
     if ip in geo_cache:
         return geo_cache[ip]
-    
+
     try:
         async with httpx.AsyncClient(timeout=3.0) as client:
             response = await client.get(f"http://ip-api.com/json/{ip}")
-            
+
             if response.status_code == 200:
                 data = response.json()
-                
+
                 if data.get("status") == "success":
                     result = {
                         "country": data.get("country", "Unknown"),
@@ -61,13 +61,13 @@ async def get_ip_location(ip: str) -> Optional[dict]:
                         "lat": data.get("lat", 0),
                         "lon": data.get("lon", 0),
                         "isp": data.get("isp", "Unknown"),
-                        "is_local": False
+                        "is_local": False,
                     }
                     geo_cache[ip] = result
                     return result
     except Exception as e:
         print(f"[GeoIP] Error geolocalizando {ip}: {e}")
-    
+
     return None
 
 
@@ -78,7 +78,7 @@ async def get_batch_locations(ips: list[str]) -> Dict[str, dict]:
     """
     results = {}
     external_ips = []
-    
+
     # Procesar IPs locales primero
     for ip in ips:
         if is_private_ip(ip):
@@ -88,23 +88,22 @@ async def get_batch_locations(ips: list[str]) -> Dict[str, dict]:
                 "lat": 0,
                 "lon": 0,
                 "isp": "Local Network",
-                "is_local": True
+                "is_local": True,
             }
         elif ip in geo_cache:
             results[ip] = geo_cache[ip]
         else:
             external_ips.append(ip)
-    
+
     # Batch request para IPs externas (máx 100)
     if external_ips:
         try:
             batch = external_ips[:100]
             async with httpx.AsyncClient(timeout=5.0) as client:
                 response = await client.post(
-                    "http://ip-api.com/batch",
-                    json=[{"query": ip} for ip in batch]
+                    "http://ip-api.com/batch", json=[{"query": ip} for ip in batch]
                 )
-                
+
                 if response.status_code == 200:
                     data = response.json()
                     for item in data:
@@ -117,13 +116,13 @@ async def get_batch_locations(ips: list[str]) -> Dict[str, dict]:
                                 "lat": item.get("lat", 0),
                                 "lon": item.get("lon", 0),
                                 "isp": item.get("isp", "Unknown"),
-                                "is_local": False
+                                "is_local": False,
                             }
                             geo_cache[ip] = result
                             results[ip] = result
         except Exception as e:
             print(f"[GeoIP] Error en batch request: {e}")
-    
+
     return results
 
 
@@ -139,4 +138,5 @@ def get_network_label(ip: str) -> str:
         elif ip.startswith("127."):
             return "Localhost"
         return "Local"
+    return "Internet"
     return "Internet"

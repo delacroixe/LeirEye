@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { PacketData } from '../services/api';
 import './ActivityTimeline.css';
 
@@ -50,72 +50,101 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({ packets }) => {
 
   if (timelineData.length === 0) {
     return (
-      <div className="activity-timeline">
-        <h3>Actividad en Tiempo Real</h3>
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#888' }}>
-          Sin datos de actividad
+      <div className="activity-view glass-card">
+        <div className="view-header">
+          <h3 className="view-title">Actividad de Red</h3>
+          <span className="view-status">Inactivo</span>
+        </div>
+        <div className="empty-state">
+          <p>Estableciendo flujo de telemetría...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="activity-timeline">
-      <h3>Actividad en Tiempo Real (Paquetes/Segundo)</h3>
-      <ResponsiveContainer width="100%" height={250}>
-        <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 200, 255, 0.1)" />
-          <XAxis 
-            dataKey="time" 
-            stroke="#a0aec0" 
-            tick={{ fontSize: 11 }}
-            angle={-45}
-            textAnchor="end"
-            height={60}
-          />
-          <YAxis stroke="#a0aec0" tick={{ fontSize: 12 }} />
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: '#1a1f3a', 
-              border: '1px solid rgba(100, 200, 255, 0.2)', 
-              borderRadius: '6px' 
-            }}
-            formatter={(value) => `${value} paquetes`}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="tcp" 
-            stroke="#10b981" 
-            strokeWidth={2}
-            dot={false}
-            name="TCP"
-          />
-          <Line 
-            type="monotone" 
-            dataKey="udp" 
-            stroke="#f59e0b" 
-            strokeWidth={2}
-            dot={false}
-            name="UDP"
-          />
-          <Line 
-            type="monotone" 
-            dataKey="icmp" 
-            stroke="#ef4444" 
-            strokeWidth={2}
-            dot={false}
-            name="ICMP"
-          />
-          <Line 
-            type="monotone" 
-            dataKey="other" 
-            stroke="#0ea5e9" 
-            strokeWidth={2}
-            dot={false}
-            name="Otros"
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="activity-view glass-card">
+      <div className="view-header">
+        <div className="title-group">
+          <h3 className="view-title">Telemetría en Tiempo Real</h3>
+          <span className="view-unit">(Paquetes/Unidad de Tiempo)</span>
+        </div>
+        <div className="legend">
+          <span className="legend-item tcp">TCP</span>
+          <span className="legend-item udp">UDP</span>
+          <span className="legend-item icmp">ICMP</span>
+          <span className="legend-item other">Otros</span>
+        </div>
+      </div>
+
+      <div className="chart-container">
+        <ResponsiveContainer width="100%" height={240}>
+          <LineChart data={timelineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
+            <XAxis
+              dataKey="time"
+              stroke="#475569"
+              tick={{ fontSize: 10, fontWeight: 600 }}
+              axisLine={false}
+              tickLine={false}
+              minTickGap={30}
+            />
+            <YAxis
+              stroke="#475569"
+              tick={{ fontSize: 10, fontWeight: 600 }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#0f172a',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                fontSize: '12px',
+                color: 'white'
+              }}
+              itemStyle={{ padding: '0px' }}
+              cursor={{ stroke: 'rgba(255, 255, 255, 0.1)', strokeWidth: 2 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="tcp"
+              stroke="#06b6d4"
+              strokeWidth={3}
+              dot={false}
+              activeDot={{ r: 4, fill: '#06b6d4', strokeWidth: 0 }}
+              name="TCP"
+            />
+            <Line
+              type="monotone"
+              dataKey="udp"
+              stroke="#f59e0b"
+              strokeWidth={3}
+              dot={false}
+              activeDot={{ r: 4, fill: '#f59e0b', strokeWidth: 0 }}
+              name="UDP"
+            />
+            <Line
+              type="monotone"
+              dataKey="icmp"
+              stroke="#ef4444"
+              strokeWidth={3}
+              dot={false}
+              activeDot={{ r: 4, fill: '#ef4444', strokeWidth: 0 }}
+              name="ICMP"
+            />
+            <Line
+              type="monotone"
+              dataKey="other"
+              stroke="#94a3b8"
+              strokeWidth={3}
+              dot={false}
+              activeDot={{ r: 4, fill: '#94a3b8', strokeWidth: 0 }}
+              name="Otros"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

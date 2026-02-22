@@ -15,7 +15,7 @@ copyright: Copyright &copy; 2026 LeirEye
 theme:
   name: material
   language: es
-  
+
   palette:
     # Dark mode (default)
     - scheme: slate
@@ -31,11 +31,11 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Cambiar a modo oscuro
-  
+
   font:
     text: Inter
     code: JetBrains Mono
-  
+
   features:
     - navigation.tabs
     - navigation.tabs.sticky
@@ -49,11 +49,11 @@ theme:
     - content.code.copy
     - content.code.annotate
     - content.tabs.link
-  
+
   icon:
     repo: fontawesome/brands/github
     logo: material/network-outline
-  
+
   favicon: assets/favicon.png
 
 plugins:
@@ -105,11 +105,11 @@ extra:
       link: https://github.com/yourusername/leireye
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/leireye
-  
+
   analytics:
     provider: google
     property: G-XXXXXXXXXX
-  
+
   generator: false
 
 extra_css:
@@ -117,54 +117,55 @@ extra_css:
 
 nav:
   - Inicio: index.md
-  
+
   - Empezar:
-    - getting-started/index.md
-    - Instalación: getting-started/installation.md
-    - Inicio Rápido: getting-started/quickstart.md
-    - Configuración: getting-started/configuration.md
-  
+      - getting-started/index.md
+      - Instalación: getting-started/installation.md
+      - Inicio Rápido: getting-started/quickstart.md
+      - Configuración: getting-started/configuration.md
+
   - Guía de Uso:
-    - guide/index.md
-    - Captura de Paquetes: guide/packet-capture.md
-    - Estadísticas: guide/statistics.md
-    - Mapa de Red: guide/network-map.md
-    - IA Explicativa: guide/ai-explainer.md
-    - Información del Sistema: guide/system-info.md
-  
+      - guide/index.md
+      - Captura de Paquetes: guide/packet-capture.md
+      - Estadísticas: guide/statistics.md
+      - Mapa de Red: guide/network-map.md
+      - IA Explicativa: guide/ai-explainer.md
+      - Información del Sistema: guide/system-info.md
+
   - Conceptos:
-    - concepts/index.md
-    - Fundamentos:
-      - concepts/basics/index.md
-      - ¿Qué es un Paquete?: concepts/basics/what-is-a-packet.md
-      - TCP vs UDP: concepts/basics/tcp-vs-udp.md
-      - Direcciones IP: concepts/basics/ip-addresses.md
-      - Puertos: concepts/basics/ports.md
-    - Protocolos:
-      - concepts/protocols/index.md
-      - HTTP/HTTPS: concepts/protocols/http-https.md
-      - DNS: concepts/protocols/dns.md
-      - SSH: concepts/protocols/ssh.md
-      - Otros Protocolos: concepts/protocols/other.md
-    - Seguridad:
-      - concepts/security/index.md
-      - Fundamentos: concepts/security/basics.md
-      - Tráfico Sospechoso: concepts/security/suspicious-traffic.md
-      - Buenas Prácticas: concepts/security/best-practices.md
-  
+      - concepts/index.md
+      - Fundamentos:
+          - concepts/basics/index.md
+          - ¿Qué es un Paquete?: concepts/basics/what-is-a-packet.md
+          - TCP vs UDP: concepts/basics/tcp-vs-udp.md
+          - Direcciones IP: concepts/basics/ip-addresses.md
+          - Puertos: concepts/basics/ports.md
+      - Protocolos:
+          - concepts/protocols/index.md
+          - HTTP/HTTPS: concepts/protocols/http-https.md
+          - DNS: concepts/protocols/dns.md
+          - SSH: concepts/protocols/ssh.md
+          - Otros Protocolos: concepts/protocols/other.md
+      - Seguridad:
+          - concepts/security/index.md
+          - Fundamentos: concepts/security/basics.md
+          - Tráfico Sospechoso: concepts/security/suspicious-traffic.md
+          - Buenas Prácticas: concepts/security/best-practices.md
+
   - API:
-    - api/index.md
-    - Autenticación: api/authentication.md
-    - Endpoints: api/endpoints.md
-    - WebSocket: api/websocket.md
-  
+      - api/index.md
+      - Autenticación: api/authentication.md
+      - Endpoints: api/endpoints.md
+      - Ejemplos de Uso: api/examples.md
+      - WebSocket: api/websocket.md
+
   - Referencia:
-    - reference/index.md
-    - Comandos: reference/commands.md
-    - Solución de Problemas: reference/troubleshooting.md
-    - Changelog: reference/changelog.md
-  
+      - reference/index.md
+      - Comandos: reference/commands.md
+      - Solución de Problemas: reference/troubleshooting.md
+      - Changelog: reference/changelog.md
+
   - Despliegue:
-    - deployment/index.md
-    - Docker: deployment/docker.md
-    - Producción: deployment/production.md
+      - deployment/index.md
+      - Docker: deployment/docker.md
+      - Producción: deployment/production.md

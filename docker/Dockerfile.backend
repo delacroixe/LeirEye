@@ -1,0 +1,35 @@
+# Dockerfile para Backend LeirEye
+FROM python:3.11-slim
+
+# Variables de entorno
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+# Instalar dependencias del sistema para scapy y networking
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpcap-dev \
+    tcpdump \
+    net-tools \
+    iproute2 \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear directorio de trabajo
+WORKDIR /app
+
+# Copiar requirements primero para aprovechar cache de Docker
+COPY requirements.txt .
+
+# Instalar dependencias Python
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copiar código fuente
+COPY . .
+
+# Exponer puerto
+EXPOSE 8000
+
+# Comando por defecto
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

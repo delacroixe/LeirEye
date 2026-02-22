@@ -1,0 +1,202 @@
+/* Process Traffic - Professional Cyber Intelligence Theme */
+
+.process-monitor {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem !important;
+  height: 100%;
+}
+
+.monitor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.monitor-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.01em;
+}
+
+.refresh-control {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refresh-control:hover {
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.entities-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
+}
+
+.entity-item {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 0.75rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.entity-item:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.entity-item.expanded {
+  background: rgba(15, 23, 42, 0.4);
+  border-color: rgba(6, 182, 212, 0.2);
+}
+
+.entity-header {
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.entity-main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.entity-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.entity-metrics {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.metric-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+.metric-tag.secondary {
+  color: #64748b;
+}
+
+.expand-icon {
+  font-family: monospace;
+  color: #475569;
+  font-size: 1.2rem;
+  margin-left: 1rem;
+}
+
+/* Entity Details */
+.entity-details {
+  padding: 0 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: slide-down 0.2s ease-out;
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detail-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+}
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.protocol-mini-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.port-mini-chip,
+.ip-mini-chip {
+  padding: 0.2rem 0.5rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #64748b;
+  font-family: monospace;
+}
+
+.more-chip {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.monitor-empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #475569;
+  font-style: italic;
+  font-size: 0.8125rem;
+}

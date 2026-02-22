@@ -1,0 +1,200 @@
+/* Statistics Dashboard - Professional Cyber Intelligence Theme */
+
+.statistics-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 0;
+}
+
+.statistics-container h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+  letter-spacing: -0.01em;
+  display: none;
+  /* Already in Page Header */
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+/* Common Widget Styles (Inherited by sub-components) */
+.stat-widget {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.widget-title {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+/* Summary Cards */
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  padding: 1.5rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.1em;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 950;
+  color: white;
+  line-height: 1;
+}
+
+.stat-percent {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #475569;
+}
+
+.change-up {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--color-success);
+  margin-top: 0.25rem;
+}
+
+.change-down {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--color-error);
+  margin-top: 0.25rem;
+}
+
+/* Color accents */
+.tcp-card {
+  border-left: 4px solid var(--color-primary);
+}
+
+.udp-card {
+  border-left: 4px solid var(--color-warning);
+}
+
+.icmp-card {
+  border-left: 4px solid var(--color-error);
+}
+
+.other-card {
+  border-left: 4px solid #64748b;
+}
+
+/* Premium Mini Tables */
+.premium-mini-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.premium-mini-table th {
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #475569;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.03);
+}
+
+.premium-mini-table th.text-right {
+  text-align: right;
+}
+
+.premium-mini-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.premium-mini-row td {
+  padding: 0.75rem 0.5rem;
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+}
+
+.premium-mini-table th:first-child,
+.premium-mini-row td:first-child {
+  padding-left: 0;
+}
+
+.premium-mini-table th:last-child,
+.premium-mini-row td:last-child {
+  padding-right: 0;
+}
+
+.premium-mini-row td.text-right {
+  text-align: right;
+}
+
+.col-ip-addr {
+  font-family: monospace;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.col-percent {
+  color: #475569;
+  font-weight: 800;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.empty-message.small {
+  padding: 2rem;
+  font-size: 0.75rem;
+}
+
+/* Loading & Empty States */
+.statistics-container .loading {
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.empty-message {
+  padding: 4rem;
+  text-align: center;
+  color: #475569;
+  font-style: italic;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+  border: 1px dashed rgba(255, 255, 255, 0.05);
+}

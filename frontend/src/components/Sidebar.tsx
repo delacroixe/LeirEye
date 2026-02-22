@@ -1,19 +1,34 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import {
-  Menu,
-  X,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   BarChart3,
-  Wifi,
-  Network,
-  Settings,
-  LogOut,
-  User,
-  Home,
+  Bell,
   ChevronDown,
-} from 'lucide-react';
-import './Sidebar.css';
+  Globe,
+  LogOut,
+  Menu,
+  Network,
+  Radio,
+  Scan,
+  Send,
+  Settings,
+  Terminal,
+  User,
+  Wifi,
+  X,
+} from "lucide-react";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAlerts } from "../contexts/AlertsContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useCaptureContext } from "../contexts/CaptureContext";
+import { useTerminal } from "../contexts/TerminalContext";
+import "./Sidebar.css";
 
 interface MenuItem {
   label: string;
@@ -26,38 +41,66 @@ export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout, hasPermission } = useAuth();
+  const { isCapturing } = useCaptureContext();
+  const { unreadCount } = useAlerts();
+  const { isOpen: isTerminalOpen, toggleTerminal, isConnected } = useTerminal();
   const [isOpen, setIsOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menuItems: MenuItem[] = [
     {
-      label: 'Dashboard',
-      path: '/dashboard',
-      icon: <Home size={20} />,
-    },
-    {
-      label: 'Captura',
-      path: '/capture',
+      label: "Captura",
+      path: "/capture",
       icon: <Wifi size={20} />,
-      requiredPermission: 'capture:start',
+      requiredPermission: "capture:start",
     },
     {
-      label: 'Estadísticas',
-      path: '/statistics',
+      label: "Estadísticas",
+      path: "/statistics",
       icon: <BarChart3 size={20} />,
-      requiredPermission: 'sessions:read',
+      requiredPermission: "sessions:read",
     },
     {
-      label: 'Mapa de Red',
-      path: '/network-map',
+      label: "Mapa de Red",
+      path: "/network-map",
       icon: <Network size={20} />,
-      requiredPermission: 'sessions:read',
+      requiredPermission: "sessions:read",
     },
     {
-      label: 'Sistema',
-      path: '/system',
+      label: "Análisis de Red",
+      path: "/analysis",
+      icon: <Scan size={20} />,
+      requiredPermission: "sessions:read",
+    },
+    {
+      label: "Alertas",
+      path: "/alerts",
+      icon: <Bell size={20} />,
+      requiredPermission: "sessions:read",
+    },
+    {
+      label: "DNS Tracker",
+      path: "/dns",
+      icon: <Globe size={20} />,
+      requiredPermission: "sessions:read",
+    },
+    {
+      label: "WiFi Analyzer",
+      path: "/wifi",
+      icon: <Radio size={20} />,
+      requiredPermission: "sessions:read",
+    },
+    {
+      label: "Packet Builder",
+      path: "/packet-builder",
+      icon: <Send size={20} />,
+      requiredPermission: "capture:start",
+    },
+    {
+      label: "Sistema",
+      path: "/system",
       icon: <Settings size={20} />,
-      requiredPermission: 'sessions:read',
+      requiredPermission: "sessions:read",
     },
   ];
 
@@ -76,120 +119,153 @@ export const Sidebar: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
     setIsOpen(false);
   };
 
   return (
     <>
-      {/* Toggle Button (Mobile) */}
+      {/* Mobile Toggle */}
       <button
-        className="sidebar-toggle"
+        className={`sidebar-mobile-toggle ${isOpen ? "open" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle sidebar"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* Overlay (Mobile) */}
-      {isOpen && <div className="sidebar-overlay" onClick={() => setIsOpen(false)} />}
-
-      {/* Sidebar */}
-      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
-        {/* Logo Section */}
+      {/* Sidebar Container */}
+      <aside
+        className={`app-sidebar ${isOpen ? "mobile-open" : ""} ${isCollapsed ? "collapsed" : ""}`}
+      >
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <div className="logo-icon">N</div>
-            <div className="logo-text">
-              <h1>NetMentor</h1>
-              <p>Network Analyzer</p>
+            <div className={`logo-icon ${isCapturing ? "capturing" : ""}`}>
+              L
             </div>
+            {!isCollapsed && (
+              <div className="logo-info">
+                <span className="logo-brand">
+                  Leir<span className="logo-accent">Eye</span>
+                </span>
+                <span className="logo-status">
+                  {isCapturing ? "● Monitorizando" : "System Ready"}
+                </span>
+              </div>
+            )}
           </div>
+          <button
+            className="collapse-toggle-btn"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            title={isCollapsed ? "Expandir" : "Contraer"}
+          >
+            <ChevronDown
+              size={14}
+              style={{
+                transform: isCollapsed ? "rotate(-90deg)" : "rotate(90deg)",
+              }}
+            />
+          </button>
         </div>
 
-        {/* Navigation */}
         <nav className="sidebar-nav">
-          <div className="nav-section">
-            <h3 className="nav-section-title">Menu Principal</h3>
+          <div className="nav-group">
+            {!isCollapsed && <h3 className="nav-group-title">Operaciones</h3>}
             <ul className="nav-list">
               {visibleItems.map((item) => (
-                <li key={item.path}>
+                <li key={item.path} className="nav-item">
                   <button
-                    className={`nav-item ${isActive(item.path) ? 'active' : ''}`}
+                    className={`nav-link ${isActive(item.path) ? "active" : ""}`}
                     onClick={() => handleNavigation(item.path)}
+                    title={isCollapsed ? item.label : ""}
                   >
                     <span className="nav-icon">{item.icon}</span>
-                    <span className="nav-label">{item.label}</span>
+                    {!isCollapsed && (
+                      <span className="nav-label">{item.label}</span>
+                    )}
+                    {item.path === "/alerts" && unreadCount > 0 && (
+                      <span className="nav-badge">
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </span>
+                    )}
                   </button>
                 </li>
               ))}
             </ul>
           </div>
+
+          {/* Terminal Toggle */}
+          <div className="nav-group nav-group-terminal">
+            {!isCollapsed && <h3 className="nav-group-title">Herramientas</h3>}
+            <button
+              className={`nav-link terminal-nav-btn ${isTerminalOpen ? "active" : ""}`}
+              onClick={toggleTerminal}
+              title={isCollapsed ? "Terminal (Ctrl+`)" : ""}
+            >
+              <span className="nav-icon">
+                <Terminal size={20} />
+                {isConnected && <span className="terminal-connected-dot" />}
+              </span>
+              {!isCollapsed && <span className="nav-label">Terminal</span>}
+              {!isCollapsed && <span className="nav-shortcut">Ctrl+`</span>}
+            </button>
+          </div>
         </nav>
 
-        {/* User Section */}
         {user && (
-          <div className="sidebar-user">
-            <button
-              className="user-button"
-              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            >
-              <div className="user-avatar">
-                {user.avatar_url ? (
-                  <img src={user.avatar_url} alt={user.username} />
-                ) : (
-                  <div className="avatar-placeholder">
-                    {user.username.charAt(0).toUpperCase()}
+          <div className="sidebar-footer">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="user-profile-btn">
+                  <div className="user-avatar">
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt={user.username} />
+                    ) : (
+                      <span>{user.username.charAt(0).toUpperCase()}</span>
+                    )}
                   </div>
-                )}
-              </div>
-              <div className="user-info">
-                <p className="user-name">{user.full_name || user.username}</p>
-                <p className="user-role">{user.role}</p>
-              </div>
-              <ChevronDown
-                size={16}
-                className={`chevron ${isUserMenuOpen ? 'open' : ''}`}
-              />
-            </button>
-
-            {isUserMenuOpen && (
-              <div className="user-menu">
-                <button
-                  className="user-menu-item"
-                  onClick={() => {
-                    navigate('/profile');
-                    setIsUserMenuOpen(false);
-                    setIsOpen(false);
-                  }}
-                >
-                  <User size={16} />
-                  <span>Perfil</span>
+                  {!isCollapsed && (
+                    <>
+                      <div className="user-details">
+                        <span className="user-name">
+                          {user.full_name || user.username}
+                        </span>
+                        <span className="user-role">{user.role}</span>
+                      </div>
+                      <ChevronDown size={14} className="user-chevron" />
+                    </>
+                  )}
                 </button>
-                <button
-                  className="user-menu-item"
-                  onClick={() => {
-                    navigate('/settings');
-                    setIsUserMenuOpen(false);
-                    setIsOpen(false);
-                  }}
-                >
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="user-dropdown-content"
+              >
+                <DropdownMenuItem onClick={() => handleNavigation("/profile")}>
+                  <User size={16} />
+                  <span>Perfil de Analista</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleNavigation("/settings")}>
                   <Settings size={16} />
                   <span>Configuración</span>
-                </button>
-                <hr className="user-menu-divider" />
-                <button
-                  className="user-menu-item logout"
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="logout-item"
                   onClick={handleLogout}
                 >
                   <LogOut size={16} />
                   <span>Cerrar Sesión</span>
-                </button>
-              </div>
-            )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
       </aside>
+
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsOpen(false)} />
+      )}
     </>
   );
 };

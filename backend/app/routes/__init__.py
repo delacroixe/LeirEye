@@ -1,4 +1,13 @@
-"""Rutas del API"""
-from . import auth, capture, stats, ai, system
+from . import ai, alerts, analysis, auth, capture, dns, stats, system, wifi
 
-__all__ = ["auth", "capture", "stats", "ai", "system"]
+__all__ = [
+    "auth",
+    "capture",
+    "stats",
+    "ai",
+    "system",
+    "alerts",
+    "dns",
+    "wifi",
+    "analysis",
+]

@@ -1,0 +1,267 @@
+/* ============================================
+   Page Help Component
+   Panel educativo para cada página
+   ============================================ */
+
+.page-help {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  width: 500px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 120px);
+  background: rgba(30, 34, 53, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(100, 200, 255, 0.3);
+  border-radius: 16px;
+  z-index: 1000;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.page-help.collapsed {
+  display: none;
+}
+
+.page-help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(100, 200, 255, 0.1);
+}
+
+.page-help-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.help-header-text {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.help-icon {
+  color: #64c8ff;
+}
+
+.page-help-actions {
+  display: flex;
+  align-items: center;
+}
+
+.page-help-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Scrollbar for help content */
+.page-help-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.page-help-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page-help-content::-webkit-scrollbar-thumb {
+  background: rgba(100, 200, 255, 0.2);
+  border-radius: 3px;
+}
+
+.help-section {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.help-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.help-section-header h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e8eaed;
+}
+
+.help-section-icon {
+  color: #64c8ff;
+  font-size: 1rem;
+}
+
+.help-section p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #b8bcc8;
+  line-height: 1.6;
+}
+
+.help-steps {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: decimal;
+}
+
+.help-steps li {
+  font-size: 0.85rem;
+  color: #b8bcc8;
+  line-height: 1.6;
+  padding: 3px 0;
+}
+
+.help-steps li::marker {
+  color: #64c8ff;
+  font-weight: 600;
+}
+
+/* Tips section */
+.tips-section {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.05) 0%,
+    rgba(255, 170, 0, 0.05) 100%
+  );
+  border: 1px solid rgba(255, 215, 0, 0.15);
+}
+
+.tips-section .help-section-icon {
+  color: #ffd700;
+}
+
+.tips-section h4 {
+  color: #ffd700;
+}
+
+.help-tips {
+  margin: 0;
+  padding-left: 18px;
+  list-style-type: disc;
+}
+
+.help-tips li {
+  font-size: 0.85rem;
+  color: #b8bcc8;
+  line-height: 1.5;
+  padding: 2px 0;
+}
+
+.help-tips li::marker {
+  color: #ffd700;
+}
+
+/* Related pages */
+.help-related {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.related-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.related-link {
+  font-size: 0.8rem;
+  color: #64c8ff;
+  text-decoration: none;
+  padding: 4px 10px;
+  background: rgba(100, 200, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.related-link:hover {
+  background: rgba(100, 200, 255, 0.2);
+  color: #8ed8ff;
+}
+
+/* Show button (when dismissed) - Now a discrete info icon */
+.page-help-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(100, 200, 255, 0.05);
+  border: 1px solid rgba(100, 200, 255, 0.15);
+  border-radius: 50%;
+  color: #64c8ff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 12px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.page-help-info-icon:hover,
+.page-help-info-icon.active {
+  background: rgba(100, 200, 255, 0.12);
+  border-color: rgba(100, 200, 255, 0.4);
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(100, 200, 255, 0.2);
+}
+
+/* Collapsed state - mini banner */
+.page-help.collapsed .page-help-header {
+  padding: 10px 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-help {
+    top: 70px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    max-height: calc(100vh - 100px);
+  }
+
+  .page-help-content {
+    gap: 12px;
+  }
+
+  .help-section {
+    padding: 12px;
+  }
+
+  .help-header-text {
+    font-size: 0.9rem;
+  }
+
+  .help-related {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

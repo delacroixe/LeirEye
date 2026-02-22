@@ -1,0 +1,276 @@
+/* Network Map - Professional Cyber Intelligence Theme */
+
+.network-map {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.map-header {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.map-stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+}
+
+.stat-icon {
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 950;
+  color: white;
+  font-family: monospace;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #475569;
+  letter-spacing: 0.1em;
+}
+
+.stat-badge.external .stat-value {
+  color: var(--color-primary);
+}
+
+.stat-badge.neutral .stat-value {
+  color: #94a3b8;
+}
+
+.map-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.view-toggle {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.25rem;
+  border-radius: 0.75rem;
+}
+
+.view-btn {
+  height: 36px;
+  padding: 0 1.25rem;
+  border: none;
+  background: none;
+  border-radius: 0.6rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.view-btn:hover:not(:disabled) {
+  color: white;
+}
+
+.view-btn.active {
+  background: white;
+  color: #020617;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+.view-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.auto-refresh-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.refresh-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+/* Visualization Containers */
+.graph-container,
+.geo-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Node Info Panel */
+.node-info-panel {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 320px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  animation: slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Legend */
+.graph-legend {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot.local {
+  background: white;
+  box-shadow: 0 0 10px white;
+}
+
+.legend-dot.external {
+  background: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
+}
+
+/* States */
+.loading-state,
+.error-state,
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 5rem;
+}
+
+.empty-state h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+}
+
+.empty-state p {
+  font-size: 0.9375rem;
+  color: #64748b;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  opacity: 0.2;
+}
+
+/* Vis-Network Custom Tooltip Style */
+.vis-tooltip {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+  font-family: "Outfit", sans-serif !important;
+  color: #f8fafc !important;
+}
+
+.vis-tooltip-custom .tooltip-header {
+  font-size: 13px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 4px;
+  font-weight: 800;
+}
+
+.vis-tooltip-custom .tooltip-row {
+  font-size: 11px;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.vis-tooltip-custom .tooltip-row span {
+  color: #64748b;
+  font-weight: 600;
+}

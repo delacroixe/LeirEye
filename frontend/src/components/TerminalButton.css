@@ -1,0 +1,63 @@
+/* Terminal Toggle Button */
+
+.terminal-toggle-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  left: calc(var(--sidebar-width, 240px) + 1.5rem);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.95),
+    rgba(30, 41, 59, 0.95)
+  );
+  color: #a78bfa;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(99, 102, 241, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+  z-index: 900;
+}
+
+.terminal-toggle-btn:hover {
+  transform: scale(1.05);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow:
+    0 6px 25px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(99, 102, 241, 0.2);
+}
+
+.terminal-toggle-btn.terminal-toggle-active {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.3),
+    rgba(139, 92, 246, 0.3)
+  );
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #c4b5fd;
+}
+
+.terminal-toggle-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .terminal-toggle-btn {
+    left: 1.5rem;
+  }
+}

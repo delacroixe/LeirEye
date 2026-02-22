@@ -1,14 +1,42 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { Sidebar } from './components/Sidebar';
-import { Login } from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import { SyncProvider } from './context/SyncContext';
-import './App.css';
+import React from "react";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
+import "./App.css";
+import AlertToast from "./components/AlertToast";
+import { CaptureBar } from "./components/CaptureBar";
+import GlobalFilterBadge from "./components/GlobalFilterBadge";
+import MainContent from "./components/MainContent";
+import { Sidebar } from "./components/Sidebar";
+import Terminal from "./components/Terminal";
+import { AIProvider } from "./contexts/AIContext";
+import { AlertsProvider } from "./contexts/AlertsContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { CaptureProvider } from "./contexts/CaptureContext";
+import { ChatProvider } from "./contexts/ChatContext";
+import { SyncProvider } from "./contexts/SyncContext";
+import { TerminalProvider } from "./contexts/TerminalContext";
+import useDevAutoLogin from "./hooks/useDevAutoLogin";
+import AlertsPage from "./pages/AlertsPage";
+import CapturePage from "./pages/CapturePage";
+import DNSPage from "./pages/DNSPage";
+import { Login } from "./pages/Login";
+import NetworkAnalysisPage from "./pages/NetworkAnalysisPage";
+import NetworkMapPage from "./pages/NetworkMapPage";
+import PacketBuilderPage from "./pages/PacketBuilderPage";
+import ProfilePage from "./pages/ProfilePage";
+import SettingsPage from "./pages/SettingsPage";
+import StatisticsPage from "./pages/StatisticsPage";
+import SystemPage from "./pages/SystemPage";
+import WiFiPage from "./pages/WiFiPage";
 
 // Componente protegido para rutas que requieren autenticación
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
@@ -30,6 +58,9 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 function AppContent() {
   const { isAuthenticated } = useAuth();
 
+  // Auto-login en desarrollo
+  useDevAutoLogin();
+
   if (!isAuthenticated) {
     return (
       <Routes>
@@ -40,57 +71,136 @@ function AppContent() {
   }
 
   return (
-    <div className="app-layout">
-      <Sidebar />
-      <main className="app-main">
-        <SyncProvider>
-          <Routes>
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/capture"
-              element={
-                <ProtectedRoute>
-                  <Dashboard initialTab="capture" />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/statistics"
-              element={
-                <ProtectedRoute>
-                  <Dashboard initialTab="stats" />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/network-map"
-              element={
-                <ProtectedRoute>
-                  <Dashboard initialTab="map" />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/system"
-              element={
-                <ProtectedRoute>
-                  <Dashboard initialTab="system" />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </SyncProvider>
-      </main>
-    </div>
+    <SyncProvider>
+      <ChatProvider>
+        <TerminalProvider>
+          <div className="app-container">
+            {/* Background Atmosphere */}
+            <div className="bg-blur-glow bg-blur-1" />
+            <div className="bg-blur-glow bg-blur-2" />
+
+            <div className="app-layout">
+              <Sidebar />
+
+              <MainContent>
+                <div className="app-content-wrapper">
+                  <CaptureBar />
+
+                  <div className="global-filter-overlay">
+                    <GlobalFilterBadge />
+                  </div>
+
+                  <main className="app-main-view">
+                    <AlertToast />
+                    <Routes>
+                      <Route
+                        path="/capture"
+                        element={
+                          <ProtectedRoute>
+                            <CapturePage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/statistics"
+                        element={
+                          <ProtectedRoute>
+                            <StatisticsPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/network-map"
+                        element={
+                          <ProtectedRoute>
+                            <NetworkMapPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/analysis"
+                        element={
+                          <ProtectedRoute>
+                            <NetworkAnalysisPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/alerts"
+                        element={
+                          <ProtectedRoute>
+                            <AlertsPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/dns"
+                        element={
+                          <ProtectedRoute>
+                            <DNSPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/wifi"
+                        element={
+                          <ProtectedRoute>
+                            <WiFiPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/packet-builder"
+                        element={
+                          <ProtectedRoute>
+                            <PacketBuilderPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/system"
+                        element={
+                          <ProtectedRoute>
+                            <SystemPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/profile"
+                        element={
+                          <ProtectedRoute>
+                            <ProfilePage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/settings"
+                        element={
+                          <ProtectedRoute>
+                            <SettingsPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/"
+                        element={<Navigate to="/capture" replace />}
+                      />
+                      <Route
+                        path="*"
+                        element={<Navigate to="/capture" replace />}
+                      />
+                    </Routes>
+                  </main>
+                </div>
+              </MainContent>
+
+              {/* Terminal integrada */}
+              <Terminal />
+            </div>
+          </div>
+        </TerminalProvider>
+      </ChatProvider>
+    </SyncProvider>
   );
 }
 
@@ -98,7 +208,13 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppContent />
+        <CaptureProvider>
+          <AlertsProvider>
+            <AIProvider>
+              <AppContent />
+            </AIProvider>
+          </AlertsProvider>
+        </CaptureProvider>
       </AuthProvider>
     </Router>
   );

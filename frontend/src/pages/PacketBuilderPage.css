@@ -1,0 +1,508 @@
+/* Packet Builder - Professional Cyber Architecture Theme */
+
+.builder-view {
+  /* No base container overrides here, inherit from .view-container */
+}
+
+/* Layout Grid System */
+.builder-layout-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.builder-config-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Sidebar Area converted to top rows */
+.builder-info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 1. Protocol Selector Card */
+.protocol-selector-card {
+  padding: 1.5rem 2rem !important;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.selector-title {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #475569;
+  letter-spacing: 0.1em;
+}
+
+.protocol-options {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.proto-opt {
+  height: 44px;
+  padding: 0 1.25rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.proto-opt:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.proto-opt.active {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--opt-color);
+  box-shadow: inset 0 0 12px -4px var(--opt-color);
+}
+
+.proto-opt.active .proto-name {
+  color: var(--opt-color);
+  font-weight: 800;
+}
+
+.proto-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+
+.proto-opt.active .proto-icon-box {
+  color: var(--opt-color);
+}
+
+.proto-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+/* 2. Packet Construction Stack (Visual Layers) */
+.presets-horizontal-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.preset-chip {
+  padding: 0.5rem 1rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 2rem;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset-chip:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.packet-construction-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.construction-layer {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s;
+}
+
+.construction-layer:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.layer-l4 {
+  border-color: rgba(6, 182, 212, 0.1);
+  box-shadow: 0 0 40px -20px var(--layer-accent);
+}
+
+.layer-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.layer-id {
+  width: 44px;
+  height: 24px;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: 900;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.layer-name {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.layer-body {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Construct Input Styles */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 160px;
+}
+
+.input-group.grow {
+  flex: 1 1 100%;
+}
+
+.input-group.small-input {
+  flex: 0;
+  min-width: 80px;
+}
+
+.input-group label,
+.sub-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #475569;
+  text-transform: uppercase;
+}
+
+.construct-input,
+.construct-select,
+.construct-textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 0.6rem;
+  padding: 0.75rem 1rem;
+  color: white;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.construct-input:focus,
+.construct-select:focus,
+.construct-textarea:focus {
+  border-color: var(--color-primary) !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  outline: none;
+}
+
+.mid-arrow {
+  padding-bottom: 0.75rem;
+  color: #334155;
+  font-weight: 900;
+}
+
+/* TCP Flags Component */
+.tcp-flags-config {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.flags-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.flag-check {
+  height: 28px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.flag-check:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.flag-check.active {
+  background: rgba(6, 182, 212, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.hidden-input {
+  display: none;
+}
+
+/* 3. Finalization Overlay (Binary & Inject) */
+.builder-finalization {
+  margin-top: 2rem;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.binary-preview {
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.preview-label {
+  font-size: 0.6rem;
+  font-weight: 950;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.preview-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.preview-content code {
+  color: #64748b;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  max-width: 80%;
+  word-break: break-all;
+}
+
+.byte-count {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #334155;
+  font-family: monospace;
+}
+
+.action-row {
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.inject-btn {
+  height: 48px;
+  padding: 0 2rem;
+  background: white;
+  color: black;
+  border-radius: 0.75rem;
+  border: none;
+  font-weight: 900;
+  font-size: 0.8125rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.inject-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px white;
+}
+
+.inject-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.inject-feedback {
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.inject-feedback.success {
+  color: var(--color-success);
+}
+
+.inject-feedback.error {
+  color: #f87171;
+}
+
+/* 4. Info Column Units */
+.builder-info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.info-card {
+  padding: 1.25rem 1.75rem !important;
+}
+
+.intelligence {
+  border: 1px dashed rgba(167, 139, 250, 0.3) !important;
+  margin-bottom: 0.5rem;
+}
+
+.ai-response-stack.compact {
+  display: block;
+  background: rgba(167, 139, 250, 0.03);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border-left: 3px solid #a78bfa;
+}
+
+.ai-explanation {
+  margin-top: 0.5rem !important;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.info-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.info-card-header h4 {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: white;
+  margin: 0;
+}
+
+.icon-ai {
+  color: #a78bfa;
+}
+
+/* AI Assistant Styles */
+.intent-box {
+  margin-bottom: 1rem;
+}
+
+.intent-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 0.6rem;
+  padding: 1rem 1.25rem;
+  color: white;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.intent-input:focus {
+  border-color: #a78bfa !important;
+  box-shadow: 0 0 20px -10px #a78bfa;
+}
+
+.ai-response-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ai-block-label {
+  font-size: 0.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #a78bfa;
+  margin-bottom: 0.3rem;
+}
+
+.ai-block p {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ai-placeholder {
+  font-size: 0.75rem;
+  color: #475569;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* Animation Utils */
+.stack-pulse {
+  animation: stack-glow 0.5s ease-out;
+}
+
+@keyframes stack-glow {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.98);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pulse {
+  animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
